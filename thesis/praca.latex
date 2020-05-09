@@ -1,0 +1,65 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+\usepackage{biblatex}
+\addbibresource{biblio.bib}
+
+\title{Modeling and forecasting of electricity prices and demand}
+\author{Adam Spychała}
+\date{June 2020}
+
+\begin{document}
+
+\maketitle
+
+\phantomsection
+
+
+\section{Introduction}
+\section{Forecasting methods}
+
+\section{Data analysis}
+
+\begin{equation}
+L_{t,h}=\sum_{i=1}^{7}L_{i}D{it} + \phi_{1}FL_{t,h} +\varepsilon _{t}
+\end{equation}
+\begin{equation}
+L_{t,h}=\sum_{i=1}^{7}L_{i}D{it} + \phi_{1}FL_{t,h} + \beta_{1}L_{t-1,h} + \beta_{2}L_{t-2,h} + \beta_{3}L_{t-7,h} +\varepsilon _{t}
+\end{equation}
+\begin{equation}
+L_{t,h}=\sum_{i=1}^{7}L_{i}D{it} + \phi_{1}FL_{t,h} + \beta_{1}L_{t-1,h} + \beta_{2}L_{t-2,h} + \beta_{3}L_{t-7,h} + \phi_{1}FW_{t,h} +\varepsilon _{t}
+\end{equation}
+\begin{equation}
+L_{t,h}=FL_{t,h}
+\end{equation}
+
+\begin{equation}
+W_{t,h}=L_{0} + \phi FW_{t,h} + \varepsilon_{t}
+\end{equation}
+\begin{equation}
+W_{t,h}=L_{0} + \phi FW_{t,h} + \beta_{1} W_{t-1,h} + \beta_{2} W_{t-2,h} + \varepsilon_{t}
+\end{equation}
+\begin{equation}
+W_{t,h}=L_{0} + \phi_{1} FW_{t,h} + \beta_{1} W_{t-1,h} + \beta_{2} W_{t-2,h} + \phi_{2} FL_{t,h} + \varepsilon_{t}
+\end{equation}
+\begin{equation}
+W_{t,h}=FW_{t,h}
+\end{equation}
+
+\begin{equation}
+y_{t,h}=\sum_{i=1}^{7} L_{i}D_{it} + \varepsilon_{t}
+\end{equation}
+\begin{equation}
+y_{t,h}=\sum_{i=1}^{7} L_{i}D_{it} + \beta_{1}y_{t-1,h}  + \beta_{2}y_{t-2,h} + \beta_{3}y_{t-7,h}   + \varepsilon_{t}
+\end{equation}
+\begin{equation}
+y_{t,h}=\sum_{i=1}^{7} L_{i}D_{it} + \beta_{1}y_{t-1,h}  + \beta_{2}y_{t-2,h} + \beta_{3}y_{t-7,h} + \beta_{4}y_{t-7,min} + \beta_{5}y_{t-1,h} + \beta_{6}y_{t-1,24} + \varepsilon_{t}
+\end{equation}
+\begin{equation}
+y_{t,h}=\sum_{i=1}^{7} L_{i}D_{it} + \beta_{1}y_{t-1,h}  + \beta_{2}y_{t-2,h} + \beta_{3}y_{t-7,h} + \beta_{4}y_{t-7,min} + \beta_{5}y_{t-1,h} + \beta_{6}y_{t-1,24} + \beta_{7}FW_{t,h} + \beta_{8}FL_{t,h} + \varepsilon_{t}
+\end{equation}
+
+\print
+
+\end{document}
+
