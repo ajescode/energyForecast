@@ -1,8 +1,11 @@
 \documentclass{article}
 \usepackage[utf8]{inputenc}
-
+\usepackage[english]{babel}
 \usepackage{biblatex}
+
 \addbibresource{biblio.bib}
+
+\newcommand{\githubLocation}{https://github.com/ajescode/energyForecast}
 
 \title{Modeling and forecasting of electricity prices and demand}
 \author{Adam Spychała}
@@ -12,14 +15,23 @@
 
 \maketitle
 
-\phantomsection
-
 
 \section{Introduction}
 \section{Forecasting methods}
-
 \section{Data analysis}
+\subsection{Load data}
+\subsection{Wind power data}
+\subsection{Price data}
 
+\subsection{Holidays}
+Usage of the electricity decreases during weekends and public holidays and this has significant effect on prediction especially during Christmas or Easter. Due to that fact, each day was aligned with variable holiday with following value based of occurrence of day of week or public holiday:
+\begin{itemize}
+	\item 1 - National Holidays (e.g. Easter Monday)\cite{denmark-holidays}
+	\item 1 - Sundays
+	\item 0 - Not a public holidays (e.g. New Year's Eve)
+	\item 0 - Other days
+\end{itemize}
+\section{Demand forecasting}
 \begin{equation}
 L_{t,h}=\sum_{i=1}^{7}L_{i}D{it} + \phi_{1}FL_{t,h} +\varepsilon _{t}
 \end{equation}
@@ -32,7 +44,8 @@ L_{t,h}=\sum_{i=1}^{7}L_{i}D{it} + \phi_{1}FL_{t,h} + \beta_{1}L_{t-1,h} + \beta
 \begin{equation}
 L_{t,h}=FL_{t,h}
 \end{equation}
-
+\section{Analysis of demand forecast}
+\section{Wind power forecasting}
 \begin{equation}
 W_{t,h}=L_{0} + \phi FW_{t,h} + \varepsilon_{t}
 \end{equation}
@@ -45,7 +58,8 @@ W_{t,h}=L_{0} + \phi_{1} FW_{t,h} + \beta_{1} W_{t-1,h} + \beta_{2} W_{t-2,h} + 
 \begin{equation}
 W_{t,h}=FW_{t,h}
 \end{equation}
-
+\section{Analysis of wind power forecast}
+\section{Price forecasting}
 \begin{equation}
 y_{t,h}=\sum_{i=1}^{7} L_{i}D_{it} + \varepsilon_{t}
 \end{equation}
@@ -58,8 +72,18 @@ y_{t,h}=\sum_{i=1}^{7} L_{i}D_{it} + \beta_{1}y_{t-1,h}  + \beta_{2}y_{t-2,h} + 
 \begin{equation}
 y_{t,h}=\sum_{i=1}^{7} L_{i}D_{it} + \beta_{1}y_{t-1,h}  + \beta_{2}y_{t-2,h} + \beta_{3}y_{t-7,h} + \beta_{4}y_{t-7,min} + \beta_{5}y_{t-1,h} + \beta_{6}y_{t-1,24} + \beta_{7}FW_{t,h} + \beta_{8}FL_{t,h} + \varepsilon_{t}
 \end{equation}
+\section{Analysis of price forecast}
+\section{Conclusions}
 
-\print
+
+\section{Data analysis}
+
+
+
+
+\printbibliography
+
+
 
 \end{document}
 
