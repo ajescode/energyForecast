@@ -19,6 +19,16 @@
 \section{Introduction}
 \section{Forecasting methods}
 \section{Data analysis}
+All data I used to perform forecasts I downloaded from the official webpage of Nordpool power exchange\cite{nordpool-historical-market-data}. Datasets are divided into the year files and periods (hours, weeks etc.). I managed to download following datasets (valid for the day 14.05.2020):
+\begin{itemize}
+	\item Consumption - hourly
+	\item Consumption prognosis - hourly
+	\item Wind power - hourly
+	\item Wind power prognosis - hourly
+	\item Elspot prices (as Price) - hourly
+\end{itemize}
+
+All of the datasets were available for years 2013-2020, except for Consumption prognosis (2015-2020). So I decided to focus on analysis only on the period 2015-2020, because 4 years period is still suitable for calculations.
 \subsection{Load data}
 \subsection{Wind power data}
 \subsection{Price data}
