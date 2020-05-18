@@ -39,6 +39,8 @@ class PriceFormatter(FormatterInterface):
                 df_area = self.dff.setColumnType(df_area, area, 'float64')
                 df_area = self.dff.renameColumn(df_area, area, 'price')
                 df_area = df_area.pivot_table(index=['date', 'holiday'], columns='hour', values='price').reset_index()
+                print(df_area)
+                exit()
 
                 df_area.to_csv(filePathOutput, index=False)
 
