@@ -3,21 +3,22 @@ import pandas as pd
 from .formatterInterface import FormatterInterface
 
 
-class PriceFormatter(FormatterInterface):
+class ConsumptionFormatter(FormatterInterface):
 
     def format(self):
-        self.setConstants('price', '../../data/data_raw/price', '../../data/data_processed/{area}/price',
-                          'elspot-prices_{year}_hourly_{price_country}.xls',
-                          'elspot-prices_{year}_hourly_{price_country}.csv')
+        self.setConstants('consumption', '../../data/data_raw/consumption', '../../data/data_processed/{area}/consumption',
+                          'consumption-{country}-areas_{year}_hourly.xls',
+                          'consumption-{country}-areas_{year}_hourly.csv')
 
         FormatterInterface.format(self)
 
     def formatHourly(self, year):
         filePath = self.getFilePath(year)
+
         if os.path.exists(filePath):
             df = pd.read_excel(filePath, skiprows=[0, 1])
-            df.rename(columns={df.columns[0]: 'date'}, inplace=True)
-            df.rename(columns={df.columns[1]: 'hour'}, inplace=True)
+            df.rename(columns={df.columns[0]: "date"}, inplace=True)
+            df.rename(columns={df.columns[1]: "hour"}, inplace=True)
 
             df = self.dff.keepColumnOnly(df, ['date', 'hour'] + self.areas)
 
