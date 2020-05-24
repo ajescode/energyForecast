@@ -6,7 +6,8 @@ from .formatterInterface import FormatterInterface
 class ConsumptionPrognosisFormatter(FormatterInterface):
 
     def format(self):
-        self.setConstants('consumption_prognosis', '../../data/data_raw/consumption_prognosis', '../../data/data_processed/{area}/consumption_prognosis',
+        self.setConstants('consumption_prognosis', '../../data/data_raw/consumption_prognosis',
+                          '../../data/data_processed/{area}/consumption_prognosis',
                           'consumption-prognosis-{country}_{year}_hourly.xls',
                           'consumption-prognosis-{country}_{year}_hourly.csv')
 

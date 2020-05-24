@@ -1,6 +1,3 @@
-import pandas as pd
-
-
 class DataFrameFormatter:
 
     def replaceDecimalSeparator(self, df, columnName):
