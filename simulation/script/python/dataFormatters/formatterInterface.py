@@ -78,15 +78,3 @@ class FormatterInterface:
             file = self.fileFormatSource
 
         return directory + '/' + file
-
-    # def countZeroNumber(self, df, year, columns):
-    #     for column in columns:
-    #         # print(df[df == 0].count(axis=0))
-    #         # print(df.isnull().sum())
-    #         df = df[['DK1']]
-    #         # print(df)
-    #         # df['DK1'] = df['DK1'].round(decimals=2)
-    #         num = df._get_numeric_data()
-    #         num[num < 0] = 0
-    #         number = (df['DK1'] == 0).sum()
-    #         self.addZeroCount(year, column, number)
