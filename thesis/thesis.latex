@@ -1,9 +1,11 @@
 \documentclass{article}
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{mathtools}
 \usepackage{biblatex}
 \usepackage{graphicx}
-\usepackage[margin=0.5in]{geometry}
+\usepackage[margin=1.5in]{geometry}
 \usepackage[section]{placeins}
 \usepackage[subsection]{placeins}
 
@@ -19,23 +21,59 @@
 
 \maketitle
 
+\begin{abstract}
+Abstract
+\end{abstract}
+Keywords: electricity spot prices, day-ahead market, forecasting, power market
+
 
 \section{Introduction}
-<<struktura energetyki w Danii>>
+Danish power market has been transformed in the last several years drastically. Since 70s there was a lot of investments in renewable sources of energy, especially in the field of wind power, and much more since 2002 when first large scale offshore wind farm in the world has been finished - Horns Rev 1 (160 MW). For year 2019, total wind power generation capacity was 6128 MW\cite{wind-europe-2019}.
 
-The electricity market in Denmark is divided into 2 groups (DK1 and DK2). First group (DK1) consists of regions: Nordjylland, Midtjylland and Syddanmark; second group (DK2) consists of regions Sjælland and Hovedstaden with the capital Copenhagen.
+National target for 2020 is over 50\% of a energy consumption covered by wind power and it's likely to be achieved, as in 2019 they obtained 47\% of coverage by domestic production\cite{denmark-sources-record-wind-2019}. Moreover they have finished construction of next large scale wind farm Horns Rev 3 in August 2019\cite{denmark-sources-record-wind-2019}. There are also defined next goals in last presented national energy strategy. For wind power consumption they aim for 70\% in 2030\cite{denmark-sources-record-wind-2019}. Denmark is currently leader of wind power shares in the national production and its development.
+
+The production of such significant part of energy from wind carries some risk. Wind speed is very fluctuant and variable even in a day cycle. There are no perfect methods of forecasting in the long term periods. It may occur in higher (or lower) demand in production from other, stable sources of energy to cover consumption. It's problematic to mark a common trend in wind power forecasts\ref{fig:wind_power_2019}. Thus it's helpful to correct prediction of electricity demand.
+
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=10cm]{pictures/analysis/wind_power/total_day_2019_DK1.png}
+    \caption{Wind power produced per day in 2019 (DK1)}
+    \label{fig:wind_power_2019}
+\end{figure}
+
+Wind power generation can't be stopped quickly as production of conventional sources of energy (coal, gas). Because of that higher unexpected wind power production may lead to decreased prices on energy stocks and in some cases, prices can drop below zero. That was happening rarely in the era of conventional production and regulated electricity market, but it happens more often with more renewable power generators. Because energy network is quite connected with each other in the European Union, in a case of negative prices energy from Danish areas (DK1, DK2) is exported to the neighboring countries, mainly to the Germany, which Denmark has the biggest balance of energy export and import.
+
+Negative prices obligate to use other approaches of price forecasting, than the old ones which were failing with unexpected domain of values. In my work I will present a few models to forecast price and consumption and point out the best approach to have optimal forecasts.
+
+The electricity market in Denmark is divided into 2 areas (DK1 and DK2). First area (DK1) consists of regions: Nordjylland, Midtjylland and Syddanmark; second area (DK2) consists of regions Sjælland and Hovedstaden with the capital Copenhagen.
 
 \begin{figure}[htp]
     \centering
     \includegraphics[width=10cm]{pictures/denmark_sector_division.png}
-    \caption{An image of a galaxy}
+    \caption{Danish electricity market}
     \label{fig:denmark_division}
 \end{figure}
 
-\section{Forecasting methods}
-\section{Data analysis}
+Denmark is located between two large energy producers: Germany and Sweden. Is connected directly with these countries and further with Norway and Netherlands. Energy link (Viking Link) with United Kingdom is under construction and connection with Poland is in the planning phase.
 
-All data I used to perform forecasts I downloaded from the official webpage of Nordpool power exchange\cite{nordpool-historical-market-data}. Datasets are divided into the year files and periods (hours, weeks etc.). I managed to download following datasets (valid for the day 14.05.2020):
+Denmark covers only small part of the its demand from the export, however their goals is to start exporting renewable energy from 2026\cite{denmarks-energy-outlook-2019}.
+
+\section{Methodology}
+
+I decided to choose Danish market for forecasting and so on I want to apply methods and models which are most fitted to the characteristics of this market. I performed forecasting for 3 categories of values: wind power, consumption and price. In each category I make prognosis for few models which are described in Forecasting section. My forecasting framework for all of them is following:
+
+\begin{enumerate}
+	\item Data preparation
+	\item Preliminary data analysis
+	\item Data forecasting (cycle for each model and day)
+	\subitem Data normalization
+	\subitem Day-ahead forecasting
+	\item Verifying models' performance
+\end{enumerate}
+
+All calculations were conducted with Python3.7 language and its libraries, i.e. numpy, pandas, scipy. All the scripts made are accessible in public GIT repository \githubLocation.
+
+Data I used to perform forecasts has been downloaded from the official webpage of the Nordpool power exchange\cite{nordpool-historical-market-data}. Datasets are divided into the year files and periods (hours, weeks etc.). I managed to download following datasets (valid for the day 14.05.2020):
 \begin{itemize}
 	\item Consumption - hourly
 	\item Consumption prognosis - hourly
@@ -44,7 +82,7 @@ All data I used to perform forecasts I downloaded from the official webpage of N
 	\item Elspot prices (as Price) - hourly
 \end{itemize}
 
-All of the datasets were available for years 2013-2020, except for Consumption prognosis (2015-2020). So I decided to focus on analysis only on the period 2015-2020, because 4 years time frame is still sufficient for calculations.
+All of the datasets were available for years 2013-2020, except for Consumption prognosis (2015-2020). So I decided to focus on analysis only on the period 2015-2020 (2015.01.01-2020.05.12), because 4 years time frame is still sufficient for calculations. 
 
 Units of downloaded data are following:
 \begin{itemize}
@@ -52,7 +90,7 @@ Units of downloaded data are following:
 	\item Price - DKK/MWh
 \end{itemize}
 
-The files were downloaded, merged, splitted for regions DK1 and DK2, pivoted in order to have separated hours as parameters for each day and merged for all years. Example for consumption DK1 is presented below.
+The files were downloaded, merged, split for regions DK1 and DK2, pivoted in order to have separated hours as parameters for each day and merged for all years. Example for consumption DK1 is presented below.
 
 \begin{table}[h!]
 \begin{center}
@@ -69,9 +107,80 @@ The files were downloaded, merged, splitted for regions DK1 and DK2, pivoted in 
 \end{center}
 \end{table}
 
-Missing values
+\FloatBarrier
+Data forecasting is performed for day ahead because given Wind power prognosis and Consumption prognosis is supplying only one day in advance. For the computations is considered number of previous days to have insights of possible value and its called as calibration window. It may take values of week multiples (7 days) because of the seasonal trend of energy production. Because chosen data has limit of 1583 days, the maximum calibration window I consider is 728 days, around 2 years.
 
-Data was very consistent and almost only single values were missing. Single missing values were replaced by average of neighbor cells and in case of missing value in neighbor cell, value was fixed manually (with file fill\_empty\_cells.py). Half of day 2018-09-18 from Wind prognosis files was filled taking closest neighbors and counting average for whole vector (with file fill\_empty\_cells\_wind\_prognosis\_DK.py). Missing values were reduced to zero.
+I consider few models for each category of forecasts (consumption, price and wind power) which I explain in the end of this section. General equation for each model (except of benchmark models for wind power and consumption) can be presented as:
+
+\begin{equation}
+    \hat{Y}_{d,h} = \sum_{i=1}^{n}\beta_{d,h,i}X_{d,h}^{i}
+\end{equation}
+
+, where $Y_{d,h}$ is prediction and $X_{d,h}^{i}$ is variable for given day ($d$) and hour ($h$). We can predict values for next whole day only, but basing on the variables from whole calibration window. Coefficients $\beta_{h,i}$ have been approximated by Ordinary least squares (OLS).
+
+\begin{equation}
+    \vec{\hat{\beta}}=(X^{T}X)^{-1}X^{T}Y
+\end{equation}
+
+,where $X$ is matrix of independent variables, and $Y$ is vector of dependant variables of size of calibration window (multiple of 7 days).
+
+Because prices of energy due to the wind dependence can have negative values I need to normalize values. I used function $asinh$ which was empirically confirmed to have best results for danish market among 4 different normalization functions.\cite{variance-stabilizing}.
+
+\begin{equation}
+    Y_{d,h}=asinh(y_{d,h})\equiv \log (y_{d,h}+\sqrt{y^{2}_{d,h}+1})
+\end{equation}
+
+, where $Y_{d,h} $ is transformed value used for forecasts either as independent variable or dependent variable. Independent values in the model must be also transformed.  $y_{d,h}$ is normalized value in calibration window by:
+\begin{equation}
+    y_{d,h}=\frac{1}{b_{d,h}}(y_{d,h}-a_{d,h})
+\end{equation}
+
+, where $a$ is median and $b$ is median absolute deviation (MAD) for given day and hour in the calibration window.
+
+Inverse function for transformation and normalization is following:
+\begin{equation}
+    y_{d,h}=b_{d,h}sinh(Y_{d,h})+a_{d,h}
+\end{equation}
+
+
+For each forecast there is error analysis with Mean Average Error (MAE), Mean Root Square Error (MRSE) and Diebold-Mariano test. All forecasts in the appropriate categories are compared to each other in order to get optimal result.
+
+\begin{equation}
+    MAE = \frac{1}{24T}\sum_{d=1}^{T}\sum_{h=1}^{24}\left |  \hat{\varepsilon}_{d,h} \right |\equiv \frac{1}{24T}\sum_{d=1}^{T}\sum_{h=1}^{24}\left |  y_{d,h} - \hat{y}_{d,h} \right |
+\end{equation}
+
+\begin{equation}
+    RMSE = \sqrt{\frac{1}{24D}\sum_{d=1}^{T}\sum_{h=1}^{24} \hat{\varepsilon}_{d,h}^2}\equiv \sqrt{\frac{1}{24D}\sum_{d=1}^{T}\sum_{h=1}^{24} (y_{d,h} - \hat{y}_{d,h})^2}
+\end{equation}
+
+, where $T$ is size of calibration window. Also I performed error analysis for each hour and day of forecasts and compared average values of them.
+
+\begin{equation}
+    MAE_{h} = \frac{1}{T}\sum_{d=1}^{T}\left |  \hat{\varepsilon}_{d,h} \right | \equiv 
+\frac{1}{T}\sum_{d=1}^{T}\left |  y_{d,h} - \hat{y}_{d,h} \right |
+\end{equation}
+\begin{equation}
+    MAE_{d} = \frac{1}{24}\sum_{h=1}^{24}\left |  \hat{\varepsilon}_{d,h} \right | \equiv 
+\frac{1}{24}\sum_{h=1}^{24}\left |  y_{d,h} - \hat{y}_{d,h} \right |
+\end{equation}
+
+\begin{equation}
+    RMSE_{h} = \sqrt{\frac{1}{T}\sum_{d=1}^{T} \hat{\varepsilon}_{d,h}^2}\equiv \sqrt{\frac{1}{T}\sum_{d=1}^{T} (y_{d,h} - \hat{y}_{d,h})^2}
+\end{equation}
+\begin{equation}
+    RMSE_{d} = \sqrt{\frac{1}{24}\sum_{h=1}^{24} \hat{\varepsilon}_{d,h}^2}\equiv \sqrt{\frac{1}{24}\sum_{h=1}^{24} (y_{d,h} - \hat{y}_{d,h})^2}
+\end{equation}
+
+
+
+\section{Data analysis}
+
+I performed a few analysis for each dataset, although I don't include all of the charts and tables in this work. The rest is uploaded into the github repository.
+
+
+\subsection{Missing values}
+
+Data was very consistent and yet only single values were missing. These null values were replaced by average of the neighboring cells and in case of missing value in neighbor cell, value was fixed manually (with file fill\_empty\_cells.py). Half of day 2018-09-18 from Wind prognosis files was filled taking closest neighbors and counting average for whole vector (with file fill\_empty\_cells\_wind\_prognosis\_DK.py). Number of missing values was reduced to zero.
 
 \begin{table}[!htbp]
 \begin{center}
@@ -90,612 +199,154 @@ Wind power prognosis & 18 & 19 \\
 
 
 
-\subsection{Load data}
-\begin{figure}[!h]
+\subsection{Consumption data}
+There was bigger consumption in area DK1 than DK2, compared for years 2016-2019 19.14, 19.41, 20.28, 20.37 TWh to 13.13, 13.03, 13.28, 13.16 TWh accordingly. We can see that consumption increased gradually in the area DK1, meanwhile in area DK2 was on the similar level.
+
+We can spot three types of seasonal trends in the data: annual, weekly and daily. On the below chart showing consumption per day in 2019, we see that every weekend consumption value drops.
+
+\begin{figure}[htp]
     \centering
-    \includegraphics[width=8cm]{pictures/analysis/consumption/total_year_DK1.png}
-    \caption{}
-    \label{fig:consumption_avg_dayofweek_dk1}
+    \includegraphics[width=8cm]{pictures/analysis/consumption/total_day_2019_DK1.png}
+    \caption{Consumption per day in 2019 (DK1)}
+    \label{fig:}
 \end{figure}
-\begin{figure}[!h]
+\FloatBarrier
+
+Although it's not easy to spot, there is also annual trend with lower consumption during summer months and higher during winter. It's observable particularly in the DK2.
+
+\begin{figure}[htp]
     \centering
-    \includegraphics[width=15cm]{pictures/analysis/consumption/total_day_2019_DK1.png}
-    \caption{}
-    \label{fig:consumption_avg_dayofweek_dk1}
+    \includegraphics[width=8cm]{pictures/analysis/consumption/total_day_2019_DK2.png}
+    \caption{Consumption per day in 2019 (DK2)}
+    \label{fig:}
 \end{figure}
-\begin{figure}[!h]
+\FloatBarrier
+
+Simple Moving Average with 14 days windows for each year shows clearly this trend. Although in the area DK1 it's not very sharp.
+
+\begin{figure}[htp]
     \centering
-    \includegraphics[width=20cm]{pictures/analysis/consumption/avg_dayofweek_DK1.png}
-    \caption{}
-    \label{fig:consumption_avg_dayofweek_dk1}
+    \includegraphics[width=8cm]{pictures/analysis/consumption/sma_14days_DK2.png}
+    \caption{Simple Moving Average of consumption - 14 days window (DK2)}
+    \label{fig:}
 \end{figure}
-\begin{figure}[!h]
+\FloatBarrier
+
+Last seasonal trend is daily which can be observed for each day of week, even holidays. There are two peaks of energy consumption each day, on the morning and evening. During weekend and holidays, morning peaks occurs later than during work days. There is also noticeable smaller consumption in the night.
+
+\begin{figure}[htp]
     \centering
-    \includegraphics[width=15cm]{pictures/analysis/consumption/avg_hour_DK1.png}
-    \caption{}
-    \label{fig:consumption_avg_dayofweek_dk1}
+    \includegraphics[width=8cm]{pictures/analysis/consumption/avg_dayofweek_DK1.png}
+    \caption{Average consumption per each hour of day for each day of week (DK1)}
+    \label{fig:}
 \end{figure}
-\begin{figure}[!h]
+\FloatBarrier
+
+There is also one interesting thing observed in the 2020's data only in the area DK2. Evening daily peak is slightly shifted which can be caused epidemic COVID-19 or incomplete data of 2020 year.
+
+\begin{figure}[htp]
     \centering
-    \includegraphics[width=20cm]{pictures/analysis/consumption/avg_workday_holiday_DK1.png}
-    \caption{}
-    \label{fig:consumption_avg_dayofweek_dk1}
+    \includegraphics[width=8cm]{pictures/analysis/consumption/avg_hour_DK2.png}
+    \caption{Average consumption per each hour of day for each year (DK2)}
+    \label{fig:}
 \end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=20cm]{pictures/analysis/consumption/median_dayofweek_DK1.png}
-    \caption{}
-    \label{fig:consumption_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=20cm]{pictures/analysis/consumption/std_dayofweek_DK1.png}
-    \caption{}
-    \label{fig:consumption_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15cm]{pictures/analysis/consumption/sma_14days_DK1.png}
-    \caption{}
-    \label{fig:consumption_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=8cm]{pictures/analysis/consumption/total_year_DK2.png}
-    \caption{}
-    \label{fig:consumption_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15cm]{pictures/analysis/consumption/total_day_2019_DK2.png}
-    \caption{}
-    \label{fig:consumption_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=20cm]{pictures/analysis/consumption/avg_dayofweek_DK2.png}
-    \caption{}
-    \label{fig:consumption_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15cm]{pictures/analysis/consumption/avg_hour_DK2.png}
-    \caption{}
-    \label{fig:consumption_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=20cm]{pictures/analysis/consumption/avg_workday_holiday_DK2.png}
-    \caption{}
-    \label{fig:consumption_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=20cm]{pictures/analysis/consumption/median_dayofweek_DK2.png}
-    \caption{}
-    \label{fig:consumption_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=20cm]{pictures/analysis/consumption/std_dayofweek_DK2.png}
-    \caption{}
-    \label{fig:consumption_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15cm]{pictures/analysis/consumption/sma_14days_DK2.png}
-    \caption{}
-    \label{fig:consumption_avg_dayofweek_dk1}
-\end{figure}
+\FloatBarrier
 
 \FloatBarrier
-\subsubsection{Load data prognosis}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=8cm]{pictures/analysis/consumption_prognosis/total_year_DK1.png}
-    \caption{}
-    \label{fig:consumption_prognosis_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15cm]{pictures/analysis/consumption_prognosis/total_day_2019_DK1.png}
-    \caption{}
-    \label{fig:consumption_prognosis_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=20cm]{pictures/analysis/consumption_prognosis/avg_dayofweek_DK1.png}
-    \caption{}
-    \label{fig:consumption_prognosis_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15cm]{pictures/analysis/consumption_prognosis/avg_hour_DK1.png}
-    \caption{}
-    \label{fig:consumption_prognosis_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=20cm]{pictures/analysis/consumption_prognosis/avg_workday_holiday_DK1.png}
-    \caption{}
-    \label{fig:consumption_prognosis_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=20cm]{pictures/analysis/consumption_prognosis/median_dayofweek_DK1.png}
-    \caption{}
-    \label{fig:consumption_prognosis_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=20cm]{pictures/analysis/consumption_prognosis/std_dayofweek_DK1.png}
-    \caption{}
-    \label{fig:consumption_prognosis_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15cm]{pictures/analysis/consumption_prognosis/sma_14days_DK1.png}
-    \caption{}
-    \label{fig:consumption_prognosis_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=8cm]{pictures/analysis/consumption_prognosis/total_year_DK2.png}
-    \caption{}
-    \label{fig:consumption_prognosis_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15cm]{pictures/analysis/consumption_prognosis/total_day_2019_DK2.png}
-    \caption{}
-    \label{fig:consumption_prognosis_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=20cm]{pictures/analysis/consumption_prognosis/avg_dayofweek_DK2.png}
-    \caption{}
-    \label{fig:consumption_prognosis_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15cm]{pictures/analysis/consumption_prognosis/avg_hour_DK2.png}
-    \caption{}
-    \label{fig:consumption_prognosis_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=20cm]{pictures/analysis/consumption_prognosis/avg_workday_holiday_DK2.png}
-    \caption{}
-    \label{fig:consumption_prognosis_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=20cm]{pictures/analysis/consumption_prognosis/median_dayofweek_DK2.png}
-    \caption{}
-    \label{fig:consumption_prognosis_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=20cm]{pictures/analysis/consumption_prognosis/std_dayofweek_DK2.png}
-    \caption{}
-    \label{fig:consumption_prognosis_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15cm]{pictures/analysis/consumption_prognosis/sma_14days_DK2.png}
-    \caption{}
-    \label{fig:consumption_prognosis_avg_dayofweek_dk1}
-\end{figure}
-\FloatBarrier
-\subsubsection{Load data prognosis metrics}
+\subsubsection{Consumption data prognosis}
+<<TODO>>
+
 \begin{equation}
 RMSE_{t} = \sqrt{\frac{1}{24}\sum_{h}^{}( y_{t,h} - \hat{y}_{t,h})^{2}}
 \end{equation}
 \begin{equation}
 RMSE_{h} = \sqrt{\frac{1}{T}\sum_{t}^{}( y_{t,h} - \hat{y}_{t,h} )^{2}}
 \end{equation}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15cm]{pictures/analysis/consumption_forecasted/rmse_year_DK1.png}
-    \caption{}
-    \label{fig:consumption_prognosis_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15cm]{pictures/analysis/consumption_forecasted/rms_month_DK1.png}
-    \caption{}
-    \label{fig:consumption_prognosis_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15cm]{pictures/analysis/consumption_forecasted/rmse_day_DK1.png}
-    \caption{}
-    \label{fig:consumption_prognosis_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15cm]{pictures/analysis/consumption_forecasted/sma_rmse_7days_DK1.png}
-    \caption{}
-    \label{fig:consumption_prognosis_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15cm]{pictures/analysis/consumption_forecasted/rmse_hour_DK1.png}
-    \caption{}
-    \label{fig:consumption_prognosis_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15cm]{pictures/analysis/consumption_forecasted/rmse_year_DK2.png}
-    \caption{}
-    \label{fig:consumption_prognosis_avg_dayofweek_DK2}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15cm]{pictures/analysis/consumption_forecasted/rms_month_DK2.png}
-    \caption{}
-    \label{fig:consumption_prognosis_avg_dayofweek_DK2}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15cm]{pictures/analysis/consumption_forecasted/rmse_day_DK2.png}
-    \caption{}
-    \label{fig:consumption_prognosis_avg_dayofweek_DK2}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15cm]{pictures/analysis/consumption_forecasted/sma_rmse_7days_DK2.png}
-    \caption{}
-    \label{fig:consumption_prognosis_avg_dayofweek_DK2}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15cm]{pictures/analysis/consumption_forecasted/rmse_hour_DK2.png}
-    \caption{}
-    \label{fig:consumption_prognosis_avg_dayofweek_DK2}
-\end{figure}
+
 \FloatBarrier
 \subsection{Wind power data}
-\begin{figure}[!h]
+Wind power production increased significantly within last 4 years. In the area DK1 from 9.41 to 11.26 TWh and for area DK2 from 2.37 to 3.22 TWh, so about 35\% more.
+
+So far in the consumption data we could spot any trend whereas in the wind power data there is no distinct trend. 
+
+\begin{figure}[htp]
     \centering
-    \includegraphics[width=8cm]{pictures/analysis/wind_power/total_year_DK1.png}
-    \caption{}
-    \label{fig:wind_power_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15cm]{pictures/analysis/wind_power/total_day_2019_DK1.png}
-    \caption{}
-    \label{fig:wind_power_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=20cm]{pictures/analysis/wind_power/avg_dayofweek_DK1.png}
-    \caption{}
-    \label{fig:wind_power_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15cm]{pictures/analysis/wind_power/avg_hour_DK1.png}
-    \caption{}
-    \label{fig:wind_power_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=20cm]{pictures/analysis/wind_power/avg_workday_holiday_DK1.png}
-    \caption{}
-    \label{fig:wind_power_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=20cm]{pictures/analysis/wind_power/median_dayofweek_DK1.png}
-    \caption{}
-    \label{fig:wind_power_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=20cm]{pictures/analysis/wind_power/std_dayofweek_DK1.png}
-    \caption{}
-    \label{fig:wind_power_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15cm]{pictures/analysis/wind_power/sma_14days_DK1.png}
-    \caption{}
-    \label{fig:wind_power_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=8cm]{pictures/analysis/wind_power/total_year_DK2.png}
-    \caption{}
-    \label{fig:wind_power_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15cm]{pictures/analysis/wind_power/total_day_2019_DK2.png}
-    \caption{}
-    \label{fig:wind_power_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=20cm]{pictures/analysis/wind_power/avg_dayofweek_DK2.png}
-    \caption{}
-    \label{fig:wind_power_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15cm]{pictures/analysis/wind_power/avg_hour_DK2.png}
-    \caption{}
-    \label{fig:wind_power_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=20cm]{pictures/analysis/wind_power/avg_workday_holiday_DK2.png}
-    \caption{}
-    \label{fig:wind_power_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=20cm]{pictures/analysis/wind_power/median_dayofweek_DK2.png}
-    \caption{}
-    \label{fig:wind_power_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=20cm]{pictures/analysis/wind_power/std_dayofweek_DK2.png}
-    \caption{}
-    \label{fig:wind_power_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15cm]{pictures/analysis/wind_power/sma_14days_DK2.png}
-    \caption{}
-    \label{fig:wind_power_avg_dayofweek_dk1}
+    \includegraphics[width=8cm]{pictures/analysis/wind_power/avg_dayofweek_DK1.png}
+    \caption{Wind power production per hour of a day for each day of week (DK1)}
+    \label{fig:}
 \end{figure}
 \FloatBarrier
+
+Simple Moving Average also doesn't show anything recurrent, thus we can assume any annual trend.
+
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=8cm]{pictures/analysis/wind_power/sma_14days_DK1.png}
+    \caption{Simple moving average of wind power production per each hour for each day of week (DK1)}
+    \label{fig:}
+\end{figure}
+\FloatBarrier
+
+Only chart of average wind power for each hour suggest there may be a daily trend, however data from area DK2 doesn't confirm this assumption.
+
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=8cm]{pictures/analysis/wind_power/avg_hour_DK1.png}
+    \caption{Average wind power production per hour of a day for each year (DK1)}
+    \label{fig:}
+\end{figure}
+\FloatBarrier
+
 \subsubsection{Wind power data prognosis}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=8cm]{pictures/analysis/wind_power_prognosis/total_year_DK1.png}
-    \caption{}
-    \label{fig:wind_power_prognosis_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15cm]{pictures/analysis/wind_power_prognosis/total_day_2019_DK1.png}
-    \caption{}
-    \label{fig:wind_power_prognosis_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=20cm]{pictures/analysis/wind_power_prognosis/avg_dayofweek_DK1.png}
-    \caption{}
-    \label{fig:wind_power_prognosis_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15cm]{pictures/analysis/wind_power_prognosis/avg_hour_DK1.png}
-    \caption{}
-    \label{fig:wind_power_prognosis_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=20cm]{pictures/analysis/wind_power_prognosis/avg_workday_holiday_DK1.png}
-    \caption{}
-    \label{fig:wind_power_prognosis_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=20cm]{pictures/analysis/wind_power_prognosis/median_dayofweek_DK1.png}
-    \caption{}
-    \label{fig:wind_power_prognosis_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=20cm]{pictures/analysis/wind_power_prognosis/std_dayofweek_DK1.png}
-    \caption{}
-    \label{fig:wind_power_prognosis_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15cm]{pictures/analysis/wind_power_prognosis/sma_14days_DK1.png}
-    \caption{}
-    \label{fig:wind_power_prognosis_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=8cm]{pictures/analysis/wind_power_prognosis/total_year_DK2.png}
-    \caption{}
-    \label{fig:wind_power_prognosis_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15cm]{pictures/analysis/wind_power_prognosis/total_day_2019_DK2.png}
-    \caption{}
-    \label{fig:wind_power_prognosis_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=20cm]{pictures/analysis/wind_power_prognosis/avg_dayofweek_DK2.png}
-    \caption{}
-    \label{fig:wind_power_prognosis_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15cm]{pictures/analysis/wind_power_prognosis/avg_hour_DK2.png}
-    \caption{}
-    \label{fig:wind_power_prognosis_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=20cm]{pictures/analysis/wind_power_prognosis/avg_workday_holiday_DK2.png}
-    \caption{}
-    \label{fig:wind_power_prognosis_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=20cm]{pictures/analysis/wind_power_prognosis/median_dayofweek_DK2.png}
-    \caption{}
-    \label{fig:wind_power_prognosis_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=20cm]{pictures/analysis/wind_power_prognosis/std_dayofweek_DK2.png}
-    \caption{}
-    \label{fig:wind_power_prognosis_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15cm]{pictures/analysis/wind_power_prognosis/sma_14days_DK2.png}
-    \caption{}
-    \label{fig:wind_power_prognosis_avg_dayofweek_dk1}
-\end{figure}
-\FloatBarrier
-\subsubsection{Wind power data prognosis metrics}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15cm]{pictures/analysis/wind_power_forecasted/rmse_year_DK1.png}
-    \caption{}
-    \label{fig:consumption_prognosis_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15cm]{pictures/analysis/wind_power_forecasted/rms_month_DK1.png}
-    \caption{}
-    \label{fig:consumption_prognosis_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15cm]{pictures/analysis/wind_power_forecasted/rmse_day_DK1.png}
-    \caption{}
-    \label{fig:consumption_prognosis_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15cm]{pictures/analysis/wind_power_forecasted/sma_rmse_7days_DK1.png}
-    \caption{}
-    \label{fig:consumption_prognosis_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15cm]{pictures/analysis/wind_power_forecasted/rmse_hour_DK1.png}
-    \caption{}
-    \label{fig:consumption_prognosis_avg_dayofweek_dk1}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15cm]{pictures/analysis/wind_power_forecasted/rmse_year_DK2.png}
-    \caption{}
-    \label{fig:consumption_prognosis_avg_dayofweek_DK2}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15cm]{pictures/analysis/wind_power_forecasted/rms_month_DK2.png}
-    \caption{}
-    \label{fig:consumption_prognosis_avg_dayofweek_DK2}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15cm]{pictures/analysis/wind_power_forecasted/rmse_day_DK2.png}
-    \caption{}
-    \label{fig:consumption_prognosis_avg_dayofweek_DK2}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15cm]{pictures/analysis/wind_power_forecasted/sma_rmse_7days_DK2.png}
-    \caption{}
-    \label{fig:consumption_prognosis_avg_dayofweek_DK2}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15cm]{pictures/analysis/wind_power_forecasted/rmse_hour_DK2.png}
-    \caption{}
-    \label{fig:consumption_prognosis_avg_dayofweek_DK2}
-\end{figure}
-\FloatBarrier
-\subsection{Price data}
+<<TODO>>
 
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15cm]{pictures/analysis/price/avg_dayofweek_DK1.png}
-    \caption{}
-    \label{fig:consumption_prognosis_avg_dayofweek_DK2}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15cm]{pictures/analysis/price/avg_hour_DK1.png}
-    \caption{}
-    \label{fig:consumption_prognosis_avg_dayofweek_DK2}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15cm]{pictures/analysis/price/avg_workday_holiday_DK1.png}
-    \caption{}
-    \label{fig:consumption_prognosis_avg_dayofweek_DK2}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15cm]{pictures/analysis/price/sma_14days_DK1.png}
-    \caption{}
-    \label{fig:consumption_prognosis_avg_dayofweek_DK2}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15cm]{pictures/analysis/price/median_dayofweek_DK1.png}
-    \caption{}
-    \label{fig:consumption_prognosis_avg_dayofweek_DK2}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15cm]{pictures/analysis/price/std_dayofweek_DK1.png}
-    \caption{}
-    \label{fig:consumption_prognosis_avg_dayofweek_DK2}
-\end{figure}
-
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15cm]{pictures/analysis/price/avg_dayofweek_DK2.png}
-    \caption{}
-    \label{fig:consumption_prognosis_avg_dayofweek_DK2}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15cm]{pictures/analysis/price/avg_hour_DK2.png}
-    \caption{}
-    \label{fig:consumption_prognosis_avg_dayofweek_DK2}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15cm]{pictures/analysis/price/avg_workday_holiday_DK2.png}
-    \caption{}
-    \label{fig:consumption_prognosis_avg_dayofweek_DK2}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15cm]{pictures/analysis/price/sma_14days_DK2.png}
-    \caption{}
-    \label{fig:consumption_prognosis_avg_dayofweek_DK2}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15cm]{pictures/analysis/price/median_dayofweek_DK2.png}
-    \caption{}
-    \label{fig:consumption_prognosis_avg_dayofweek_DK2}
-\end{figure}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15cm]{pictures/analysis/price/std_dayofweek_DK2.png}
-    \caption{}
-    \label{fig:consumption_prognosis_avg_dayofweek_DK2}
-\end{figure}
 \begin{equation}
 RMSE_{t} = \sqrt{\frac{1}{24}\sum_{h}^{}( y_{t,h} - \hat{y}_{t,h})^{2}}
 \end{equation}
 \begin{equation}
 RMSE_{h} = \sqrt{\frac{1}{T}\sum_{t}^{}( y_{t,h} - \hat{y}_{t,h} )^{2}}
 \end{equation}
-
 \FloatBarrier
+
+\subsubsection{Price data}
+In the 2020 price of energy decreased compared to the previous years. However we don't know what impact had epidemic on this data so it's hard to retrieve any conclusion.
+
+\begin{table}[!htbp]
+\begin{center}
+\begin{tabular}{lrr}
+Year &  DK1 & DK2 \\
+      \hline
+2016 & 184.435 & 206.825 \\
+2017 & 224.005 & 227.575 \\
+2018 & 329.235 & 339.345 \\
+2019 & 289.270 & 295.390 \\
+2020 & 142.520 & 149.865 \\
+\end{tabular}
+    \caption{Average price of energy per each year (DKK/MWh)}
+\end{center}
+\end{table}
+\FloatBarrier
+
+As in the consumption data we can also notice seasonal trends in this category, but this time only two kinds: daily and weekly. There is no annual trend in the price data.
+
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=8cm]{pictures/analysis/price/sma_14days_DK1.png}
+    \caption{Simple moving average of price for each year - 14 days window (DK1)}
+    \label{fig:}
+\end{figure}
+\FloatBarrier
+
+Electricity prices are lower during weekends due to the lower consumption and there are also 2 daily peaks each day, either weekend (including holidays) and work days.
+
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=8cm]{pictures/analysis/price/avg_dayofweek_DK1.png}
+    \caption{Average price per hour of a day for each day of week (DK1)}
+    \label{fig:}
+\end{figure}
+\FloatBarrier
+
 \subsection{Holidays}
 Usage of the electricity decreases during weekends and public holidays and this has significant effect on prediction especially during Christmas or Easter. Due to that fact, each day was aligned with variable holiday with following value based of occurrence of day of week or public holiday:
 \begin{itemize}
@@ -704,53 +355,131 @@ Usage of the electricity decreases during weekends and public holidays and this 
 	\item 0 - Not a public holidays (e.g. New Year's Eve)
 	\item 0 - Other days
 \end{itemize}
+\FloatBarrier
+
 \section{Demand forecasting}
+<<TODO>>
+First considering model is a benchmark model containing consumption forecast provided by Nordpool's database for day ahead ($FL_{t,h}$). Its performance is analyzed in the section Demand data prognosis.
 \begin{equation}
-L_{t,h}=\sum_{i=1}^{7}L_{i}D{it} + \phi_{1}FL_{t,h} +\varepsilon _{t}
+\label{eq:demand_model_1}
+C_{d,h}=FC_{d,h}
 \end{equation}
+
+Second model is extension of benchmark model (\ref{eq:demand_model_1}), where $D{i,d}$ is a vector of the values {0,1} for the corresponding day of a week. For day ($d$) which is Monday  $D_{1,d}=1$ and $D_{2,d}=D_{3,d}=...=D_{7,d}=0$, for a day which is Tuesday $D_{2,d}=1$ and $D_{1,d}=D_{3,d}=...=D_{7,d}=0$ etc.
 \begin{equation}
-L_{t,h}=\sum_{i=1}^{7}L_{i}D{it} + \phi_{1}FL_{t,h} + \beta_{1}L_{t-1,h} + \beta_{2}L_{t-2,h} + \beta_{3}L_{t-7,h} +\varepsilon _{t}
+\label{eq:demand_model_2}
+C_{d,h}=\sum_{i=1}^{7}\beta_{0,i}D_{i,d} + \beta_{1}FC_{d,h} +\varepsilon _{d,h}
 \end{equation}
+
+Third model is extension of second model (\ref{eq:demand_model_2}), where are added 3 parameters according to a similar-day technique: consumption of previous day ($C_{d-1,h}$), 2 days ago ($C_{d-2,h}$) and week ago ($C_{d-7,h}$).
+
 \begin{equation}
-L_{t,h}=\sum_{i=1}^{7}L_{i}D{it} + \phi_{1}FL_{t,h} + \beta_{1}L_{t-1,h} + \beta_{2}L_{t-2,h} + \beta_{3}L_{t-7,h} + \phi_{1}FW_{t,h} +\varepsilon _{t}
+\label{eq:demand_model_3}
+C_{d,h}=\sum_{i=1}^{7}\beta_{0,i}D_{i,d} + \beta_{1}FC_{d,h} + \beta_{1}C_{d-1,h} + \beta_{2}C_{d-2,h} + \beta_{3}C_{d-7,h} +\varepsilon _{d,h}
 \end{equation}
+
+Fourth model is extension of third model (\ref{eq:demand_model_3}) where is also considered forecast of the wind power download from Nordpool's database, denoted as $FW_{d,h}$. 
+
 \begin{equation}
-L_{t,h}=FL_{t,h}
+\label{eq:demand_model_4}
+C_{d,h}=\sum_{i=1}^{7}\beta_{0,i}D_{i,d} + \beta_{1}FC_{d,h} + \beta_{2}C_{d-1,h} + \beta_{3}C_{d-2,h} + \beta_{4}C_{d-7,h} + \beta_{5}FW_{d,h} +\varepsilon _{d,h}
 \end{equation}
-\section{Analysis of demand forecast}
+\subsection{Analysis}
+<<TODO>>
+
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=8cm]{pictures/err_analysis/consumption/consumption_forecast_mae.png}
+    \caption{}
+    \label{fig:}
+\end{figure}
+\FloatBarrier
+
+
 \section{Wind power forecasting}
+First model is presented and analyzed in the section Wind power data prognosis <<TODO LINK>>. This is benchmark model for further forecasts, where $FW_{t,h} + \varepsilon_{t}$ is a day ahead forecast of wind power taken from Nordpool's data.
 \begin{equation}
-W_{t,h}=L_{0} + \phi FW_{t,h} + \varepsilon_{t}
-\end{equation}
-\begin{equation}
-W_{t,h}=L_{0} + \phi FW_{t,h} + \beta_{1} W_{t-1,h} + \beta_{2} W_{t-2,h} + \varepsilon_{t}
-\end{equation}
-\begin{equation}
-W_{t,h}=L_{0} + \phi_{1} FW_{t,h} + \beta_{1} W_{t-1,h} + \beta_{2} W_{t-2,h} + \phi_{2} FL_{t,h} + \varepsilon_{t}
-\end{equation}
-\begin{equation}
+\label{eq:wind_model_1}
 W_{t,h}=FW_{t,h}
 \end{equation}
-\section{Analysis of wind power forecast}
+
+Second model includes additionally day of week vector as the second demand model (\ref{eq:demand_model_2}).
+
+\begin{equation}
+\label{eq:wind_model_2}
+W_{t,h}=\sum_{i=1}^{7}\beta_{0,i}D_{i,d} + \beta FW_{t,h} + \varepsilon_{d,h}
+\end{equation}
+
+Third model is extension of second model (\ref{eq:wind_model_2}) and contains also wind power from previous day ($W_{t-1,h}$) and 2 days ago ($W_{t-1,h}$) from the corresponding hour.
+
+\begin{equation}
+\label{eq:wind_model_3}
+W_{t,h}=\sum_{i=1}^{7}\beta_{0,i}D_{i,d} + \beta_{1} FW_{t,h} + \beta_{2} W_{t-1,h} + \beta_{3} W_{t-2,h} + \varepsilon_{d,h}
+\end{equation}
+
+Fourth model is extension of third one (\ref{eq:wind_model_3}) and contains additionally parameter of consumption forecast from previous day denoted as $FL_{t,h}$.
+
+\begin{equation}
+\label{eq:wind_model_4}
+W_{t,h}=\sum_{i=1}^{7}\beta_{0,i}D_{i,d} + \beta_{1} FW_{t,h} + \beta_{2} W_{t-1,h} + \beta_{3} W_{t-2,h} + \beta_{4} FC_{t,h} + \varepsilon_{d,h}
+\end{equation}
+\subsection{Analysis}
+<<TODO>>
+
+
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=8cm]{pictures/err_analysis/consumption/consumption_forecast_mae.png}
+    \caption{}
+    \label{fig:}
+\end{figure}
+\FloatBarrier
+
 \section{Price forecasting}
+<<TODO>>
+First forecasting model of price consists of the same daf of week vector ($D_{i,d}$) as the second demand model (\ref{eq:demand_model_2}).
+
 \begin{equation}
-y_{t,h}=\sum_{i=1}^{7} L_{i}D_{it} + \varepsilon_{t}
+\label{eq:price_model_1}
+P_{d,h}=\sum_{i=1}^{7} \beta_{0,i}D_{i,d} + \varepsilon_{d,h}
 \end{equation}
+
+Second model is an extension of first model (\ref{eq:price_model_1}), where were added parameters of price for previous days: 1 day ago, 2 days ago and 1 week ago.
+
 \begin{equation}
-y_{t,h}=\sum_{i=1}^{7} L_{i}D_{it} + \beta_{1}y_{t-1,h}  + \beta_{2}y_{t-2,h} + \beta_{3}y_{t-7,h}   + \varepsilon_{t}
+\label{eq:price_model_2}
+P_{d,h}=\sum_{i=1}^{7} \beta_{0,i}D_{i,d} + \beta_{1}p_{d-1,h}  + \beta_{2}p_{d-2,h} + \beta_{3}p_{d-7,h} + \varepsilon_{d,h}
 \end{equation}
+
+Third model is an extension of second model (\ref{eq:price_model_2}) which consists additionally parameters of minimum ($p_{d-1,min}$) and maximum value ($p_{d-1,max}$) of previous day and value of price for last hour of previous day ($p_{d-1,24}$).
+
 \begin{equation}
-y_{t,h}=\sum_{i=1}^{7} L_{i}D_{it} + \beta_{1}y_{t-1,h}  + \beta_{2}y_{t-2,h} + \beta_{3}y_{t-7,h} + \beta_{4}y_{t-7,min} + \beta_{5}y_{t-1,h} + \beta_{6}y_{t-1,24} + \varepsilon_{t}
+\label{eq:price_model_3}
+P_{d,h}=\sum_{i=1}^{7} \beta_{0,i}D_{i,d} + \beta_{1}p_{d-1,h}  + \beta_{2}p_{d-2,h} + \beta_{3}p_{d-7,h} + \beta_{4}p_{d-1,min} + \beta_{5}p_{d-1,max} + \beta_{6}p_{d-1,24} + \varepsilon_{d,h}
 \end{equation}
+
+Fourth model is an extension of third model (\ref{eq:price_model_3}) which is an expert model ARX2\cite{day-ahead-el-hg-structures} with two exogenous variables: wind power prognosis ($FW_{d,h}$) and consumption prognosis ($FC_{d,h}$).
+
 \begin{equation}
-y_{t,h}=\sum_{i=1}^{7} L_{i}D_{it} + \beta_{1}y_{t-1,h}  + \beta_{2}y_{t-2,h} + \beta_{3}y_{t-7,h} + \beta_{4}y_{t-7,min} + \beta_{5}y_{t-1,h} + \beta_{6}y_{t-1,24} + \beta_{7}FW_{t,h} + \beta_{8}FL_{t,h} + \varepsilon_{t}
+\begin{multlined}
+\label{eq:price_model_4}
+P_{d,h}=\sum_{i=1}^{7} \beta_{0,i}D_{i,d} + \beta_{1}p_{d-1,h}  + \beta_{2}p_{d-2,h} + \beta_{3}p_{d-7,h} + \beta_{4}p_{d-1,min} + \beta_{5}p_{d-1,max} \\ + \beta_{6}p_{d-1,24} + \beta_{7}FW_{d,h} + \beta_{8}FC_{d,h} + \varepsilon_{d,h}
+\end{multlined}
 \end{equation}
-\section{Analysis of price forecast}
+
+\subsection{Analysis}
+<<TODO>>
+
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=8cm]{pictures/err_analysis/consumption/consumption_forecast_mae.png}
+    \caption{}
+    \label{fig:}
+\end{figure}
+\FloatBarrier
+
 \section{Conclusions}
-
-
-\section{Data analysis}
-
+<<TODO>>
 
 
 
