@@ -253,17 +253,26 @@ There is also one interesting thing observed in the 2020's data only in the area
 \FloatBarrier
 
 \FloatBarrier
-\subsubsection{Consumption data prognosis}
-<<TODO>>
+\subsubsection{Nordpool's prognosis}
+The prognosis day-ahead given by Nordpool shows that those are less accurate over time, especially for area DK1 where consumption is larger than DK2. Level of accuracy for area DK2 is quite stable. Also there is no clear trend regarding the time of day. For DK1 best prediction are for night and for DK2 best prediction are performed for hours 7 and 15.
 
-\begin{equation}
-RMSE_{t} = \sqrt{\frac{1}{24}\sum_{h}^{}( y_{t,h} - \hat{y}_{t,h})^{2}}
-\end{equation}
-\begin{equation}
-RMSE_{h} = \sqrt{\frac{1}{T}\sum_{t}^{}( y_{t,h} - \hat{y}_{t,h} )^{2}}
-\end{equation}
 
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=10cm]{pictures/err_analysis/consumption/consumption_mae_to_prognosis_dk1.png}
+    \caption{MAE for consumption for each hour and year with total figures (DK1)}
+    \label{fig:}
+\end{figure}
 \FloatBarrier
+
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=10cm]{pictures/err_analysis/consumption/consumption_mae_to_prognosis_dk2.png}
+    \caption{MAE for consumption for each hour and year with total figures (DK2)}
+    \label{fig:}
+\end{figure}
+\FloatBarrier
+
 \subsection{Wind power data}
 Wind power production increased significantly within last 4 years. In the area DK1 from 9.41 to 11.26 TWh and for area DK2 from 2.37 to 3.22 TWh, so about 35\% more.
 
@@ -297,18 +306,28 @@ Only chart of average wind power for each hour suggest there may be a daily tren
 \end{figure}
 \FloatBarrier
 
-\subsubsection{Wind power data prognosis}
-<<TODO>>
+\subsubsection{Nordpool's prognosis}
+I calculated Mean Absolute Error for prognosis performed by Nordpool for each hour and year. The results for area DK1 are rounded to the integer. We can spot that the newer data is the bigger error for prognosis with over 80\% growth in 2020 (until 12th May) comparing to the previous year. Another thing we can notice that the error in the night hours is lower than others.
 
-\begin{equation}
-RMSE_{t} = \sqrt{\frac{1}{24}\sum_{h}^{}( y_{t,h} - \hat{y}_{t,h})^{2}}
-\end{equation}
-\begin{equation}
-RMSE_{h} = \sqrt{\frac{1}{T}\sum_{t}^{}( y_{t,h} - \hat{y}_{t,h} )^{2}}
-\end{equation}
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=10cm]{pictures/err_analysis/wind_power/wind_mae_to_prognosis_dk1.png}
+    \caption{MAE for wind power for each hour and year with total figures (DK1)}
+    \label{fig:}
+\end{figure}
 \FloatBarrier
 
-\subsubsection{Price data}
+The results for area DK2 are similar, however numbers are smaller due to the lower capacity of wind farms in this part of Denmark.
+
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=10cm]{pictures/err_analysis/wind_power/wind_mae_to_prognosis_dk2.png}
+    \caption{MAE for wind power for each hour and year with total figures (DK2)}
+    \label{fig:}
+\end{figure}
+\FloatBarrier
+
+\subsection{Price data}
 In the 2020 price of energy decreased compared to the previous years. However we don't know what impact had epidemic on this data so it's hard to retrieve any conclusion.
 
 \begin{table}[!htbp]
