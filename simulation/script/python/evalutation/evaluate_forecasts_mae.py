@@ -42,4 +42,5 @@ for f in forecasts:
     y_true = data[forecasts[f]['file']][forecasts[f]['area']].loc[first_index:last_index, '0':'23']
     forecasts_mae[f] = metrics.mean_absolute_error(y_true, y_pred)
 
-print(forecasts_mae)
+for m in forecasts_mae:
+    print(m + ": " + str(forecasts_mae[m]))
