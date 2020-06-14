@@ -127,23 +127,25 @@ I consider few models for each category of forecasts (consumption, price and win
 Because prices of energy due to the wind dependence can have negative values I need to normalize values. I used function $asinh$ which was empirically confirmed to have best results for danish market among 4 different normalization functions.\cite{variance-stabilizing}.
 
 \begin{equation}
+\label{eq:asinh_function}
     Y_{d,h}=asinh(y_{d,h})\equiv \log (y_{d,h}+\sqrt{y^{2}_{d,h}+1})
 \end{equation}
 
-, where $Y_{d,h} $ is transformed value used for forecasts either as independent variable or dependent variable. Independent values in the model must be also transformed.  $y_{d,h}$ is normalized value in calibration window by:
+, where $Y_{d,h} $ is transformed value used for forecasts either as independent variable or dependent variable. Independent values in the model must be also transformed. $y_{d,h}$ is normalized value in calibration window by:
 \begin{equation}
-    y_{d,h}=\frac{1}{b_{d,h}}(y_{d,h}-a_{d,h})
+\label{eq:normalization}
+    y_{d,h}=\frac{1}{b_{d,h}}(y^*_{d,h}-a_{d,h})
 \end{equation}
 
-, where $a$ is median and $b$ is median absolute deviation (MAD) for given day and hour in the calibration window.
+, where $a$ is median and $b$ is median absolute deviation (MAD) for given day and hour in the calibration window. I used both simple normalization (\ref{eq:normalization}), and one with $asinh$ function (\ref{eq:asinh_function}) for each category of forecasting.
 
 Inverse function for transformation and normalization is following:
 \begin{equation}
-    y_{d,h}=b_{d,h}sinh(Y_{d,h})+a_{d,h}
+    y^*_{d,h}=b_{d,h}sinh(Y_{d,h})+a_{d,h}
 \end{equation}
 
 
-For each forecast there is error analysis with Mean Average Error (MAE), Mean Root Square Error (MRSE) and Diebold-Mariano test. All forecasts in the appropriate categories are compared to each other in order to get optimal result.
+For each forecast there is error analysis with Mean Average Error (MAE), Mean Root Square Error (MRSE). All forecasts in the appropriate categories are compared to each other in order to get optimal result.
 
 \begin{equation}
     MAE = \frac{1}{24T}\sum_{d=1}^{T}\sum_{h=1}^{24}\left |  \hat{\varepsilon}_{d,h} \right |\equiv \frac{1}{24T}\sum_{d=1}^{T}\sum_{h=1}^{24}\left |  y_{d,h} - \hat{y}_{d,h} \right |
@@ -259,7 +261,7 @@ The prognosis day-ahead given by Nordpool shows that those are less accurate ove
 
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=10cm]{pictures/err_analysis/consumption/consumption_mae_to_prognosis_dk1.png}
+    \includegraphics[width=11cm]{pictures/err_analysis/consumption/consumption_mae_to_prognosis_dk1.png}
     \caption{MAE for consumption for each hour and year with total figures (DK1)}
     \label{fig:}
 \end{figure}
@@ -267,7 +269,7 @@ The prognosis day-ahead given by Nordpool shows that those are less accurate ove
 
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=10cm]{pictures/err_analysis/consumption/consumption_mae_to_prognosis_dk2.png}
+    \includegraphics[width=11cm]{pictures/err_analysis/consumption/consumption_mae_to_prognosis_dk2.png}
     \caption{MAE for consumption for each hour and year with total figures (DK2)}
     \label{fig:}
 \end{figure}
@@ -311,7 +313,7 @@ I calculated Mean Absolute Error for prognosis performed by Nordpool for each ho
 
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=10cm]{pictures/err_analysis/wind_power/wind_mae_to_prognosis_dk1.png}
+    \includegraphics[width=11cm]{pictures/err_analysis/wind_power/wind_mae_to_prognosis_dk1.png}
     \caption{MAE for wind power for each hour and year with total figures (DK1)}
     \label{fig:}
 \end{figure}
@@ -321,7 +323,7 @@ The results for area DK2 are similar, however numbers are smaller due to the low
 
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=10cm]{pictures/err_analysis/wind_power/wind_mae_to_prognosis_dk2.png}
+    \includegraphics[width=11cm]{pictures/err_analysis/wind_power/wind_mae_to_prognosis_dk2.png}
     \caption{MAE for wind power for each hour and year with total figures (DK2)}
     \label{fig:}
 \end{figure}
@@ -366,8 +368,42 @@ Electricity prices are lower during weekends due to the lower consumption and th
 \end{figure}
 \FloatBarrier
 
+\subsubsection{Negative prices}
+There were 417 negative prices in the area DK1 in the years 2016-2020 and 288 in the DK2. The dataset for 2020 ends on 12th May, however there are already 84 negative prices compared to the 133 in the full year 2019. Negative prices occur more often during nights than the peaks of consumption.
+
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=11cm]{pictures/analysis/price/neg_prices_dk1.png}
+    \caption{Number of negative prices for each hour, year and totally (DK1)}
+    \label{fig:}
+\end{figure}
+\FloatBarrier
+
+
+\subsubsection{Correlation between price and wind power}
+
+We can suspect that with bigger values of wind power price is lower. Pearson's correlation shows that mostly it's weak correlation, only for 2020 year there are moderate values.
+
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=8cm]{pictures/analysis/price/corr_price_wind_2019.png}
+    \caption{Correlation between price and wind power for each hour - year 2019 (2019, DK1)}
+    \label{fig:}
+\end{figure}
+\FloatBarrier
+
+Correlation is a little bit higher for night hours than rest of the day.
+
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=11cm]{pictures/analysis/price/corr_price_wind.png}
+    \caption{Correlation between price and wind power for each hour and year (DK1 and DK2)}
+    \label{fig:}
+\end{figure}
+\FloatBarrier
+
 \subsection{Holidays}
-Usage of the electricity decreases during weekends and public holidays and this has significant effect on prediction especially during Christmas or Easter. Due to that fact, each day was aligned with variable holiday with following value based of occurrence of day of week or public holiday:
+Usage of the electricity decreases during weekends and public holidays and this has a significant effect on a prediction especially during Christmas or Easter. Due to that fact, each day was aligned with variable holiday with following value based of occurrence of day of week or public holiday:
 \begin{itemize}
 	\item 1 - National Holidays (e.g. Easter Monday)\cite{denmark-holidays}
 	\item 1 - Sundays
@@ -376,8 +412,10 @@ Usage of the electricity decreases during weekends and public holidays and this 
 \end{itemize}
 \FloatBarrier
 
+Each holiday is treated in weekday dummies as a Sunday.
+
 \section{Demand forecasting}
-<<TODO>>
+
 First considering model is a benchmark model containing consumption forecast provided by Nordpool's database for day ahead ($FL_{t,h}$). Its performance is analyzed in the section Demand data prognosis.
 \begin{equation}
 \label{eq:demand_model_1}
@@ -403,20 +441,50 @@ Fourth model is extension of third model (\ref{eq:demand_model_3}) where is also
 \label{eq:demand_model_4}
 C_{d,h}=\sum_{i=1}^{7}\beta_{0,i}D_{i,d} + \beta_{1}FC_{d,h} + \beta_{2}C_{d-1,h} + \beta_{3}C_{d-2,h} + \beta_{4}C_{d-7,h} + \beta_{5}FW_{d,h} +\varepsilon _{d,h}
 \end{equation}
-\subsection{Analysis}
-<<TODO>>
+\subsection{Results}
+The forecasts were performed with several different settings for each area (DK1 and DK2):
+\begin{itemize}
+	\item Calibration window: 182, 364, 728
+	\item Normalization function: standard, asinh
+	\item \begin{tabbing}Dates: \= 2019.01.01-2019.12.31 (2019 year), \\        \>2019.05.13-2020.05.12 (last year),\\ \>2020.01.01-2020.05.12, \\ \>2019.01.01-2020.05.12\end{tabbing}
+\end{itemize}
+
+For both areas results with $asinh$ were significantly worse than with standard normalization function. Especially for calibration window 182. The forecast with standard normalization was better for Models 2-4 than Nordpool's prognosis, however better accuracy was for longer calibration windows. Because drops of consumption level in 2020 results including this period were less accurate.
 
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=8cm]{pictures/err_analysis/consumption/consumption_forecast_mae.png}
-    \caption{}
+    \includegraphics[width=10cm]{pictures/forecasts/consumption/consumption_mae_dk1.png}
+    \caption{MAE on the consumption forecasts (DK1)}
     \label{fig:}
 \end{figure}
 \FloatBarrier
 
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=10cm]{pictures/forecasts/consumption/consumption_mae_dk2.png}
+    \caption{MAE on the consumption forecasts (DK2)}
+    \label{fig:}
+\end{figure}
+\FloatBarrier
+
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=10cm]{pictures/forecasts/consumption/consumption_rmse_dk1.png}
+    \caption{RMSE on the consumption forecasts (DK1)}
+    \label{fig:}
+\end{figure}
+\FloatBarrier
+
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=10cm]{pictures/forecasts/consumption/consumption_rmse_dk2.png}
+    \caption{RMSE on the consumption forecasts (DK2)}
+    \label{fig:}
+\end{figure}
+\FloatBarrier
 
 \section{Wind power forecasting}
-First model is presented and analyzed in the section Wind power data prognosis <<TODO LINK>>. This is benchmark model for further forecasts, where $FW_{t,h} + \varepsilon_{t}$ is a day ahead forecast of wind power taken from Nordpool's data.
+First model is presented and analyzed in the section \emph{Wind power data prognosis}. This is a benchmark model for further forecasts, where $FW_{t,h} + \varepsilon_{t}$ is a day ahead forecast of wind power taken from Nordpool's data.
 \begin{equation}
 \label{eq:wind_model_1}
 W_{t,h}=FW_{t,h}
@@ -442,14 +510,37 @@ Fourth model is extension of third one (\ref{eq:wind_model_3}) and contains addi
 \label{eq:wind_model_4}
 W_{t,h}=\sum_{i=1}^{7}\beta_{0,i}D_{i,d} + \beta_{1} FW_{t,h} + \beta_{2} W_{t-1,h} + \beta_{3} W_{t-2,h} + \beta_{4} FC_{t,h} + \varepsilon_{d,h}
 \end{equation}
-\subsection{Analysis}
-<<TODO>>
-
+\subsection{Results}
+The retrieved results from wind power forecasting with standard normalization were significantly better for DK1, and very slightly better for DK2 comparing to the Nordpool's forecast. $Asinh$ function as normalization was useful only for part of cases with short calibration window, so I don't consider it as succesful results. MAE for Model 4 with 728 days window and for full 2019 year is 6,6\% lower, while MAE for last period (2020.01.01-2020.05-12) is 22,19\% lower.
 
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=8cm]{pictures/err_analysis/consumption/consumption_forecast_mae.png}
-    \caption{}
+    \includegraphics[width=10cm]{pictures/forecasts/wind/wind_mae_dk1.png}
+    \caption{MAE on the wind power forecasts (DK1)}
+    \label{fig:}
+\end{figure}
+\FloatBarrier
+
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=10cm]{pictures/forecasts/wind/wind_mae_dk2.png}
+    \caption{MAE on the wind power forecasts (DK2)}
+    \label{fig:}
+\end{figure}
+\FloatBarrier
+
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=10cm]{pictures/forecasts/wind/wind_rmse_dk1.png}
+    \caption{RMSE on the wind power forecasts (DK1)}
+    \label{fig:}
+\end{figure}
+\FloatBarrier
+
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=10cm]{pictures/forecasts/wind/wind_rmse_dk2.png}
+    \caption{RMSE on the wind power forecasts (DK2)}
     \label{fig:}
 \end{figure}
 \FloatBarrier
@@ -486,19 +577,54 @@ P_{d,h}=\sum_{i=1}^{7} \beta_{0,i}D_{i,d} + \beta_{1}p_{d-1,h}  + \beta_{2}p_{d-
 \end{multlined}
 \end{equation}
 
-\subsection{Analysis}
-<<TODO>>
+In the last fifth model, Nordpoool's prognosis for wind and consumption are replaced with the forecast of Model 4 (\ref{eq:wind_model_4}) for wind and Model 4 (\ref{eq:demand_model_4}) for consumption. However only values for predicting period were replaced, not full rolling window.
+
+\subsection{Results}
+With more complex models results are much better, however $asinh$ function surprisingly doesn't improve predictions in the every case. Disproportion is especially big in the last period (2020.01.01-2020.05-12) and Model 4.
+
+I performed Model 5 hoping that with better predictions of wind power and consumption than original ones, price will be more accurate. Because these predictions replaced only values for prediction period, not rolling window, coefficients could be overfitted to the worse values trying to predict using improved ones.
 
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=8cm]{pictures/err_analysis/consumption/consumption_forecast_mae.png}
-    \caption{}
+    \includegraphics[width=10cm]{pictures/forecasts/price/price_mae_dk1.png}
+    \caption{MAE on the price forecasts (DK1)}
+    \label{fig:}
+\end{figure}
+\FloatBarrier
+
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=10cm]{pictures/forecasts/price/price_mae_dk2.png}
+    \caption{MAE on the price forecasts (DK2)}
+    \label{fig:}
+\end{figure}
+\FloatBarrier
+
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=10cm]{pictures/forecasts/price/price_rmse_dk1.png}
+    \caption{RMSE on the price forecasts (DK1)}
+    \label{fig:}
+\end{figure}
+\FloatBarrier
+
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=10cm]{pictures/forecasts/price/price_rmse_dk2.png}
+    \caption{RMSE on the price forecasts (DK2)}
     \label{fig:}
 \end{figure}
 \FloatBarrier
 
 \section{Conclusions}
-<<TODO>>
+
+Almost all of the assumptions came true, forecasts for wind power and consumption were performed better than original prepared by Nordpool. Even models for wind power performed well however wind power predicting is not typical time-series problem, because more important factors influencing such as atmospheric models were not known and not used in this work.
+
+Main finding is that period of forecast matters in using the most efficient model. For some periods more accurate were shorter calibration windows, because anomalies in the 2020 caused by COVID-19 changed seasonal numbers like consumption and thus price which was significantly lower in 2020 than 2019.
+
+One assumption I found invalid was that $asinh$ normalization function improves price predictions. It completely fails for wind power and consumption forecasting, but should be useful for price, but yet it works worse for periods including 2020 and especially for period which includes only 2020 year. The forecast Model 4 with asinh normalization performs 7.34\% (DK1) and 16.34\% (DK2) worse comparing MAE of the results.
+
+Experiment of replacing original forecasts of Nordpool with better, forecasted results unfortunately failed but I still see potential with bigger calibration window, which can be used to trained better forecasts for whole considering period of price prediction. But for this purpose it's necessary to have more data.
 
 
 
