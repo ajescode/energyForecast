@@ -1,19 +1,18 @@
 from scipy import stats
 import numpy as np
+import pandas as pd
 
 
-def count_frame_indeces(data_f, window_f, start_date_f):
+def count_frame_indeces(data_f, window_f, start_date_f, last_date_f):
     shape = data_f.shape
     start_index = shape[0] - 2 * window_f + 1
     last_index = shape[0] - window_f + 1
     if start_date_f:
-        start_date_index = int(data_f[data_f['date'] == start_date_f].index[0])
-        if start_date_index > start_index:
-            print(start_index)
-            raise Exception('Start date is too big')
-        start_index = start_date_index
-        last_index = start_date_index + window_f
-    last_index -= 1
+        start_index = int(data_f[data_f['date'] == start_date_f].index[0])
+        last_index = start_index + window_f
+    if last_date_f:
+        last_index = int(data_f[data_f['date'] == last_date_f].index[0])
+
     return start_index, last_index
 
 
@@ -30,24 +29,52 @@ def filter_hours(data):
     return data.loc[:, '0':'23']
 
 
-def print_settings(file, area, window, start_date, variables_list):
-    return '|'.join([file, area, str(window), str(start_date), str(variables_list)])
+def print_settings(file, area, window, start_date, end_date, method, variables_list):
+    return '|'.join([file, area, str(window), str(start_date), str(end_date), str(method), str(variables_list)])
 
 
 # counting median and MAD for each hour
 def count_median_mad(data):
-    data = filter_hours(data)
+    if len(data.shape) > 1:
+        data = filter_hours(data)
     median = np.median(data, axis=0)
     mad = stats.median_absolute_deviation(data)
     return median, mad
 
 
-def standarize(data, median, mad):
-    mad = np.tile(mad, (data.shape[0], 1))
-    return np.arcsinh((data - np.tile(median, (data.shape[0], 1))) / mad)
+def standarize(method, data, median, mad):
+    # mad = np.tile(mad, (data.shape[0], 1))
+    # data = (data - np.tile(median, (data.shape[0], 1))) / mad
+    data = (data - median) / mad
+    if method == 'asinh':
+        data = np.arcsinh(data)
+    return data
 
 
-def unstandarize(data, median, mad):
-    data = np.sinh(data)
+def unstandarize(method, data, median, mad):
+    if method == 'asinh':
+        data = np.sinh(data)
     data = data * mad + median
     return data
+
+
+def get_standarize_method(file=None):
+    method = None
+    if file == 'consumption' or file == 'wind':
+        method = 'normal'
+    elif file == 'price':
+        method = 'asinh'
+    return method
+
+
+def load_nordpool_prognosis(data_dir, name, area):
+    file_name = name + '_prognosis_' + area + '.csv'
+
+    return pd.read_csv(data_dir + file_name)
+
+
+def get_variables_list(variables_list, nordpool_prognosis):
+    if nordpool_prognosis:
+        return 'nordpool_prognosis'
+    else:
+        return variables_list
