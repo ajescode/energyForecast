@@ -52,8 +52,6 @@ def reload_data():
 
 def forecast(data_f, window_f, data_shape_f, variables_f):
     start_index, last_index = data_shape_f
-    # out = widgets.HTML()
-    # display(out)
 
     pred_data = data_f.copy()
     pred_data = pred_data.drop(columns=['date'])
@@ -65,8 +63,6 @@ def forecast(data_f, window_f, data_shape_f, variables_f):
                                                           start_index:last_index, '0':'23']
     else:
         for i in pred_data.loc[start_index:last_index].index:
-            # out.value = "Forecasting row " + str(i) + ", left: " + str(shape[0] - i - 1)
-            # exit()
             pred_data.loc[i, '0':'23'] = forecast_row(i, window_f, test_data, variables_f)
 
     pred_data = pred_data.loc[start_index:last_index, :]
@@ -102,7 +98,6 @@ def forecast_row(index_f, window_f, data_f, variables_f):
     # counting MAD and median
     median, mad = count_median_mad(data_f.loc[index_f - window_f:index_f - 1])
 
-    # print(median, mad)
     # normalize values
     if standarizing_method:
         data_f = standarize(standarizing_method, data_f, median, mad)
@@ -128,7 +123,12 @@ def forecast_row(index_f, window_f, data_f, variables_f):
                 variablesMatrix[i] = v[1][str(h)]
                 if v[2]:
                     median_v, mad_v = count_median_mad(variablesMatrix[i].loc[index_f - window_f:index_f])
+                    print(variablesMatrix[i].loc[index_f - window_f:index_f])
+                    print('aaa')
+                    print(variablesMatrix[i])
                     variablesMatrix[i] = standarize(v[2], variablesMatrix[i], median_v, mad_v)
+                    print(variablesMatrix[i])
+                    print('bbb')
                 i += 1
             elif v[0] == 'each_day':
                 if len(v[1].shape) == 1:
@@ -173,23 +173,24 @@ def getVariablesVector(index, variables_f):
 
 def f():
     reload_data()
-    variables_getter = VariablesGetter(file, data, area, variables_list, start_date, end_date, standarizing_method, window)
+    variables_getter = VariablesGetter(file, data, area, variables_list, start_date, end_date, standarizing_method,
+                                       window)
     variables = variables_getter.get_variables()
     return forecast(data, window, data_shape, variables)
 
 
 # perform all forecasts
-file = 'price'
-areas = ['DK1', 'DK2']
-windows = [182, 364, 728]
+file = 'consumption'
+areas = ['DK1']
+windows = [4]
 std_methods = ['asinh']
 start_dates = [('2019-01-01', '2019-12-31'), ('2019-05-13', '2020-05-12'), ('2020-01-01', '2020-05-12'),
                ('2019-01-01', '2020-05-12')]
 variables_lists = {
     'consumption': [
         ['dayofweek', 'consumption_prognosis'],
-        ['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7'],
-        ['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
+        # ['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7'],
+        # ['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
     ],
     'wind': [
         ['dayofweek', 'wind_prognosis'],
@@ -203,7 +204,7 @@ variables_lists = {
         # ['dayofweek', 'prev_day1', 'prev_day2', 'prev_day7', 'min_day', 'max_day', 'last_val_day',
         #  'consumption_prognosis', 'wind_prognosis'],
         ['dayofweek', 'prev_day1', 'prev_day2', 'prev_day7', 'min_day', 'max_day', 'last_val_day',
-                  'consumption_prognosis_for_price', 'wind_prognosis_for_price']
+         'consumption_prognosis_for_price', 'wind_prognosis_for_price']
     ]}
 
 # f()
@@ -224,3 +225,4 @@ for a in areas:
                 for v in variables_lists[file]:
                     variables_list = v
                     f()
+                    exit()
