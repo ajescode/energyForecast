@@ -1,5 +1,6 @@
 from scipy import stats
 import numpy as np
+import statsmodels.tsa.filters.hp_filter as hp
 import pandas as pd
 
 
@@ -42,17 +43,23 @@ def count_median_mad(data):
     return median, mad
 
 
-def standarize(method, data, median, mad):
-    # mad = np.tile(mad, (data.shape[0], 1))
-    # data = (data - np.tile(median, (data.shape[0], 1))) / mad
+def standarize(method, data, median, mad, hp_filter=True):
     data = (data - median) / mad
     if method == 'asinh':
         data = np.arcsinh(data)
+    elif method == 'asinh-hp' and hp_filter:
+        print(data)
+        data = hp.hpfilter(data, 6.25)
+        print(data)
+        data = np.arcsinh(data)
+        print('fff')
+        print(data)
+        # exit()
     return data
 
 
 def unstandarize(method, data, median, mad):
-    if method == 'asinh':
+    if method == 'asinh' or method == 'asinh-hp':
         data = np.sinh(data)
     data = data * mad + median
     return data
@@ -62,8 +69,10 @@ def get_standarize_method(file=None):
     method = None
     if file == 'consumption' or file == 'wind':
         method = 'normal'
+        method = 'asinh-hp'
     elif file == 'price':
         method = 'asinh'
+        method = 'asinh-hp'
     return method
 
 

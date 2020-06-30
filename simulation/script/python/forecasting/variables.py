@@ -97,6 +97,7 @@ class VariablesGetter:
         else:
             vars_a = ['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
 
+        forecast_file = None
         with open(forecasts_file, 'r+') as f:
             lines = f.read().splitlines()
             for line in lines:
@@ -110,6 +111,8 @@ class VariablesGetter:
             start_index = data_forecast.iloc[0, 0]
             last_index = data_forecast.iloc[-1, 0]
             data.loc[start_index:last_index, '0':'23'] = data_forecast.loc[:, '0':'23'].values
+        else:
+            print('No prognosis for price')
 
         return "each_hour", data, get_standarize_method(prognosis_name)
 

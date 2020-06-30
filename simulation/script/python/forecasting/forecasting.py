@@ -45,9 +45,9 @@ def reload_data():
     data_shape = count_frame_indeces(data, window, start_date, end_date)
 
 
-# data: full dataframe with all varibales,
+# data: full dataframe with all variables,
 # window: window for forecasting, integer, ex. 730
-# start_date: first data of window (if False takes last date - windowd), ex. '2016-05-05'
+# start_date: first data of window (if False takes last date - window), ex. '2016-05-05'
 # variables: arrays of all variables []
 
 def forecast(data_f, window_f, data_shape_f, variables_f):
@@ -100,7 +100,7 @@ def forecast_row(index_f, window_f, data_f, variables_f):
 
     # normalize values
     if standarizing_method:
-        data_f = standarize(standarizing_method, data_f, median, mad)
+        data_f = standarize(standarizing_method, data_f, median, mad, hp_filter=False)
 
     # counting variables vector size in model
     for v in variables_f:
@@ -123,12 +123,14 @@ def forecast_row(index_f, window_f, data_f, variables_f):
                 variablesMatrix[i] = v[1][str(h)]
                 if v[2]:
                     median_v, mad_v = count_median_mad(variablesMatrix[i].loc[index_f - window_f:index_f])
-                    print(variablesMatrix[i].loc[index_f - window_f:index_f])
-                    print('aaa')
-                    print(variablesMatrix[i])
+                    # print(variablesMatrix[i].loc[index_f - window_f:index_f])
+                    # print('aaa')
+                    # print(variablesMatrix[i])
+                    sm.show_versions()
+                    exit()
                     variablesMatrix[i] = standarize(v[2], variablesMatrix[i], median_v, mad_v)
-                    print(variablesMatrix[i])
-                    print('bbb')
+                    # print(variablesMatrix[i])
+                    # print('bbb')
                 i += 1
             elif v[0] == 'each_day':
                 if len(v[1].shape) == 1:
@@ -182,14 +184,14 @@ def f():
 # perform all forecasts
 file = 'consumption'
 areas = ['DK1']
-windows = [4]
-std_methods = ['asinh']
+windows = [182,728]
+std_methods = ['asinh', 'asinh-hp', 'None']
 start_dates = [('2019-01-01', '2019-12-31'), ('2019-05-13', '2020-05-12'), ('2020-01-01', '2020-05-12'),
                ('2019-01-01', '2020-05-12')]
 variables_lists = {
     'consumption': [
         ['dayofweek', 'consumption_prognosis'],
-        # ['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7'],
+        ['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7'],
         # ['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
     ],
     'wind': [
@@ -225,4 +227,3 @@ for a in areas:
                 for v in variables_lists[file]:
                     variables_list = v
                     f()
-                    exit()
