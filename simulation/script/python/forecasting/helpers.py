@@ -48,12 +48,14 @@ def standarize(method, data, median, mad, hp_filter=True):
     if method == 'asinh':
         data = np.arcsinh(data)
     elif method == 'asinh-hp' and hp_filter:
-        print(data)
-        data = hp.hpfilter(data, 6.25)
-        print(data)
+        # print(data)
+        data = hp.hpfilter(data, 6.25)[0]
+        # print(data.shape)
         data = np.arcsinh(data)
-        print('fff')
-        print(data)
+        # print(data)
+        # exit()
+        # print('fff')
+        # print(data)
         # exit()
     return data
 

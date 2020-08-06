@@ -126,8 +126,11 @@ def forecast_row(index_f, window_f, data_f, variables_f):
                     # print(variablesMatrix[i].loc[index_f - window_f:index_f])
                     # print('aaa')
                     # print(variablesMatrix[i])
-                    sm.show_versions()
-                    exit()
+                    # sm.show_versions()
+                    # exit()
+                    # print(variablesMatrix[i].shape)
+                    # print(standarize(v[2], variablesMatrix[i], median_v, mad_v).shape)
+                    # exit()
                     variablesMatrix[i] = standarize(v[2], variablesMatrix[i], median_v, mad_v)
                     # print(variablesMatrix[i])
                     # print('bbb')
@@ -184,15 +187,16 @@ def f():
 # perform all forecasts
 file = 'consumption'
 areas = ['DK1']
-windows = [182,728]
+windows = [182]
 std_methods = ['asinh', 'asinh-hp', 'None']
 start_dates = [('2019-01-01', '2019-12-31'), ('2019-05-13', '2020-05-12'), ('2020-01-01', '2020-05-12'),
                ('2019-01-01', '2020-05-12')]
+start_dates = [('2019-01-01', '2019-12-31')]
 variables_lists = {
     'consumption': [
         ['dayofweek', 'consumption_prognosis'],
         ['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7'],
-        # ['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
+        ['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
     ],
     'wind': [
         ['dayofweek', 'wind_prognosis'],
