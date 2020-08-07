@@ -31,7 +31,7 @@ class VariablesGetter:
         d = d.append(data_copy)
         d = d.reset_index(drop=True)
         d = d.drop(d.tail(n).index)
-        return "each_hour", d, get_standarize_method(self.file)
+        return "each_hour", d, get_standarize_method(self.file, self.method)
 
     def get_variables_holidays(self):
         days_file = self.dir_data + 'days.csv'
@@ -55,20 +55,20 @@ class VariablesGetter:
         dc['max'] = dc.max(axis=1)
         d = np.zeros((1, 1))
         d = np.append(d, dc[['max']])
-        return "each_day", d[:-1], get_standarize_method(self.file)
+        return "each_day", d[:-1], get_standarize_method(self.file, self.method)
 
     def get_variables_min_day(self):
         dc = filter_hours(self.data)
         dc['min'] = dc.min(axis=1)
         d = np.zeros((1, 1))
         d = np.append(d, dc[['min']])
-        return "each_day", d[:-1], get_standarize_method(self.file)
+        return "each_day", d[:-1], get_standarize_method(self.file, self.method)
 
     def get_variables_last_val_day(self):
         df = filter_hours(self.data)
         d = np.zeros((1, 1))
         d = np.append(d, df[['23']])
-        return "each_day", d[:-1], get_standarize_method(self.file)
+        return "each_day", d[:-1], get_standarize_method(self.file, self.method)
 
     def get_variables_prognosis(self, prognosis_name):
         file_name = prognosis_name + '_prognosis_' + self.area + '.csv'
@@ -76,7 +76,7 @@ class VariablesGetter:
         data = pd.read_csv(self.dir_file + file_name)
         data = filter_hours(data)
 
-        return "each_hour", data, get_standarize_method(prognosis_name)
+        return "each_hour", data, get_standarize_method(prognosis_name, self.method)
 
     def get_variables_consumption_prognosis(self):
         return self.get_variables_prognosis('consumption')

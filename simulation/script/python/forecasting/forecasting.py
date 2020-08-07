@@ -1,10 +1,3 @@
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import math
-from scipy import stats
-from IPython.display import display
-import ipywidgets as widgets
 import statsmodels.api as sm
 from simulation.script.python.forecasting.variables import VariablesGetter
 from simulation.script.python.forecasting.helpers import *
@@ -22,7 +15,7 @@ variables_list = ['dayofweek', 'prev_day1', 'prev_day2', 'prev_day7', 'min_day',
 
 save_files = True
 nordpool_prognosis = False
-standarizing_method = 'asinh'
+standardizing_method = 'asinh'
 
 data_dir = "../../../data/data_sanitized/"
 forecast_dir = '../../../data/forecasts/'
@@ -37,11 +30,14 @@ data_shape = count_frame_indeces(data, window, start_date, end_date)
 
 def reload_data():
     global file_name, data, data_shape
-    file_name = file + '_' + area + '.csv'
 
-    data = pd.read_csv(data_dir + file_name)
-    data['date'] = pd.to_datetime(data['date'], format='%Y-%m-%d')
-    data = data.drop(columns=['holiday'])
+    if not file_name == (file + '_' + area + '.csv'):
+        file_name = file + '_' + area + '.csv'
+
+        data = pd.read_csv(data_dir + file_name)
+        data['date'] = pd.to_datetime(data['date'], format='%Y-%m-%d')
+        data = data.drop(columns=['holiday'])
+
     data_shape = count_frame_indeces(data, window, start_date, end_date)
 
 
@@ -78,7 +74,7 @@ def forecast(data_f, window_f, data_shape_f, variables_f):
                 last_line = lines[-1]
                 no = last_line.split('.', 1)[0]
             no = str(int(no) + 1)
-            settings_desc = print_settings(file, area, window_f, start_date, end_date, standarizing_method,
+            settings_desc = print_settings(file, area, window_f, start_date, end_date, standardizing_method,
                                            get_variables_list(variables_list, nordpool_prognosis))
             f.write(no + "." + settings_desc + "\n")
             print("Saved: " + settings_desc)
@@ -99,8 +95,8 @@ def forecast_row(index_f, window_f, data_f, variables_f):
     median, mad = count_median_mad(data_f.loc[index_f - window_f:index_f - 1])
 
     # normalize values
-    if standarizing_method:
-        data_f = standarize(standarizing_method, data_f, median, mad, hp_filter=False)
+    if standardizing_method:
+        data_f = standarize(standardizing_method, data_f, median, mad, hp_filter=False)
 
     # counting variables vector size in model
     for v in variables_f:
@@ -123,31 +119,23 @@ def forecast_row(index_f, window_f, data_f, variables_f):
                 variablesMatrix[i] = v[1][str(h)]
                 if v[2]:
                     median_v, mad_v = count_median_mad(variablesMatrix[i].loc[index_f - window_f:index_f])
-                    # print(variablesMatrix[i].loc[index_f - window_f:index_f])
-                    # print('aaa')
-                    # print(variablesMatrix[i])
-                    # sm.show_versions()
-                    # exit()
-                    # print(variablesMatrix[i].shape)
-                    # print(standarize(v[2], variablesMatrix[i], median_v, mad_v).shape)
-                    # exit()
-                    variablesMatrix[i] = standarize(v[2], variablesMatrix[i], median_v, mad_v)
-                    # print(variablesMatrix[i])
-                    # print('bbb')
+                    variablesMatrix[i] = standarize(v[2], variablesMatrix[i], median_v, mad_v, True, index_f, window_f)
                 i += 1
             elif v[0] == 'each_day':
                 if len(v[1].shape) == 1:
                     variablesMatrix[i] = v[1]
                     if v[2]:
                         median_v, mad_v = count_median_mad(variablesMatrix[i].loc[index_f - window_f:index_f])
-                        variablesMatrix[i] = standarize(v[2], variablesMatrix[i], median_v, mad_v)
+                        variablesMatrix[i] = standarize(v[2], variablesMatrix[i], median_v, mad_v, True, index_f,
+                                                        window_f)
                     i += 1
                 else:
                     for k in range(v[1].shape[1]):
                         variablesMatrix[i] = v[1][:, k]
                         if v[2]:
                             median_v, mad_v = count_median_mad(variablesMatrix[i].loc[index_f - window_f:index_f])
-                            variablesMatrix[i] = standarize(v[2], variablesMatrix[i], median_v, mad_v)
+                            variablesMatrix[i] = standarize(v[2], variablesMatrix[i], median_v, mad_v, True, index_f,
+                                                            window_f)
                         i += 1
 
         # normalize variables_matrix
@@ -156,8 +144,8 @@ def forecast_row(index_f, window_f, data_f, variables_f):
                                                                                                             variablesMatrix)
 
     # inverse normalization
-    if standarizing_method:
-        row = unstandarize(standarizing_method, row, median, mad)
+    if standardizing_method:
+        row = unstandarize(standardizing_method, row, median, mad)
 
     return row
 
@@ -178,7 +166,7 @@ def getVariablesVector(index, variables_f):
 
 def f():
     reload_data()
-    variables_getter = VariablesGetter(file, data, area, variables_list, start_date, end_date, standarizing_method,
+    variables_getter = VariablesGetter(file, data, area, variables_list, start_date, end_date, standardizing_method,
                                        window)
     variables = variables_getter.get_variables()
     return forecast(data, window, data_shape, variables)
@@ -187,11 +175,12 @@ def f():
 # perform all forecasts
 file = 'consumption'
 areas = ['DK1']
-windows = [182]
-std_methods = ['asinh', 'asinh-hp', 'None']
+windows = [182, 364, 728]
+std_methods = ['asinh-hp']
+# std_methods = ['None']
 start_dates = [('2019-01-01', '2019-12-31'), ('2019-05-13', '2020-05-12'), ('2020-01-01', '2020-05-12'),
                ('2019-01-01', '2020-05-12')]
-start_dates = [('2019-01-01', '2019-12-31')]
+# start_dates = [('2019-01-01', '2019-12-31')]
 variables_lists = {
     'consumption': [
         ['dayofweek', 'consumption_prognosis'],
@@ -227,7 +216,7 @@ for a in areas:
                 f()
                 nordpool_prognosis = False
             for m in std_methods:
-                standarizing_method = m
+                standardizing_method = m
                 for v in variables_lists[file]:
                     variables_list = v
                     f()
