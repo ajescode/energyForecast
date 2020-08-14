@@ -173,11 +173,11 @@ def f():
 
 
 # perform all forecasts
+files = ['price']
 file = 'consumption'
-areas = ['DK1']
+areas = ['DK1', 'DK2']
 windows = [182, 364, 728]
-std_methods = ['asinh-hp']
-# std_methods = ['None']
+std_methods = ['asinh-hp','None','asinh']
 start_dates = [('2019-01-01', '2019-12-31'), ('2019-05-13', '2020-05-12'), ('2020-01-01', '2020-05-12'),
                ('2019-01-01', '2020-05-12')]
 # start_dates = [('2019-01-01', '2019-12-31')]
@@ -204,19 +204,21 @@ variables_lists = {
 
 # f()
 
-for a in areas:
-    area = a
-    for w in windows:
-        window = w
-        for s in start_dates:
-            start_date = s[0]
-            end_date = s[1]
-            if not file == 'price':
-                nordpool_prognosis = True
-                f()
-                nordpool_prognosis = False
-            for m in std_methods:
-                standardizing_method = m
-                for v in variables_lists[file]:
-                    variables_list = v
+for file_ in files:
+    file = file_
+    for a in areas:
+        area = a
+        for w in windows:
+            window = w
+            for s in start_dates:
+                start_date = s[0]
+                end_date = s[1]
+                if not file == 'price':
+                    nordpool_prognosis = True
                     f()
+                    nordpool_prognosis = False
+                for m in std_methods:
+                    standardizing_method = m
+                    for v in variables_lists[file]:
+                        variables_list = v
+                        f()

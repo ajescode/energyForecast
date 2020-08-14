@@ -89,32 +89,45 @@ class VariablesGetter:
         file_name = prognosis_name + '_prognosis_' + self.area + '.csv'
         data = pd.read_csv(self.dir_file + file_name)
         data = filter_hours(data)
+        dir_forecasts = ''
 
-        forecasts_file = self.dir_forecasts + prognosis_name + '/files.txt'
+        method = self.method
 
         if prognosis_name == 'wind':
-            vars_a = ['dayofweek', 'wind_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'consumption_prognosis']
-        else:
-            vars_a = ['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
+            dir_forecasts = 'wind/'
+            if self.area == 'DK1':
+                vars_a = ['dayofweek', 'wind_prognosis']
+                method = 'asinh-hp'
+            elif self.area == 'DK2':
+                return self.get_variables_wind_prognosis()
+        elif prognosis_name == 'consumption':
+            dir_forecasts = 'consumption/'
+            if self.area == 'DK1':
+                vars_a = ['dayofweek', 'consumption_prognosis']
+            elif self.area == 'DK2':
+                vars_a = ['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
+            method = 'None'
+
+        forecasts_file = self.dir_forecasts + dir_forecasts + 'files.txt'
 
         forecast_file = None
         with open(forecasts_file, 'r+') as f:
             lines = f.read().splitlines()
             for line in lines:
                 if line.find(print_settings(prognosis_name, self.area, self.window, self.start_date, self.end_date,
-                                            self.method, vars_a)) != -1:
+                                            method, vars_a)) != -1:
                     forecast_file = line.split('.', 1)[0] + '.csv'
                     break
 
         if forecast_file:
-            data_forecast = pd.read_csv(self.dir_forecasts + prognosis_name + '/' + forecast_file)
+            data_forecast = pd.read_csv(self.dir_forecasts + dir_forecasts + forecast_file)
             start_index = data_forecast.iloc[0, 0]
             last_index = data_forecast.iloc[-1, 0]
             data.loc[start_index:last_index, '0':'23'] = data_forecast.loc[:, '0':'23'].values
         else:
             print('No prognosis for price')
 
-        return "each_hour", data, get_standarize_method(prognosis_name)
+        return "each_hour", data, get_standarize_method(prognosis_name, self.method)
 
     def get_variables_consumption_prognosis_for_price(self):
         return self.get_variables_prognosis_for_price('consumption')
