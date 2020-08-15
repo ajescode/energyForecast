@@ -5,7 +5,7 @@
 \usepackage{mathtools}
 \usepackage{biblatex}
 \usepackage{graphicx}
-\usepackage[margin=1.5in]{geometry}
+\usepackage[margin=1.2in]{geometry}
 \usepackage[section]{placeins}
 \usepackage[subsection]{placeins}
 
@@ -384,14 +384,6 @@ There were 417 negative prices in the area DK1 in the years 2016-2020 and 288 in
 
 We can suspect that with bigger values of wind power price is lower. Pearson's correlation shows that mostly it's weak correlation, only for 2020 year there are moderate values.
 
-\begin{figure}[htp]
-    \centering
-    \includegraphics[width=8cm]{pictures/analysis/price/corr_price_wind_2019.png}
-    \caption{Correlation between price and wind power for each hour - year 2019 (2019, DK1)}
-    \label{fig:}
-\end{figure}
-\FloatBarrier
-
 Correlation is a little bit higher for night hours than rest of the day.
 
 \begin{figure}[htp]
@@ -419,12 +411,14 @@ Each holiday is treated in weekday dummies as a Sunday.
 First considering model is a benchmark model containing consumption forecast provided by Nordpool's database for day ahead ($FL_{t,h}$). Its performance is analyzed in the section Demand data prognosis.
 \begin{equation}
 \label{eq:demand_model_1}
+\tag{C1}
 C_{d,h}=FC_{d,h}
 \end{equation}
 
 Second model is extension of benchmark model (\ref{eq:demand_model_1}), where $D{i,d}$ is a vector of the values {0,1} for the corresponding day of a week. For day ($d$) which is Monday  $D_{1,d}=1$ and $D_{2,d}=D_{3,d}=...=D_{7,d}=0$, for a day which is Tuesday $D_{2,d}=1$ and $D_{1,d}=D_{3,d}=...=D_{7,d}=0$ etc.
 \begin{equation}
 \label{eq:demand_model_2}
+\tag{C2}
 C_{d,h}=\sum_{i=1}^{7}\beta_{0,i}D_{i,d} + \beta_{1}FC_{d,h} +\varepsilon _{d,h}
 \end{equation}
 
@@ -432,6 +426,7 @@ Third model is extension of second model (\ref{eq:demand_model_2}), where are ad
 
 \begin{equation}
 \label{eq:demand_model_3}
+\tag{C3}
 C_{d,h}=\sum_{i=1}^{7}\beta_{0,i}D_{i,d} + \beta_{1}FC_{d,h} + \beta_{1}C_{d-1,h} + \beta_{2}C_{d-2,h} + \beta_{3}C_{d-7,h} +\varepsilon _{d,h}
 \end{equation}
 
@@ -439,6 +434,7 @@ Fourth model is extension of third model (\ref{eq:demand_model_3}) where is also
 
 \begin{equation}
 \label{eq:demand_model_4}
+\tag{C4}
 C_{d,h}=\sum_{i=1}^{7}\beta_{0,i}D_{i,d} + \beta_{1}FC_{d,h} + \beta_{2}C_{d-1,h} + \beta_{3}C_{d-2,h} + \beta_{4}C_{d-7,h} + \beta_{5}FW_{d,h} +\varepsilon _{d,h}
 \end{equation}
 \subsection{Results}
@@ -487,6 +483,7 @@ For both areas results with $asinh$ were significantly worse than with standard 
 First model is presented and analyzed in the section \emph{Wind power data prognosis}. This is a benchmark model for further forecasts, where $FW_{t,h} + \varepsilon_{t}$ is a day ahead forecast of wind power taken from Nordpool's data.
 \begin{equation}
 \label{eq:wind_model_1}
+\tag{W1}
 W_{t,h}=FW_{t,h}
 \end{equation}
 
@@ -494,6 +491,7 @@ Second model includes additionally day of week vector as the second demand model
 
 \begin{equation}
 \label{eq:wind_model_2}
+\tag{W2}
 W_{t,h}=\sum_{i=1}^{7}\beta_{0,i}D_{i,d} + \beta FW_{t,h} + \varepsilon_{d,h}
 \end{equation}
 
@@ -501,6 +499,7 @@ Third model is extension of second model (\ref{eq:wind_model_2}) and contains al
 
 \begin{equation}
 \label{eq:wind_model_3}
+\tag{W3}
 W_{t,h}=\sum_{i=1}^{7}\beta_{0,i}D_{i,d} + \beta_{1} FW_{t,h} + \beta_{2} W_{t-1,h} + \beta_{3} W_{t-2,h} + \varepsilon_{d,h}
 \end{equation}
 
@@ -508,6 +507,7 @@ Fourth model is extension of third one (\ref{eq:wind_model_3}) and contains addi
 
 \begin{equation}
 \label{eq:wind_model_4}
+\tag{W4}
 W_{t,h}=\sum_{i=1}^{7}\beta_{0,i}D_{i,d} + \beta_{1} FW_{t,h} + \beta_{2} W_{t-1,h} + \beta_{3} W_{t-2,h} + \beta_{4} FC_{t,h} + \varepsilon_{d,h}
 \end{equation}
 \subsection{Results}
@@ -546,11 +546,11 @@ The retrieved results from wind power forecasting with standard normalization we
 \FloatBarrier
 
 \section{Price forecasting}
-<<TODO>>
 First forecasting model of price consists of the same daf of week vector ($D_{i,d}$) as the second demand model (\ref{eq:demand_model_2}).
 
 \begin{equation}
 \label{eq:price_model_1}
+\tag{P1}
 P_{d,h}=\sum_{i=1}^{7} \beta_{0,i}D_{i,d} + \varepsilon_{d,h}
 \end{equation}
 
@@ -558,6 +558,7 @@ Second model is an extension of first model (\ref{eq:price_model_1}), where were
 
 \begin{equation}
 \label{eq:price_model_2}
+\tag{P2}
 P_{d,h}=\sum_{i=1}^{7} \beta_{0,i}D_{i,d} + \beta_{1}p_{d-1,h}  + \beta_{2}p_{d-2,h} + \beta_{3}p_{d-7,h} + \varepsilon_{d,h}
 \end{equation}
 
@@ -573,11 +574,21 @@ Fourth model is an extension of third model (\ref{eq:price_model_3}) which is an
 \begin{equation}
 \begin{multlined}
 \label{eq:price_model_4}
+\tag{P4}
 P_{d,h}=\sum_{i=1}^{7} \beta_{0,i}D_{i,d} + \beta_{1}p_{d-1,h}  + \beta_{2}p_{d-2,h} + \beta_{3}p_{d-7,h} + \beta_{4}p_{d-1,min} + \beta_{5}p_{d-1,max} \\ + \beta_{6}p_{d-1,24} + \beta_{7}FW_{d,h} + \beta_{8}FC_{d,h} + \varepsilon_{d,h}
 \end{multlined}
 \end{equation}
 
-In the last fifth model, Nordpoool's prognosis for wind and consumption are replaced with the forecast of Model 4 (\ref{eq:wind_model_4}) for wind and Model 4 (\ref{eq:demand_model_4}) for consumption. However only values for predicting period were replaced, not full rolling window.
+In the last fifth model, Nordpool's prognosis for wind and consumption are replaced with the forecast of Model 4 (\ref{eq:wind_model_4}) for wind and model  \ref{eq:demand_model_4} for consumption. However only values for predicted period were replaced by better prognosis, not full rolling window, that's why it was very inefficient to 
+
+\begin{equation}
+\begin{multlined}
+\label{eq:price_model_5}
+\tag{P5}
+P_{d,h}=\sum_{i=1}^{7} \beta_{0,i}D_{i,d} + \beta_{1}p_{d-1,h}  + \beta_{2}p_{d-2,h} + \beta_{3}p_{d-7,h} + \beta_{4}p_{d-1,min} + \beta_{5}p_{d-1,max} \\ + \beta_{6}p_{d-1,24} + \beta_{7}FW_{d,h} + \beta_{8}FC_{d,h} + \varepsilon_{d,h}
+\end{multlined}
+\end{equation}
+
 
 \subsection{Results}
 With more complex models results are much better, however $asinh$ function surprisingly doesn't improve predictions in the every case. Disproportion is especially big in the last period (2020.01.01-2020.05-12) and Model 4.
