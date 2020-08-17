@@ -44,12 +44,16 @@ def count_median_mad(data):
 
 
 def standarize(method, data, median, mad, hp_filter=True, index_f=None, window_f=None):
-    if method == 'asinh-hp' and hp_filter:
-        data.loc[index_f - window_f:index_f] = hp.hpfilter(data.loc[index_f - window_f:index_f], 110930628906)[0]
-        median, mad = count_median_mad(data.loc[index_f - window_f:index_f])
-    if method == 'asinh' or method == 'asinh-hp':
+    if method == 'asinh-hp' or method == 'asinh':
+        if method == 'asinh-hp' and hp_filter:
+            data = hp.hpfilter(data, 110930628906)[0]
+            median, mad = count_median_mad(data.loc[index_f - window_f:index_f])
         data = (data - median) / mad
         data = np.arcsinh(data)
+    elif method == 'hp' and hp_filter:
+        data = hp.hpfilter(data, 110930628906)[0]
+        median, mad = count_median_mad(data.loc[index_f - window_f:index_f])
+        data = (data - median) / mad
     else:
         data = (data - median) / mad
     return data
@@ -67,6 +71,7 @@ def get_standarize_method(file=None, method=None):
         if not method:
             method = 'normal'
             method = 'asinh-hp'
+            method = 'hp'
     elif file == 'price':
         if not method:
             method = 'asinh'

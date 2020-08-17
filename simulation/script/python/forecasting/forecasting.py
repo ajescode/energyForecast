@@ -176,8 +176,9 @@ def f():
 files = ['price']
 file = 'consumption'
 areas = ['DK1', 'DK2']
-windows = [182, 364, 728]
-std_methods = ['asinh-hp','None','asinh']
+
+windows = [128, 364, 728]
+std_methods = ['hp']
 start_dates = [('2019-01-01', '2019-12-31'), ('2019-05-13', '2020-05-12'), ('2020-01-01', '2020-05-12'),
                ('2019-01-01', '2020-05-12')]
 # start_dates = [('2019-01-01', '2019-12-31')]
@@ -194,10 +195,10 @@ variables_lists = {
     ],
     'price': [
         # ['dayofweek'],
-        # ['dayofweek', 'prev_day1', 'prev_day2', 'prev_day7'],
-        # ['dayofweek', 'prev_day1', 'prev_day2', 'prev_day7', 'min_day', 'max_day', 'last_val_day'],
-        # ['dayofweek', 'prev_day1', 'prev_day2', 'prev_day7', 'min_day', 'max_day', 'last_val_day',
-        #  'consumption_prognosis', 'wind_prognosis'],
+        ['dayofweek', 'prev_day1', 'prev_day2', 'prev_day7'],
+        ['dayofweek', 'prev_day1', 'prev_day2', 'prev_day7', 'min_day', 'max_day', 'last_val_day'],
+        ['dayofweek', 'prev_day1', 'prev_day2', 'prev_day7', 'min_day', 'max_day', 'last_val_day',
+         'consumption_prognosis', 'wind_prognosis'],
         ['dayofweek', 'prev_day1', 'prev_day2', 'prev_day7', 'min_day', 'max_day', 'last_val_day',
          'consumption_prognosis_for_price', 'wind_prognosis_for_price']
     ]}
