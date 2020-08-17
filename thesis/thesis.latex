@@ -26,8 +26,17 @@ Abstract
 \end{abstract}
 Keywords: electricity spot prices, day-ahead market, forecasting, power market
 
-
 \section{Introduction}
+
+We have experienced big growth of wind power industry in the recent years and massive number of new installments of the wind turbines. Some countries have significantly increasing shares of renewable energy in the overall production. I will focus especially on a wind energy, which is becoming the most important source in some regions.
+
+Better prognosis of the renewable energy production, consumption may have positive impact on the final predicted price of energy. Smaller errors may lead to economical profits for companies operating and buying energy on the power exchanges.
+
+In this work I made a simulations in order to achieve the best forecasts of consumption and price for Danish market using day-ahead data. There are plenty of possible approaches using, i.e. regression models\cite{forecasting-regression}, neural networks\cite{forecasting-neural-networks}\cite{forecasting-neural-networks2}, probabilistic methods\cite{forecasting-probalistic}. I decided to use regression model with best fitting expert models from \cite{eff-forecasting-spot-prices} implementing modifications of HP filter and testing different variations of expert models with different lengths of calibration window.
+
+In the Chapter 2 I reviewed analysis of the Danish market. In the Chapter 3 I presented characteristics of available data provided by Nordpool power exchange. In the Chapter 4 I presented used methods to perform forecasts. In the Chapter 5 I presented empirical results of the all forecasts and in the last Chapter 6 I came up with conclusions.
+
+\section{Market analysis}
 Danish power market has been transformed in the last several years drastically. Since 70s there was a lot of investments in renewable sources of energy, especially in the field of wind power, and much more since 2002 when first large scale offshore wind farm in the world has been finished - Horns Rev 1 (160 MW). For year 2019, total wind power generation capacity was 6128 MW\cite{wind-europe-2019}.
 
 National target for 2020 is over 50\% of a energy consumption covered by wind power and it's likely to be achieved, as in 2019 they obtained 47\% of coverage by domestic production\cite{denmark-sources-record-wind-2019}. Moreover they have finished construction of next large scale wind farm Horns Rev 3 in August 2019\cite{denmark-sources-record-wind-2019}. There are also defined next goals in last presented national energy strategy. For wind power consumption they aim for 70\% in 2030\cite{denmark-sources-record-wind-2019}. Denmark is currently leader of wind power shares in the national production and its development.
@@ -49,29 +58,12 @@ The electricity market in Denmark is divided into 2 areas (DK1 and DK2). First a
 
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=10cm]{pictures/denmark_sector_division.png}
+    \includegraphics[width=9cm]{pictures/denmark_sector_division.png}
     \caption{Danish electricity market}
     \label{fig:denmark_division}
 \end{figure}
 
-Denmark is located between two large energy producers: Germany and Sweden. Is connected directly with these countries and further with Norway and Netherlands. Energy link (Viking Link) with United Kingdom is under construction and connection with Poland is in the planning phase.
-
-Denmark covers only small part of the its demand from the export, however their goals is to start exporting renewable energy from 2026\cite{denmarks-energy-outlook-2019}.
-
-\section{Methodology}
-
-I decided to choose Danish market for forecasting and so on I want to apply methods and models which are most fitted to the characteristics of this market. I performed forecasting for 3 categories of values: wind power, consumption and price. In each category I make prognosis for few models which are described in Forecasting section. My forecasting framework for all of them is following:
-
-\begin{enumerate}
-	\item Data preparation
-	\item Preliminary data analysis
-	\item Data forecasting (cycle for each model and day)
-	\subitem Data normalization
-	\subitem Day-ahead forecasting
-	\item Verifying models' performance
-\end{enumerate}
-
-All calculations were conducted with Python3.7 language and its libraries, i.e. numpy, pandas, scipy. All the scripts made are accessible in public GIT repository \githubLocation.
+\section{Data analysis}
 
 Data I used to perform forecasts has been downloaded from the official webpage of the Nordpool power exchange\cite{nordpool-historical-market-data}. Datasets are divided into the year files and periods (hours, weeks etc.). I managed to download following datasets (valid for the day 14.05.2020):
 \begin{itemize}
@@ -107,77 +99,7 @@ The files were downloaded, merged, split for regions DK1 and DK2, pivoted in ord
 \end{center}
 \end{table}
 
-\FloatBarrier
-Data forecasting is performed for day ahead because given Wind power prognosis and Consumption prognosis is supplying only one day in advance. For the computations is considered number of previous days to have insights of possible value and its called as calibration window. It may take values of week multiples (7 days) because of the seasonal trend of energy production. Because chosen data has limit of 1583 days, the maximum calibration window I consider is 728 days, around 2 years.
-
-I consider few models for each category of forecasts (consumption, price and wind power) which I explain in the end of this section. General equation for each model (except of benchmark models for wind power and consumption) can be presented as:
-
-\begin{equation}
-    \hat{Y}_{d,h} = \sum_{i=1}^{n}\beta_{d,h,i}X_{d,h}^{i}
-\end{equation}
-
-, where $Y_{d,h}$ is prediction and $X_{d,h}^{i}$ is variable for given day ($d$) and hour ($h$). We can predict values for next whole day only, but basing on the variables from whole calibration window. Coefficients $\beta_{h,i}$ have been approximated by Ordinary least squares (OLS).
-
-\begin{equation}
-    \vec{\hat{\beta}}=(X^{T}X)^{-1}X^{T}Y
-\end{equation}
-
-,where $X$ is matrix of independent variables, and $Y$ is vector of dependant variables of size of calibration window (multiple of 7 days).
-
-Because prices of energy due to the wind dependence can have negative values I need to normalize values. I used function $asinh$ which was empirically confirmed to have best results for danish market among 4 different normalization functions.\cite{variance-stabilizing}.
-
-\begin{equation}
-\label{eq:asinh_function}
-    Y_{d,h}=asinh(y_{d,h})\equiv \log (y_{d,h}+\sqrt{y^{2}_{d,h}+1})
-\end{equation}
-
-, where $Y_{d,h} $ is transformed value used for forecasts either as independent variable or dependent variable. Independent values in the model must be also transformed. $y_{d,h}$ is normalized value in calibration window by:
-\begin{equation}
-\label{eq:normalization}
-    y_{d,h}=\frac{1}{b_{d,h}}(y^*_{d,h}-a_{d,h})
-\end{equation}
-
-, where $a$ is median and $b$ is median absolute deviation (MAD) for given day and hour in the calibration window. I used both simple normalization (\ref{eq:normalization}), and one with $asinh$ function (\ref{eq:asinh_function}) for each category of forecasting.
-
-Inverse function for transformation and normalization is following:
-\begin{equation}
-    y^*_{d,h}=b_{d,h}sinh(Y_{d,h})+a_{d,h}
-\end{equation}
-
-
-For each forecast there is error analysis with Mean Average Error (MAE), Mean Root Square Error (MRSE). All forecasts in the appropriate categories are compared to each other in order to get optimal result.
-
-\begin{equation}
-    MAE = \frac{1}{24T}\sum_{d=1}^{T}\sum_{h=1}^{24}\left |  \hat{\varepsilon}_{d,h} \right |\equiv \frac{1}{24T}\sum_{d=1}^{T}\sum_{h=1}^{24}\left |  y_{d,h} - \hat{y}_{d,h} \right |
-\end{equation}
-
-\begin{equation}
-    RMSE = \sqrt{\frac{1}{24D}\sum_{d=1}^{T}\sum_{h=1}^{24} \hat{\varepsilon}_{d,h}^2}\equiv \sqrt{\frac{1}{24D}\sum_{d=1}^{T}\sum_{h=1}^{24} (y_{d,h} - \hat{y}_{d,h})^2}
-\end{equation}
-
-, where $T$ is size of calibration window. Also I performed error analysis for each hour and day of forecasts and compared average values of them.
-
-\begin{equation}
-    MAE_{h} = \frac{1}{T}\sum_{d=1}^{T}\left |  \hat{\varepsilon}_{d,h} \right | \equiv 
-\frac{1}{T}\sum_{d=1}^{T}\left |  y_{d,h} - \hat{y}_{d,h} \right |
-\end{equation}
-\begin{equation}
-    MAE_{d} = \frac{1}{24}\sum_{h=1}^{24}\left |  \hat{\varepsilon}_{d,h} \right | \equiv 
-\frac{1}{24}\sum_{h=1}^{24}\left |  y_{d,h} - \hat{y}_{d,h} \right |
-\end{equation}
-
-\begin{equation}
-    RMSE_{h} = \sqrt{\frac{1}{T}\sum_{d=1}^{T} \hat{\varepsilon}_{d,h}^2}\equiv \sqrt{\frac{1}{T}\sum_{d=1}^{T} (y_{d,h} - \hat{y}_{d,h})^2}
-\end{equation}
-\begin{equation}
-    RMSE_{d} = \sqrt{\frac{1}{24}\sum_{h=1}^{24} \hat{\varepsilon}_{d,h}^2}\equiv \sqrt{\frac{1}{24}\sum_{h=1}^{24} (y_{d,h} - \hat{y}_{d,h})^2}
-\end{equation}
-
-
-
-\section{Data analysis}
-
-I performed a few analysis for each dataset, although I don't include all of the charts and tables in this work. The rest is uploaded into the github repository.
+I performed a few analysis for each dataset, although I didn't include all of the charts and the tables in this work. The rest is uploaded into the github repository.
 
 
 \subsection{Missing values}
@@ -202,7 +124,7 @@ Wind power prognosis & 18 & 19 \\
 
 
 \subsection{Consumption data}
-There was bigger consumption in area DK1 than DK2, compared for years 2016-2019 19.14, 19.41, 20.28, 20.37 TWh to 13.13, 13.03, 13.28, 13.16 TWh accordingly. We can see that consumption increased gradually in the area DK1, meanwhile in area DK2 was on the similar level.
+Elictricity consumption was higher in the area DK1 than DK2, compared for years 2016-2019 19.14, 19.41, 20.28, 20.37 TWh to 13.13, 13.03, 13.28, 13.16 TWh accordingly. We can see that consumption increased gradually in the area DK1, meanwhile in area DK2 was on the similar level.
 
 We can spot three types of seasonal trends in the data: annual, weekly and daily. On the below chart showing consumption per day in 2019, we see that every weekend consumption value drops.
 
@@ -214,7 +136,7 @@ We can spot three types of seasonal trends in the data: annual, weekly and daily
 \end{figure}
 \FloatBarrier
 
-Although it's not easy to spot, there is also annual trend with lower consumption during summer months and higher during winter. It's observable particularly in the DK2.
+Although it's not easy to spot in the DK1, there is annual trend with lower consumption during summer months and higher during winter. It's observable particularly in the DK2.
 
 \begin{figure}[htp]
     \centering
@@ -224,17 +146,17 @@ Although it's not easy to spot, there is also annual trend with lower consumptio
 \end{figure}
 \FloatBarrier
 
-Simple Moving Average with 14 days windows for each year shows clearly this trend. Although in the area DK1 it's not very sharp.
+Simple moving average with 14 days windows for each year shows clearly this trend. Although in the area DK1 it's not very sharp.
 
 \begin{figure}[htp]
     \centering
     \includegraphics[width=8cm]{pictures/analysis/consumption/sma_14days_DK2.png}
-    \caption{Simple Moving Average of consumption - 14 days window (DK2)}
+    \caption{Simple moving average of consumption - 14 days window (DK2)}
     \label{fig:}
 \end{figure}
 \FloatBarrier
 
-Last seasonal trend is daily which can be observed for each day of week, even holidays. There are two peaks of energy consumption each day, on the morning and evening. During weekend and holidays, morning peaks occurs later than during work days. There is also noticeable smaller consumption in the night.
+Last seasonal trend is daily which can be observed for each day of a week, even holidays. There are two peaks of energy consumption each day, in the morning and evening. During weekends and holidays, morning peaks are slightly shifted than during work days. There is also noticeable smaller consumption in the night.
 
 \begin{figure}[htp]
     \centering
@@ -261,7 +183,7 @@ The prognosis day-ahead given by Nordpool shows that those are less accurate ove
 
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=11cm]{pictures/err_analysis/consumption/consumption_mae_to_prognosis_dk1.png}
+    \includegraphics[width=12cm]{pictures/err_analysis/consumption/consumption_mae_to_prognosis_dk1.png}
     \caption{MAE for consumption for each hour and year with total figures (DK1)}
     \label{fig:}
 \end{figure}
@@ -269,7 +191,7 @@ The prognosis day-ahead given by Nordpool shows that those are less accurate ove
 
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=11cm]{pictures/err_analysis/consumption/consumption_mae_to_prognosis_dk2.png}
+    \includegraphics[width=12cm]{pictures/err_analysis/consumption/consumption_mae_to_prognosis_dk2.png}
     \caption{MAE for consumption for each hour and year with total figures (DK2)}
     \label{fig:}
 \end{figure}
@@ -278,7 +200,7 @@ The prognosis day-ahead given by Nordpool shows that those are less accurate ove
 \subsection{Wind power data}
 Wind power production increased significantly within last 4 years. In the area DK1 from 9.41 to 11.26 TWh and for area DK2 from 2.37 to 3.22 TWh, so about 35\% more.
 
-So far in the consumption data we could spot any trend whereas in the wind power data there is no distinct trend. 
+So far in the consumption data we could spot trends whereas in the wind power data there is no distinct trend.
 
 \begin{figure}[htp]
     \centering
@@ -288,7 +210,7 @@ So far in the consumption data we could spot any trend whereas in the wind power
 \end{figure}
 \FloatBarrier
 
-Simple Moving Average also doesn't show anything recurrent, thus we can assume any annual trend.
+Simple moving average also doesn't show anything recurrent, thus we can't assume any annual trend.
 
 \begin{figure}[htp]
     \centering
@@ -309,12 +231,12 @@ Only chart of average wind power for each hour suggest there may be a daily tren
 \FloatBarrier
 
 \subsubsection{Nordpool's prognosis}
-I calculated Mean Absolute Error for prognosis performed by Nordpool for each hour and year. The results for area DK1 are rounded to the integer. We can spot that the newer data is the bigger error for prognosis with over 80\% growth in 2020 (until 12th May) comparing to the previous year. Another thing we can notice that the error in the night hours is lower than others.
+I calculated mean absolute error for prognosis performed by Nordpool for each hour and year. The results for area DK1 are rounded to the whole number. We can spot that error for prognosis is bigger for newer data with over 80\% growth in 2020 (until 12th May) comparing to the previous year. Another thing we can notice that the error in the night hours is lower than others.
 
 \begin{figure}[htp]
     \centering
     \includegraphics[width=11cm]{pictures/err_analysis/wind_power/wind_mae_to_prognosis_dk1.png}
-    \caption{MAE for wind power for each hour and year with total figures (DK1)}
+    \caption{MAE for wind power and Nordpool prognosis for each hour and year (DK1)}
     \label{fig:}
 \end{figure}
 \FloatBarrier
@@ -324,13 +246,13 @@ The results for area DK2 are similar, however numbers are smaller due to the low
 \begin{figure}[htp]
     \centering
     \includegraphics[width=11cm]{pictures/err_analysis/wind_power/wind_mae_to_prognosis_dk2.png}
-    \caption{MAE for wind power for each hour and year with total figures (DK2)}
+    \caption{MAE for wind power and Nordpool prognosis for each hour and year (DK2)}
     \label{fig:}
 \end{figure}
 \FloatBarrier
 
 \subsection{Price data}
-In the 2020 price of energy decreased compared to the previous years. However we don't know what impact had epidemic on this data so it's hard to retrieve any conclusion.
+In the 2020 price of energy decreased compared to the previous years. However we don't know what kind of the impact had epidemic on this data so it's hard to come up with any conclusion.
 
 \begin{table}[!htbp]
 \begin{center}
@@ -405,8 +327,80 @@ Usage of the electricity decreases during weekends and public holidays and this 
 \FloatBarrier
 
 Each holiday is treated in weekday dummies as a Sunday.
+\section{Methodology}
 
-\section{Demand forecasting}
+I decided to choose Danish market for forecasting and so on I want to apply methods and models most fitting to the characteristics of this market. I performed forecasting for 3 categories of values: wind power, consumption and price. In each category I made prognosis for few models which are described in Forecasting section. My forecasting framework for all of them is following:
+
+\begin{enumerate}
+	\item Data preparation
+	\item Preliminary data analysis
+	\item Data forecasting (cycle for each model and day)
+	\subitem Optional deseasonalization
+	\subitem Data normalization
+	\subitem Day-ahead forecasting
+	\item Verifying models' performance
+\end{enumerate}
+
+All calculations were conducted with Python 3.7 language and its libraries, i.e. numpy, pandas, scipy. All the scripts and results made are accessible in public GIT repository \githubLocation.
+
+
+\FloatBarrier
+Wind power prognosis and Consumption prognosis is provided only one day in advance so data forecasting is also performed day ahead. I used 3 calibration windows to compute predictions. They may take values of week multiples (7 days) because of the seasonal trend of energy production. Because chosen data has a limit of 1583 days, the maximum calibration window I considered is 728 days, around 2 years.
+
+I consider few models for each category of forecasts (consumption, price and wind power) which I explain later in this section. General equation for each model (except of benchmark models for wind power and consumption) can be presented as:
+
+\begin{equation}
+    \hat{Y}_{d,h} = \sum_{i=1}^{n}\beta_{d,h,i}X_{d,h}^{i},
+\end{equation}
+
+where $Y_{d,h}$ is prediction and $X_{d,h}^{i}$ is variable for given day ($d$) and hour ($h$). We can predict values for next whole day only, but basing on the variables from whole calibration window. Coefficients $\beta_{h,i}$ have been approximated by ordinary least squares (OLS).
+
+\begin{equation}
+    \vec{\hat{\beta}}=(X^{T}X)^{-1}X^{T}Y,
+\end{equation}
+
+where $X$ is matrix of independent variables, and $Y$ is vector of dependant variables of size of calibration window (multiple of 7 days).
+
+Because prices of energy due to the wind dependence can have negative values I needed to normalize values. I used function $asinh$ which was empirically confirmed to have best results for danish market among 4 different normalization functions.\cite{variance-stabilizing}.
+
+\begin{equation}
+\tag{asinh}
+\label{eq:asinh_function}
+    X_{d,h}=asinh(x_{d,h})\equiv \log (x_{d,h}+\sqrt{x^{2}_{d,h}+1}),
+\end{equation}
+
+where $Y_{d,h} $ is transformed value used for forecasts either as independent variable or dependent variable. Independent values in the model must be also transformed. $y_{d,h}$ is normalized in a calibration window by:
+\begin{equation}
+\label{eq:normalization}
+\tag{std}
+    x_{d,h}=\frac{1}{b_{d,h}}(x^*_{d,h}-a_{d,h}),
+\end{equation}
+
+where $a$ is median and $b$ is median absolute deviation (MAD) for given day and hour in the calibration window. $ y^*_{d,h} $ is original value of a parameter without any transformation yet. I used both simple normalization (\ref{eq:normalization}), and one with $asinh$ function (\ref{eq:asinh_function}) for each category of forecasting. 
+
+Inverse function for transformation and normalization is following:
+\begin{equation}
+    x^*_{d,h}=b_{d,h}sinh(X_{d,h})+a_{d,h},
+\end{equation}
+
+To eliminate seasonal component from the data I applied Hodrick-Prescott filter\cite{hp-filter} before standard normalization with smoothing parameter derived from  Ravn and Uhlig (2002) \cite{adjusting-hp-filter} and adjusted to the daily data as $1600^{4}*6.25 = 110930628906.25$.
+
+Types of transformations used:
+
+\begin{enumerate}
+	\item Standard normalization (\ref{eq:normalization})
+	\item Standard normalization (\ref{eq:normalization}) + asinh (\ref{eq:asinh_function})
+	\item Standard normalization (\ref{eq:normalization}) + asinh (\ref{eq:asinh_function}) + HP filter
+\end{enumerate}
+
+Despite of used transformation, the forecasts were performed with several different settings for each area (DK1 and DK2):
+\begin{itemize}
+	\item Calibration window: 182, 364, 728
+	\item \begin{tabbing}Predicted dates: \= 2019.01.01-2019.12.31 (2019 year), \\        \>2019.05.13-2020.05.12 (last year),\\ \>2020.01.01-2020.05.12, \\ \>2019.01.01-2020.05.12\end{tabbing}
+\end{itemize}
+
+
+\subsection{Demand forecasting}
 
 First considering model is a benchmark model containing consumption forecast provided by Nordpool's database for day ahead ($FL_{t,h}$). Its performance is analyzed in the section Demand data prognosis.
 \begin{equation}
@@ -437,13 +431,101 @@ Fourth model is extension of third model (\ref{eq:demand_model_3}) where is also
 \tag{C4}
 C_{d,h}=\sum_{i=1}^{7}\beta_{0,i}D_{i,d} + \beta_{1}FC_{d,h} + \beta_{2}C_{d-1,h} + \beta_{3}C_{d-2,h} + \beta_{4}C_{d-7,h} + \beta_{5}FW_{d,h} +\varepsilon _{d,h}
 \end{equation}
-\subsection{Results}
-The forecasts were performed with several different settings for each area (DK1 and DK2):
-\begin{itemize}
-	\item Calibration window: 182, 364, 728
-	\item Normalization function: standard, asinh
-	\item \begin{tabbing}Dates: \= 2019.01.01-2019.12.31 (2019 year), \\        \>2019.05.13-2020.05.12 (last year),\\ \>2020.01.01-2020.05.12, \\ \>2019.01.01-2020.05.12\end{tabbing}
-\end{itemize}
+
+
+\subsection{Wind power forecasting}
+First model is presented and analyzed in the section \emph{Wind power data prognosis}. This is a benchmark model for further forecasts, where $FW_{t,h} + \varepsilon_{t}$ is a day ahead forecast of wind power taken from Nordpool's data.
+\begin{equation}
+\label{eq:wind_model_1}
+\tag{W1}
+W_{t,h}=FW_{t,h}
+\end{equation}
+
+Second model includes additionally day of week vector as the second demand model (\ref{eq:demand_model_2}).
+
+\begin{equation}
+\label{eq:wind_model_2}
+\tag{W2}
+W_{t,h}=\sum_{i=1}^{7}\beta_{0,i}D_{i,d} + \beta FW_{t,h} + \varepsilon_{d,h}
+\end{equation}
+
+Third model is extension of second model (\ref{eq:wind_model_2}) and contains also wind power from previous day ($W_{t-1,h}$) and 2 days ago ($W_{t-1,h}$) from the corresponding hour.
+
+\begin{equation}
+\label{eq:wind_model_3}
+\tag{W3}
+W_{t,h}=\sum_{i=1}^{7}\beta_{0,i}D_{i,d} + \beta_{1} FW_{t,h} + \beta_{2} W_{t-1,h} + \beta_{3} W_{t-2,h} + \varepsilon_{d,h}
+\end{equation}
+
+Fourth model is extension of third one (\ref{eq:wind_model_3}) and contains additionally parameter of consumption forecast from previous day denoted as $FL_{t,h}$.
+
+\begin{equation}
+\label{eq:wind_model_4}
+\tag{W4}
+W_{t,h}=\sum_{i=1}^{7}\beta_{0,i}D_{i,d} + \beta_{1} FW_{t,h} + \beta_{2} W_{t-1,h} + \beta_{3} W_{t-2,h} + \beta_{4} FC_{t,h} + \varepsilon_{d,h}
+\end{equation}
+
+
+\subsection{Price forecasting}
+First forecasting model of price consists of the same daf of week vector ($D_{i,d}$) as the second demand model (\ref{eq:demand_model_2}).
+
+\begin{equation}
+\label{eq:price_model_1}
+\tag{P1}
+P_{d,h}=\sum_{i=1}^{7} \beta_{0,i}D_{i,d} + \varepsilon_{d,h}
+\end{equation}
+
+Second model is an extension of first model (\ref{eq:price_model_1}), where were added parameters of price for previous days: 1 day ago, 2 days ago and 1 week ago.
+
+\begin{equation}
+\label{eq:price_model_2}
+\tag{P2}
+P_{d,h}=\sum_{i=1}^{7} \beta_{0,i}D_{i,d} + \beta_{1}p_{d-1,h}  + \beta_{2}p_{d-2,h} + \beta_{3}p_{d-7,h} + \varepsilon_{d,h}
+\end{equation}
+
+Third model is an extension of second model (\ref{eq:price_model_2}) which consists additionally parameters of minimum ($p_{d-1,min}$) and maximum value ($p_{d-1,max}$) of previous day and value of price for last hour of previous day ($p_{d-1,24}$).
+
+\begin{equation}
+\label{eq:price_model_3}
+P_{d,h}=\sum_{i=1}^{7} \beta_{0,i}D_{i,d} + \beta_{1}p_{d-1,h}  + \beta_{2}p_{d-2,h} + \beta_{3}p_{d-7,h} + \beta_{4}p_{d-1,min} + \beta_{5}p_{d-1,max} + \beta_{6}p_{d-1,24} + \varepsilon_{d,h}
+\end{equation}
+
+Fourth model is an extension of third model (\ref{eq:price_model_3}) which is an expert model ARX2\cite{day-ahead-el-hg-structures} with two exogenous variables: wind power prognosis ($FW_{d,h}$) and consumption prognosis ($FC_{d,h}$).
+
+\begin{equation}
+\begin{multlined}
+\label{eq:price_model_4}
+\tag{P4}
+P_{d,h}=\sum_{i=1}^{7} \beta_{0,i}D_{i,d} + \beta_{1}p_{d-1,h}  + \beta_{2}p_{d-2,h} + \beta_{3}p_{d-7,h} + \beta_{4}p_{d-1,min} + \beta_{5}p_{d-1,max} \\ + \beta_{6}p_{d-1,24} + \beta_{7}FW_{d,h} + \beta_{8}FC_{d,h} + \varepsilon_{d,h}
+\end{multlined}
+\end{equation}
+
+In the last fifth model, Nordpool's prognosis for wind and consumption are replaced with the best forecasts acquired from the wind and consumption prognosis. However only values in predicted period were replaced by better prognosis, not full rolling window, that's why eventually it wasn't very efficient.
+
+Models \ref{eq:wind_model_2} and \ref{eq:demand_model_2} were used for area DK1 and for are DK2 best forecasts were achieved in \ref{eq:wind_model_1} and \ref{eq:demand_model_3}.
+
+\begin{equation}
+\begin{multlined}
+\label{eq:price_model_5}
+\tag{P5}
+P_{d,h}=\sum_{i=1}^{7} \beta_{0,i}D_{i,d} + \beta_{1}p_{d-1,h}  + \beta_{2}p_{d-2,h} + \beta_{3}p_{d-7,h} + \beta_{4}p_{d-1,min} + \beta_{5}p_{d-1,max} \\ + \beta_{6}p_{d-1,24} + \beta_{7}FW^*_{d,h} + \beta_{8}FC^*_{d,h} + \varepsilon_{d,h}
+\end{multlined}
+\end{equation}
+
+\section{Empirical results}
+For each forecast there is error analysis with Mean average error (MAE), Mean root square error (MRSE). All forecasts in the appropriate categories are compared to each other in order to get optimal result.
+
+\begin{equation}
+    MAE = \frac{1}{24T}\sum_{d=1}^{T}\sum_{h=1}^{24}\left |  \hat{\varepsilon}_{d,h} \right |\equiv \frac{1}{24T}\sum_{d=1}^{T}\sum_{h=1}^{24}\left |  y_{d,h} - \hat{y}_{d,h} \right |,
+\end{equation}
+
+\begin{equation}
+    RMSE = \sqrt{\frac{1}{24T}\sum_{d=1}^{T}\sum_{h=1}^{24} \hat{\varepsilon}_{d,h}^2}\equiv \sqrt{\frac{1}{24T}\sum_{d=1}^{T}\sum_{h=1}^{24} (y_{d,h} - \hat{y}_{d,h})^2},
+\end{equation}
+
+where $T$ is size of calibration window.
+
+\subsection{Demand forecasts}
 
 For both areas results with $asinh$ were significantly worse than with standard normalization function. Especially for calibration window 182. The forecast with standard normalization was better for Models 2-4 than Nordpool's prognosis, however better accuracy was for longer calibration windows. Because drops of consumption level in 2020 results including this period were less accurate.
 
@@ -479,38 +561,7 @@ For both areas results with $asinh$ were significantly worse than with standard 
 \end{figure}
 \FloatBarrier
 
-\section{Wind power forecasting}
-First model is presented and analyzed in the section \emph{Wind power data prognosis}. This is a benchmark model for further forecasts, where $FW_{t,h} + \varepsilon_{t}$ is a day ahead forecast of wind power taken from Nordpool's data.
-\begin{equation}
-\label{eq:wind_model_1}
-\tag{W1}
-W_{t,h}=FW_{t,h}
-\end{equation}
-
-Second model includes additionally day of week vector as the second demand model (\ref{eq:demand_model_2}).
-
-\begin{equation}
-\label{eq:wind_model_2}
-\tag{W2}
-W_{t,h}=\sum_{i=1}^{7}\beta_{0,i}D_{i,d} + \beta FW_{t,h} + \varepsilon_{d,h}
-\end{equation}
-
-Third model is extension of second model (\ref{eq:wind_model_2}) and contains also wind power from previous day ($W_{t-1,h}$) and 2 days ago ($W_{t-1,h}$) from the corresponding hour.
-
-\begin{equation}
-\label{eq:wind_model_3}
-\tag{W3}
-W_{t,h}=\sum_{i=1}^{7}\beta_{0,i}D_{i,d} + \beta_{1} FW_{t,h} + \beta_{2} W_{t-1,h} + \beta_{3} W_{t-2,h} + \varepsilon_{d,h}
-\end{equation}
-
-Fourth model is extension of third one (\ref{eq:wind_model_3}) and contains additionally parameter of consumption forecast from previous day denoted as $FL_{t,h}$.
-
-\begin{equation}
-\label{eq:wind_model_4}
-\tag{W4}
-W_{t,h}=\sum_{i=1}^{7}\beta_{0,i}D_{i,d} + \beta_{1} FW_{t,h} + \beta_{2} W_{t-1,h} + \beta_{3} W_{t-2,h} + \beta_{4} FC_{t,h} + \varepsilon_{d,h}
-\end{equation}
-\subsection{Results}
+\subsection{Wind power forecasts}
 The retrieved results from wind power forecasting with standard normalization were significantly better for DK1, and very slightly better for DK2 comparing to the Nordpool's forecast. $Asinh$ function as normalization was useful only for part of cases with short calibration window, so I don't consider it as succesful results. MAE for Model 4 with 728 days window and for full 2019 year is 6,6\% lower, while MAE for last period (2020.01.01-2020.05-12) is 22,19\% lower.
 
 \begin{figure}[htp]
@@ -545,52 +596,7 @@ The retrieved results from wind power forecasting with standard normalization we
 \end{figure}
 \FloatBarrier
 
-\section{Price forecasting}
-First forecasting model of price consists of the same daf of week vector ($D_{i,d}$) as the second demand model (\ref{eq:demand_model_2}).
-
-\begin{equation}
-\label{eq:price_model_1}
-\tag{P1}
-P_{d,h}=\sum_{i=1}^{7} \beta_{0,i}D_{i,d} + \varepsilon_{d,h}
-\end{equation}
-
-Second model is an extension of first model (\ref{eq:price_model_1}), where were added parameters of price for previous days: 1 day ago, 2 days ago and 1 week ago.
-
-\begin{equation}
-\label{eq:price_model_2}
-\tag{P2}
-P_{d,h}=\sum_{i=1}^{7} \beta_{0,i}D_{i,d} + \beta_{1}p_{d-1,h}  + \beta_{2}p_{d-2,h} + \beta_{3}p_{d-7,h} + \varepsilon_{d,h}
-\end{equation}
-
-Third model is an extension of second model (\ref{eq:price_model_2}) which consists additionally parameters of minimum ($p_{d-1,min}$) and maximum value ($p_{d-1,max}$) of previous day and value of price for last hour of previous day ($p_{d-1,24}$).
-
-\begin{equation}
-\label{eq:price_model_3}
-P_{d,h}=\sum_{i=1}^{7} \beta_{0,i}D_{i,d} + \beta_{1}p_{d-1,h}  + \beta_{2}p_{d-2,h} + \beta_{3}p_{d-7,h} + \beta_{4}p_{d-1,min} + \beta_{5}p_{d-1,max} + \beta_{6}p_{d-1,24} + \varepsilon_{d,h}
-\end{equation}
-
-Fourth model is an extension of third model (\ref{eq:price_model_3}) which is an expert model ARX2\cite{day-ahead-el-hg-structures} with two exogenous variables: wind power prognosis ($FW_{d,h}$) and consumption prognosis ($FC_{d,h}$).
-
-\begin{equation}
-\begin{multlined}
-\label{eq:price_model_4}
-\tag{P4}
-P_{d,h}=\sum_{i=1}^{7} \beta_{0,i}D_{i,d} + \beta_{1}p_{d-1,h}  + \beta_{2}p_{d-2,h} + \beta_{3}p_{d-7,h} + \beta_{4}p_{d-1,min} + \beta_{5}p_{d-1,max} \\ + \beta_{6}p_{d-1,24} + \beta_{7}FW_{d,h} + \beta_{8}FC_{d,h} + \varepsilon_{d,h}
-\end{multlined}
-\end{equation}
-
-In the last fifth model, Nordpool's prognosis for wind and consumption are replaced with the forecast of Model 4 (\ref{eq:wind_model_4}) for wind and model  \ref{eq:demand_model_4} for consumption. However only values for predicted period were replaced by better prognosis, not full rolling window, that's why it was very inefficient to 
-
-\begin{equation}
-\begin{multlined}
-\label{eq:price_model_5}
-\tag{P5}
-P_{d,h}=\sum_{i=1}^{7} \beta_{0,i}D_{i,d} + \beta_{1}p_{d-1,h}  + \beta_{2}p_{d-2,h} + \beta_{3}p_{d-7,h} + \beta_{4}p_{d-1,min} + \beta_{5}p_{d-1,max} \\ + \beta_{6}p_{d-1,24} + \beta_{7}FW_{d,h} + \beta_{8}FC_{d,h} + \varepsilon_{d,h}
-\end{multlined}
-\end{equation}
-
-
-\subsection{Results}
+\subsection{Price forecasts}
 With more complex models results are much better, however $asinh$ function surprisingly doesn't improve predictions in the every case. Disproportion is especially big in the last period (2020.01.01-2020.05-12) and Model 4.
 
 I performed Model 5 hoping that with better predictions of wind power and consumption than original ones, price will be more accurate. Because these predictions replaced only values for prediction period, not rolling window, coefficients could be overfitted to the worse values trying to predict using improved ones.
