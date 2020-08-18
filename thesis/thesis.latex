@@ -502,7 +502,7 @@ P_{d,h}=\sum_{i=1}^{7} \beta_{0,i}D_{i,d} + \beta_{1}p_{d-1,h}  + \beta_{2}p_{d-
 
 In the last fifth model, Nordpool's prognosis for wind and consumption are replaced with the best forecasts acquired from the wind and consumption prognosis. However only values in predicted period were replaced by better prognosis, not full rolling window, that's why eventually it wasn't very efficient.
 
-Models \ref{eq:wind_model_2} and \ref{eq:demand_model_2} were used for area DK1 and for are DK2 best forecasts were achieved in \ref{eq:wind_model_1} and \ref{eq:demand_model_3}.
+Different models for different periods and areas were used. Summary of best models used were presented in next chapter.
 
 \begin{equation}
 \begin{multlined}
@@ -524,6 +524,8 @@ For each forecast there is error analysis with Mean average error (MAE), Mean ro
 \end{equation}
 
 where $T$ is size of calibration window.
+
+From each consumption, wind and price prognosis were chosen the best results for each period and area and performed Diebold-Mariano test based on MAD criterion.
 
 \subsection{Demand forecasts}
 
