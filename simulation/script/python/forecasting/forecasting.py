@@ -77,7 +77,7 @@ def forecast(data_f, window_f, data_shape_f, variables_f):
             settings_desc = print_settings(file, area, window_f, start_date, end_date, standardizing_method,
                                            get_variables_list(variables_list, nordpool_prognosis))
             f.write(no + "." + settings_desc + "\n")
-            print("Saved: " + settings_desc)
+            print("Saved: " + str(no) + '. ' + settings_desc)
         pred_data.to_csv(forecast_dir + no + ".csv", index=True)
 
     return real_data, pred_data
@@ -174,31 +174,30 @@ def f():
 
 # perform all forecasts
 files = ['price']
-file = 'consumption'
 areas = ['DK1', 'DK2']
 
-windows = [128, 364, 728]
-std_methods = ['hp']
+windows = [182, 364, 728]
+std_methods = ['None', 'hp', 'asinh', 'asinh-hp']
 start_dates = [('2019-01-01', '2019-12-31'), ('2019-05-13', '2020-05-12'), ('2020-01-01', '2020-05-12'),
                ('2019-01-01', '2020-05-12')]
 # start_dates = [('2019-01-01', '2019-12-31')]
 variables_lists = {
     'consumption': [
-        ['dayofweek', 'consumption_prognosis'],
+        # ['dayofweek', 'consumption_prognosis'],
         ['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7'],
-        ['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
+        # ['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
     ],
     'wind': [
-        ['dayofweek', 'wind_prognosis'],
-        ['dayofweek', 'wind_prognosis', 'prev_day1', 'prev_day2', 'prev_day7'],
+        # ['dayofweek', 'wind_prognosis'],
+        # ['dayofweek', 'wind_prognosis', 'prev_day1', 'prev_day2', 'prev_day7'],
         ['dayofweek', 'wind_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'consumption_prognosis']
     ],
     'price': [
         # ['dayofweek'],
-        ['dayofweek', 'prev_day1', 'prev_day2', 'prev_day7'],
-        ['dayofweek', 'prev_day1', 'prev_day2', 'prev_day7', 'min_day', 'max_day', 'last_val_day'],
-        ['dayofweek', 'prev_day1', 'prev_day2', 'prev_day7', 'min_day', 'max_day', 'last_val_day',
-         'consumption_prognosis', 'wind_prognosis'],
+        # ['dayofweek', 'prev_day1', 'prev_day2', 'prev_day7'],
+        # ['dayofweek', 'prev_day1', 'prev_day2', 'prev_day7', 'min_day', 'max_day', 'last_val_day'],
+        # ['dayofweek', 'prev_day1', 'prev_day2', 'prev_day7', 'min_day', 'max_day', 'last_val_day',
+        #  'consumption_prognosis', 'wind_prognosis'],
         ['dayofweek', 'prev_day1', 'prev_day2', 'prev_day7', 'min_day', 'max_day', 'last_val_day',
          'consumption_prognosis_for_price', 'wind_prognosis_for_price']
     ]}

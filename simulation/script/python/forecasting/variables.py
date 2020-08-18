@@ -91,22 +91,43 @@ class VariablesGetter:
         data = filter_hours(data)
         dir_forecasts = ''
 
+        vars_a = self.variables_list
         method = self.method
+        window = self.window
 
         if prognosis_name == 'wind':
             dir_forecasts = 'wind/'
             if self.area == 'DK1':
                 vars_a = ['dayofweek', 'wind_prognosis']
                 method = 'asinh-hp'
+                if self.start_date == '2019-01-01' and self.end_date == '2020-05-12':
+                    window = 182
+                else:
+                    window = 364
             elif self.area == 'DK2':
-                return self.get_variables_wind_prognosis()
+                if self.start_date == '2019-01-01' and self.end_date == '2020-05-12':
+                    vars_a = ['dayofweek', 'wind_prognosis']
+                    window = 728
+                    method = 'asinh'
+                else:
+                    return self.get_variables_wind_prognosis()
         elif prognosis_name == 'consumption':
             dir_forecasts = 'consumption/'
             if self.area == 'DK1':
-                vars_a = ['dayofweek', 'consumption_prognosis']
+                vars_a = ['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
+                window = 728
+                method = 'None'
             elif self.area == 'DK2':
                 vars_a = ['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
-            method = 'None'
+                if self.start_date == '2019-01-01' and self.end_date == '2019-12-31':
+                    window = 728
+                    method = 'None'
+                elif self.start_date == '2019-01-01' and self.end_date == '2020-05-12':
+                    window = 182
+                    method = 'hp'
+                else:
+                    window = 364
+                    method = 'hp'
 
         forecasts_file = self.dir_forecasts + dir_forecasts + 'files.txt'
 
@@ -114,7 +135,7 @@ class VariablesGetter:
         with open(forecasts_file, 'r+') as f:
             lines = f.read().splitlines()
             for line in lines:
-                if line.find(print_settings(prognosis_name, self.area, self.window, self.start_date, self.end_date,
+                if line.find(print_settings(prognosis_name, self.area, window, self.start_date, self.end_date,
                                             method, vars_a)) != -1:
                     forecast_file = line.split('.', 1)[0] + '.csv'
                     break
