@@ -1,4 +1,4 @@
-1.consumption|DK1|182|2019-01-01|2019-12-31|asinh|nordpool_prognosis
+1.consumption|DK1|182|2019-01-01|2019-12-31|None|nordpool_prognosis
 2.consumption|DK1|182|2019-01-01|2019-12-31|asinh-hp|['dayofweek', 'consumption_prognosis']
 3.consumption|DK1|182|2019-01-01|2019-12-31|asinh-hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
 4.consumption|DK1|182|2019-01-01|2019-12-31|asinh-hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
@@ -8,7 +8,7 @@
 8.consumption|DK1|182|2019-01-01|2019-12-31|asinh|['dayofweek', 'consumption_prognosis']
 9.consumption|DK1|182|2019-01-01|2019-12-31|asinh|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
 10.consumption|DK1|182|2019-01-01|2019-12-31|asinh|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
-11.consumption|DK1|182|2019-05-13|2020-05-12|asinh|nordpool_prognosis
+11.consumption|DK1|182|2019-05-13|2020-05-12|None|nordpool_prognosis
 12.consumption|DK1|182|2019-05-13|2020-05-12|asinh-hp|['dayofweek', 'consumption_prognosis']
 13.consumption|DK1|182|2019-05-13|2020-05-12|asinh-hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
 14.consumption|DK1|182|2019-05-13|2020-05-12|asinh-hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
@@ -18,7 +18,7 @@
 18.consumption|DK1|182|2019-05-13|2020-05-12|asinh|['dayofweek', 'consumption_prognosis']
 19.consumption|DK1|182|2019-05-13|2020-05-12|asinh|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
 20.consumption|DK1|182|2019-05-13|2020-05-12|asinh|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
-21.consumption|DK1|182|2020-01-01|2020-05-12|asinh|nordpool_prognosis
+21.consumption|DK1|182|2020-01-01|2020-05-12|None|nordpool_prognosis
 22.consumption|DK1|182|2020-01-01|2020-05-12|asinh-hp|['dayofweek', 'consumption_prognosis']
 23.consumption|DK1|182|2020-01-01|2020-05-12|asinh-hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
 24.consumption|DK1|182|2020-01-01|2020-05-12|asinh-hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
@@ -28,7 +28,7 @@
 28.consumption|DK1|182|2020-01-01|2020-05-12|asinh|['dayofweek', 'consumption_prognosis']
 29.consumption|DK1|182|2020-01-01|2020-05-12|asinh|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
 30.consumption|DK1|182|2020-01-01|2020-05-12|asinh|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
-31.consumption|DK1|182|2019-01-01|2020-05-12|asinh|nordpool_prognosis
+31.consumption|DK1|182|2019-01-01|2020-05-12|None|nordpool_prognosis
 32.consumption|DK1|182|2019-01-01|2020-05-12|asinh-hp|['dayofweek', 'consumption_prognosis']
 33.consumption|DK1|182|2019-01-01|2020-05-12|asinh-hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
 34.consumption|DK1|182|2019-01-01|2020-05-12|asinh-hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
@@ -38,7 +38,7 @@
 38.consumption|DK1|182|2019-01-01|2020-05-12|asinh|['dayofweek', 'consumption_prognosis']
 39.consumption|DK1|182|2019-01-01|2020-05-12|asinh|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
 40.consumption|DK1|182|2019-01-01|2020-05-12|asinh|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
-41.consumption|DK1|364|2019-01-01|2019-12-31|asinh|nordpool_prognosis
+41.consumption|DK1|364|2019-01-01|2019-12-31|None|nordpool_prognosis
 42.consumption|DK1|364|2019-01-01|2019-12-31|asinh-hp|['dayofweek', 'consumption_prognosis']
 43.consumption|DK1|364|2019-01-01|2019-12-31|asinh-hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
 44.consumption|DK1|364|2019-01-01|2019-12-31|asinh-hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
@@ -48,7 +48,7 @@
 48.consumption|DK1|364|2019-01-01|2019-12-31|asinh|['dayofweek', 'consumption_prognosis']
 49.consumption|DK1|364|2019-01-01|2019-12-31|asinh|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
 50.consumption|DK1|364|2019-01-01|2019-12-31|asinh|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
-51.consumption|DK1|364|2019-05-13|2020-05-12|asinh|nordpool_prognosis
+51.consumption|DK1|364|2019-05-13|2020-05-12|None|nordpool_prognosis
 52.consumption|DK1|364|2019-05-13|2020-05-12|asinh-hp|['dayofweek', 'consumption_prognosis']
 53.consumption|DK1|364|2019-05-13|2020-05-12|asinh-hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
 54.consumption|DK1|364|2019-05-13|2020-05-12|asinh-hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
@@ -58,7 +58,7 @@
 58.consumption|DK1|364|2019-05-13|2020-05-12|asinh|['dayofweek', 'consumption_prognosis']
 59.consumption|DK1|364|2019-05-13|2020-05-12|asinh|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
 60.consumption|DK1|364|2019-05-13|2020-05-12|asinh|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
-61.consumption|DK1|364|2020-01-01|2020-05-12|asinh|nordpool_prognosis
+61.consumption|DK1|364|2020-01-01|2020-05-12|None|nordpool_prognosis
 62.consumption|DK1|364|2020-01-01|2020-05-12|asinh-hp|['dayofweek', 'consumption_prognosis']
 63.consumption|DK1|364|2020-01-01|2020-05-12|asinh-hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
 64.consumption|DK1|364|2020-01-01|2020-05-12|asinh-hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
@@ -68,7 +68,7 @@
 68.consumption|DK1|364|2020-01-01|2020-05-12|asinh|['dayofweek', 'consumption_prognosis']
 69.consumption|DK1|364|2020-01-01|2020-05-12|asinh|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
 70.consumption|DK1|364|2020-01-01|2020-05-12|asinh|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
-71.consumption|DK1|364|2019-01-01|2020-05-12|asinh|nordpool_prognosis
+71.consumption|DK1|364|2019-01-01|2020-05-12|None|nordpool_prognosis
 72.consumption|DK1|364|2019-01-01|2020-05-12|asinh-hp|['dayofweek', 'consumption_prognosis']
 73.consumption|DK1|364|2019-01-01|2020-05-12|asinh-hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
 74.consumption|DK1|364|2019-01-01|2020-05-12|asinh-hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
@@ -78,7 +78,7 @@
 78.consumption|DK1|364|2019-01-01|2020-05-12|asinh|['dayofweek', 'consumption_prognosis']
 79.consumption|DK1|364|2019-01-01|2020-05-12|asinh|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
 80.consumption|DK1|364|2019-01-01|2020-05-12|asinh|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
-81.consumption|DK1|728|2019-01-01|2019-12-31|asinh|nordpool_prognosis
+81.consumption|DK1|728|2019-01-01|2019-12-31|None|nordpool_prognosis
 82.consumption|DK1|728|2019-01-01|2019-12-31|asinh-hp|['dayofweek', 'consumption_prognosis']
 83.consumption|DK1|728|2019-01-01|2019-12-31|asinh-hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
 84.consumption|DK1|728|2019-01-01|2019-12-31|asinh-hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
@@ -88,7 +88,7 @@
 88.consumption|DK1|728|2019-01-01|2019-12-31|asinh|['dayofweek', 'consumption_prognosis']
 89.consumption|DK1|728|2019-01-01|2019-12-31|asinh|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
 90.consumption|DK1|728|2019-01-01|2019-12-31|asinh|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
-91.consumption|DK1|728|2019-05-13|2020-05-12|asinh|nordpool_prognosis
+91.consumption|DK1|728|2019-05-13|2020-05-12|None|nordpool_prognosis
 92.consumption|DK1|728|2019-05-13|2020-05-12|asinh-hp|['dayofweek', 'consumption_prognosis']
 93.consumption|DK1|728|2019-05-13|2020-05-12|asinh-hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
 94.consumption|DK1|728|2019-05-13|2020-05-12|asinh-hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
@@ -98,7 +98,7 @@
 98.consumption|DK1|728|2019-05-13|2020-05-12|asinh|['dayofweek', 'consumption_prognosis']
 99.consumption|DK1|728|2019-05-13|2020-05-12|asinh|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
 100.consumption|DK1|728|2019-05-13|2020-05-12|asinh|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
-101.consumption|DK1|728|2020-01-01|2020-05-12|asinh|nordpool_prognosis
+101.consumption|DK1|728|2020-01-01|2020-05-12|None|nordpool_prognosis
 102.consumption|DK1|728|2020-01-01|2020-05-12|asinh-hp|['dayofweek', 'consumption_prognosis']
 103.consumption|DK1|728|2020-01-01|2020-05-12|asinh-hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
 104.consumption|DK1|728|2020-01-01|2020-05-12|asinh-hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
@@ -108,7 +108,7 @@
 108.consumption|DK1|728|2020-01-01|2020-05-12|asinh|['dayofweek', 'consumption_prognosis']
 109.consumption|DK1|728|2020-01-01|2020-05-12|asinh|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
 110.consumption|DK1|728|2020-01-01|2020-05-12|asinh|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
-111.consumption|DK1|728|2019-01-01|2020-05-12|asinh|nordpool_prognosis
+111.consumption|DK1|728|2019-01-01|2020-05-12|None|nordpool_prognosis
 112.consumption|DK1|728|2019-01-01|2020-05-12|asinh-hp|['dayofweek', 'consumption_prognosis']
 113.consumption|DK1|728|2019-01-01|2020-05-12|asinh-hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
 114.consumption|DK1|728|2019-01-01|2020-05-12|asinh-hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
@@ -118,7 +118,7 @@
 118.consumption|DK1|728|2019-01-01|2020-05-12|asinh|['dayofweek', 'consumption_prognosis']
 119.consumption|DK1|728|2019-01-01|2020-05-12|asinh|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
 120.consumption|DK1|728|2019-01-01|2020-05-12|asinh|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
-121.consumption|DK2|182|2019-01-01|2019-12-31|asinh|nordpool_prognosis
+121.consumption|DK2|182|2019-01-01|2019-12-31|None|nordpool_prognosis
 122.consumption|DK2|182|2019-01-01|2019-12-31|asinh-hp|['dayofweek', 'consumption_prognosis']
 123.consumption|DK2|182|2019-01-01|2019-12-31|asinh-hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
 124.consumption|DK2|182|2019-01-01|2019-12-31|asinh-hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
@@ -128,7 +128,7 @@
 128.consumption|DK2|182|2019-01-01|2019-12-31|asinh|['dayofweek', 'consumption_prognosis']
 129.consumption|DK2|182|2019-01-01|2019-12-31|asinh|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
 130.consumption|DK2|182|2019-01-01|2019-12-31|asinh|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
-131.consumption|DK2|182|2019-05-13|2020-05-12|asinh|nordpool_prognosis
+131.consumption|DK2|182|2019-05-13|2020-05-12|None|nordpool_prognosis
 132.consumption|DK2|182|2019-05-13|2020-05-12|asinh-hp|['dayofweek', 'consumption_prognosis']
 133.consumption|DK2|182|2019-05-13|2020-05-12|asinh-hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
 134.consumption|DK2|182|2019-05-13|2020-05-12|asinh-hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
@@ -138,7 +138,7 @@
 138.consumption|DK2|182|2019-05-13|2020-05-12|asinh|['dayofweek', 'consumption_prognosis']
 139.consumption|DK2|182|2019-05-13|2020-05-12|asinh|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
 140.consumption|DK2|182|2019-05-13|2020-05-12|asinh|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
-141.consumption|DK2|182|2020-01-01|2020-05-12|asinh|nordpool_prognosis
+141.consumption|DK2|182|2020-01-01|2020-05-12|None|nordpool_prognosis
 142.consumption|DK2|182|2020-01-01|2020-05-12|asinh-hp|['dayofweek', 'consumption_prognosis']
 143.consumption|DK2|182|2020-01-01|2020-05-12|asinh-hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
 144.consumption|DK2|182|2020-01-01|2020-05-12|asinh-hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
@@ -148,7 +148,7 @@
 148.consumption|DK2|182|2020-01-01|2020-05-12|asinh|['dayofweek', 'consumption_prognosis']
 149.consumption|DK2|182|2020-01-01|2020-05-12|asinh|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
 150.consumption|DK2|182|2020-01-01|2020-05-12|asinh|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
-151.consumption|DK2|182|2019-01-01|2020-05-12|asinh|nordpool_prognosis
+151.consumption|DK2|182|2019-01-01|2020-05-12|None|nordpool_prognosis
 152.consumption|DK2|182|2019-01-01|2020-05-12|asinh-hp|['dayofweek', 'consumption_prognosis']
 153.consumption|DK2|182|2019-01-01|2020-05-12|asinh-hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
 154.consumption|DK2|182|2019-01-01|2020-05-12|asinh-hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
@@ -158,7 +158,7 @@
 158.consumption|DK2|182|2019-01-01|2020-05-12|asinh|['dayofweek', 'consumption_prognosis']
 159.consumption|DK2|182|2019-01-01|2020-05-12|asinh|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
 160.consumption|DK2|182|2019-01-01|2020-05-12|asinh|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
-161.consumption|DK2|364|2019-01-01|2019-12-31|asinh|nordpool_prognosis
+161.consumption|DK2|364|2019-01-01|2019-12-31|None|nordpool_prognosis
 162.consumption|DK2|364|2019-01-01|2019-12-31|asinh-hp|['dayofweek', 'consumption_prognosis']
 163.consumption|DK2|364|2019-01-01|2019-12-31|asinh-hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
 164.consumption|DK2|364|2019-01-01|2019-12-31|asinh-hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
@@ -168,7 +168,7 @@
 168.consumption|DK2|364|2019-01-01|2019-12-31|asinh|['dayofweek', 'consumption_prognosis']
 169.consumption|DK2|364|2019-01-01|2019-12-31|asinh|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
 170.consumption|DK2|364|2019-01-01|2019-12-31|asinh|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
-171.consumption|DK2|364|2019-05-13|2020-05-12|asinh|nordpool_prognosis
+171.consumption|DK2|364|2019-05-13|2020-05-12|None|nordpool_prognosis
 172.consumption|DK2|364|2019-05-13|2020-05-12|asinh-hp|['dayofweek', 'consumption_prognosis']
 173.consumption|DK2|364|2019-05-13|2020-05-12|asinh-hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
 174.consumption|DK2|364|2019-05-13|2020-05-12|asinh-hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
@@ -178,7 +178,7 @@
 178.consumption|DK2|364|2019-05-13|2020-05-12|asinh|['dayofweek', 'consumption_prognosis']
 179.consumption|DK2|364|2019-05-13|2020-05-12|asinh|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
 180.consumption|DK2|364|2019-05-13|2020-05-12|asinh|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
-181.consumption|DK2|364|2020-01-01|2020-05-12|asinh|nordpool_prognosis
+181.consumption|DK2|364|2020-01-01|2020-05-12|None|nordpool_prognosis
 182.consumption|DK2|364|2020-01-01|2020-05-12|asinh-hp|['dayofweek', 'consumption_prognosis']
 183.consumption|DK2|364|2020-01-01|2020-05-12|asinh-hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
 184.consumption|DK2|364|2020-01-01|2020-05-12|asinh-hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
@@ -188,7 +188,7 @@
 188.consumption|DK2|364|2020-01-01|2020-05-12|asinh|['dayofweek', 'consumption_prognosis']
 189.consumption|DK2|364|2020-01-01|2020-05-12|asinh|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
 190.consumption|DK2|364|2020-01-01|2020-05-12|asinh|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
-191.consumption|DK2|364|2019-01-01|2020-05-12|asinh|nordpool_prognosis
+191.consumption|DK2|364|2019-01-01|2020-05-12|None|nordpool_prognosis
 192.consumption|DK2|364|2019-01-01|2020-05-12|asinh-hp|['dayofweek', 'consumption_prognosis']
 193.consumption|DK2|364|2019-01-01|2020-05-12|asinh-hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
 194.consumption|DK2|364|2019-01-01|2020-05-12|asinh-hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
@@ -198,7 +198,7 @@
 198.consumption|DK2|364|2019-01-01|2020-05-12|asinh|['dayofweek', 'consumption_prognosis']
 199.consumption|DK2|364|2019-01-01|2020-05-12|asinh|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
 200.consumption|DK2|364|2019-01-01|2020-05-12|asinh|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
-201.consumption|DK2|728|2019-01-01|2019-12-31|asinh|nordpool_prognosis
+201.consumption|DK2|728|2019-01-01|2019-12-31|None|nordpool_prognosis
 202.consumption|DK2|728|2019-01-01|2019-12-31|asinh-hp|['dayofweek', 'consumption_prognosis']
 203.consumption|DK2|728|2019-01-01|2019-12-31|asinh-hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
 204.consumption|DK2|728|2019-01-01|2019-12-31|asinh-hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
@@ -208,7 +208,7 @@
 208.consumption|DK2|728|2019-01-01|2019-12-31|asinh|['dayofweek', 'consumption_prognosis']
 209.consumption|DK2|728|2019-01-01|2019-12-31|asinh|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
 210.consumption|DK2|728|2019-01-01|2019-12-31|asinh|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
-211.consumption|DK2|728|2019-05-13|2020-05-12|asinh|nordpool_prognosis
+211.consumption|DK2|728|2019-05-13|2020-05-12|None|nordpool_prognosis
 212.consumption|DK2|728|2019-05-13|2020-05-12|asinh-hp|['dayofweek', 'consumption_prognosis']
 213.consumption|DK2|728|2019-05-13|2020-05-12|asinh-hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
 214.consumption|DK2|728|2019-05-13|2020-05-12|asinh-hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
@@ -218,7 +218,7 @@
 218.consumption|DK2|728|2019-05-13|2020-05-12|asinh|['dayofweek', 'consumption_prognosis']
 219.consumption|DK2|728|2019-05-13|2020-05-12|asinh|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
 220.consumption|DK2|728|2019-05-13|2020-05-12|asinh|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
-221.consumption|DK2|728|2020-01-01|2020-05-12|asinh|nordpool_prognosis
+221.consumption|DK2|728|2020-01-01|2020-05-12|None|nordpool_prognosis
 222.consumption|DK2|728|2020-01-01|2020-05-12|asinh-hp|['dayofweek', 'consumption_prognosis']
 223.consumption|DK2|728|2020-01-01|2020-05-12|asinh-hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
 224.consumption|DK2|728|2020-01-01|2020-05-12|asinh-hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
@@ -228,7 +228,7 @@
 228.consumption|DK2|728|2020-01-01|2020-05-12|asinh|['dayofweek', 'consumption_prognosis']
 229.consumption|DK2|728|2020-01-01|2020-05-12|asinh|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
 230.consumption|DK2|728|2020-01-01|2020-05-12|asinh|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
-231.consumption|DK2|728|2019-01-01|2020-05-12|asinh|nordpool_prognosis
+231.consumption|DK2|728|2019-01-01|2020-05-12|None|nordpool_prognosis
 232.consumption|DK2|728|2019-01-01|2020-05-12|asinh-hp|['dayofweek', 'consumption_prognosis']
 233.consumption|DK2|728|2019-01-01|2020-05-12|asinh-hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
 234.consumption|DK2|728|2019-01-01|2020-05-12|asinh-hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
@@ -238,4 +238,75 @@
 238.consumption|DK2|728|2019-01-01|2020-05-12|asinh|['dayofweek', 'consumption_prognosis']
 239.consumption|DK2|728|2019-01-01|2020-05-12|asinh|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
 240.consumption|DK2|728|2019-01-01|2020-05-12|asinh|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
-
+500.consumption|DK2|728|2019-05-13|2020-05-12|hp|['dayofweek', 'consumption_prognosis']
+501.consumption|DK2|728|2019-05-13|2020-05-12|hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
+502.consumption|DK2|728|2019-05-13|2020-05-12|hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
+503.consumption|DK2|728|2020-01-01|2020-05-12|hp|['dayofweek', 'consumption_prognosis']
+504.consumption|DK2|728|2020-01-01|2020-05-12|hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
+505.consumption|DK2|728|2020-01-01|2020-05-12|hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
+506.consumption|DK2|728|2019-01-01|2020-05-12|hp|['dayofweek', 'consumption_prognosis']
+507.consumption|DK2|728|2019-01-01|2020-05-12|hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
+508.consumption|DK2|728|2019-01-01|2020-05-12|hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
+1115.consumption|DK1|364|2019-01-01|2019-12-31|hp|['dayofweek', 'consumption_prognosis']
+1116.consumption|DK1|364|2019-01-01|2019-12-31|hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
+1117.consumption|DK1|364|2019-01-01|2019-12-31|hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
+1119.consumption|DK1|364|2019-05-13|2020-05-12|hp|['dayofweek', 'consumption_prognosis']
+1120.consumption|DK1|364|2019-05-13|2020-05-12|hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
+1121.consumption|DK1|364|2019-05-13|2020-05-12|hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
+1123.consumption|DK1|364|2020-01-01|2020-05-12|hp|['dayofweek', 'consumption_prognosis']
+1124.consumption|DK1|364|2020-01-01|2020-05-12|hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
+1125.consumption|DK1|364|2020-01-01|2020-05-12|hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
+1127.consumption|DK1|364|2019-01-01|2020-05-12|hp|['dayofweek', 'consumption_prognosis']
+1128.consumption|DK1|364|2019-01-01|2020-05-12|hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
+1129.consumption|DK1|364|2019-01-01|2020-05-12|hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
+1131.consumption|DK1|728|2019-01-01|2019-12-31|hp|['dayofweek', 'consumption_prognosis']
+1132.consumption|DK1|728|2019-01-01|2019-12-31|hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
+1133.consumption|DK1|728|2019-01-01|2019-12-31|hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
+1135.consumption|DK1|728|2019-05-13|2020-05-12|hp|['dayofweek', 'consumption_prognosis']
+1136.consumption|DK1|728|2019-05-13|2020-05-12|hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
+1137.consumption|DK1|728|2019-05-13|2020-05-12|hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
+1139.consumption|DK1|728|2020-01-01|2020-05-12|hp|['dayofweek', 'consumption_prognosis']
+1140.consumption|DK1|728|2020-01-01|2020-05-12|hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
+1141.consumption|DK1|728|2020-01-01|2020-05-12|hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
+1143.consumption|DK1|728|2019-01-01|2020-05-12|hp|['dayofweek', 'consumption_prognosis']
+1144.consumption|DK1|728|2019-01-01|2020-05-12|hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
+1145.consumption|DK1|728|2019-01-01|2020-05-12|hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
+1163.consumption|DK2|364|2019-01-01|2019-12-31|hp|['dayofweek', 'consumption_prognosis']
+1164.consumption|DK2|364|2019-01-01|2019-12-31|hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
+1165.consumption|DK2|364|2019-01-01|2019-12-31|hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
+1167.consumption|DK2|364|2019-05-13|2020-05-12|hp|['dayofweek', 'consumption_prognosis']
+1168.consumption|DK2|364|2019-05-13|2020-05-12|hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
+1169.consumption|DK2|364|2019-05-13|2020-05-12|hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
+1171.consumption|DK2|364|2020-01-01|2020-05-12|hp|['dayofweek', 'consumption_prognosis']
+1172.consumption|DK2|364|2020-01-01|2020-05-12|hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
+1173.consumption|DK2|364|2020-01-01|2020-05-12|hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
+1175.consumption|DK2|364|2019-01-01|2020-05-12|hp|['dayofweek', 'consumption_prognosis']
+1209.consumption|DK1|182|2019-01-01|2019-12-31|hp|['dayofweek', 'consumption_prognosis']
+1210.consumption|DK1|182|2019-01-01|2019-12-31|hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
+1211.consumption|DK1|182|2019-01-01|2019-12-31|hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
+1213.consumption|DK1|182|2019-05-13|2020-05-12|hp|['dayofweek', 'consumption_prognosis']
+1214.consumption|DK1|182|2019-05-13|2020-05-12|hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
+1215.consumption|DK1|182|2019-05-13|2020-05-12|hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
+1217.consumption|DK1|182|2020-01-01|2020-05-12|hp|['dayofweek', 'consumption_prognosis']
+1218.consumption|DK1|182|2020-01-01|2020-05-12|hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
+1219.consumption|DK1|182|2020-01-01|2020-05-12|hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
+1221.consumption|DK1|182|2019-01-01|2020-05-12|hp|['dayofweek', 'consumption_prognosis']
+1222.consumption|DK1|182|2019-01-01|2020-05-12|hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
+1223.consumption|DK1|182|2019-01-01|2020-05-12|hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
+1225.consumption|DK2|182|2019-01-01|2019-12-31|hp|['dayofweek', 'consumption_prognosis']
+1226.consumption|DK2|182|2019-01-01|2019-12-31|hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
+1227.consumption|DK2|182|2019-01-01|2019-12-31|hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
+1229.consumption|DK2|182|2019-05-13|2020-05-12|hp|['dayofweek', 'consumption_prognosis']
+1230.consumption|DK2|182|2019-05-13|2020-05-12|hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
+1231.consumption|DK2|182|2019-05-13|2020-05-12|hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
+1233.consumption|DK2|182|2020-01-01|2020-05-12|hp|['dayofweek', 'consumption_prognosis']
+1234.consumption|DK2|182|2020-01-01|2020-05-12|hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
+1235.consumption|DK2|182|2020-01-01|2020-05-12|hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
+1237.consumption|DK2|182|2019-01-01|2020-05-12|hp|['dayofweek', 'consumption_prognosis']
+1238.consumption|DK2|182|2019-01-01|2020-05-12|hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
+1239.consumption|DK2|182|2019-01-01|2020-05-12|hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
+1250.consumption|DK2|728|2019-01-01|2019-12-31|hp|['dayofweek', 'consumption_prognosis']
+1252.consumption|DK2|728|2019-01-01|2019-12-31|hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
+1258.consumption|DK2|364|2019-01-01|2020-05-12|hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
+1259.consumption|DK2|364|2019-01-01|2020-05-12|hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7', 'wind_prognosis']
+1261.consumption|DK2|728|2019-01-01|2019-12-31|hp|['dayofweek', 'consumption_prognosis', 'prev_day1', 'prev_day2', 'prev_day7']
