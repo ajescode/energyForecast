@@ -11,6 +11,14 @@
 
 \addbibresource{biblio.bib}
 
+\usepackage{titlesec}
+
+\titleformat{\paragraph}
+{\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
+\titlespacing*{\paragraph}
+{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+
+
 \newcommand{\githubLocation}{https://github.com/ajescode/energyForecast}
 
 \title{Modeling and forecasting of electricity prices and demand}
@@ -39,27 +47,29 @@ Supervisor: prof. Rafał Weron, dr. Katarzyna Maciejowska
 
 We have experienced big growth of wind power industry in the recent years and massive number of new installments of the wind turbines. Some countries have significantly increasing shares of renewable energy in the overall production. I will focus especially on a wind energy, which is becoming the most important source in some regions.
 
-Better prognosis of the renewable energy production, consumption may have positive impact on the final predicted price of energy. Smaller errors may lead to economical profits for companies operating and buying energy on the power exchanges.
+Better prognosis of the renewable energy production and consumption may have positive impact on the final predicted price of energy. Smaller errors may lead to economical profits for companies operating and buying energy on the power exchanges. It may occur also in lower waste of energy.
 
-In this work I made a simulations in order to achieve the best forecasts of consumption and price for Danish market using day-ahead data. There are plenty of possible approaches using, i.e. regression models\cite{forecasting-regression}\cite{nordpool-foreacsting-python}, neural networks\cite{forecasting-neural-networks}\cite{forecasting-neural-networks2}, probabilistic methods\cite{forecasting-probalistic}. I decided to use regression model with best fitting expert models from \cite{eff-forecasting-spot-prices} implementing modifications of HP filter and testing different variations of expert models with different lengths of calibration window.
+In this work I made a simulations in order to achieve the best forecasts of consumption and price for Danish market using day-ahead data. There are plenty of possible approaches using i.e. regression models\cite{forecasting-regression}\cite{nordpool-foreacsting-python}, neural networks\cite{forecasting-neural-networks}\cite{forecasting-neural-networks2}, probabilistic methods\cite{forecasting-probalistic}. I decided to use regression model with best fitting expert models from [Uniejewski, Weron, 2018]\cite{eff-forecasting-spot-prices} implementing modifications of HP filter and testing different variations of expert models with different lengths of calibration window.
 
-In the Chapter 2 I reviewed analysis of the Danish market. In the Chapter 3 I presented characteristics of available data provided by Nordpool power exchange. In the Chapter 4 I presented used methods to perform forecasts. In the Chapter 5 I presented empirical results of the all forecasts and in the last Chapter 6 I came up with conclusions.
+In the Chapter 2 I reviewed analysis of the Danish market. In the Chapter 3 I presented characteristics of available data provided by Nordpool power exchange. In the Chapter 4 I presented methods used to perform forecasts. In the Chapter 5 I presented empirical results of the all forecasts and in the last Chapter 6 I came up with conclusions.
 
-\section{Market analysis}
+\section{Market and data description}
+
+\subsection{Market description}
 Danish power market has been transformed in the last several years drastically. Since 70s there was a lot of investments in renewable sources of energy, especially in the field of wind power, and much more since 2002 when first large scale offshore wind farm in the world has been finished - Horns Rev 1 (160 MW). For year 2019, total wind power generation capacity was 6128 MW\cite{wind-europe-2019}.
 
 National target for 2020 is over 50\% of a energy consumption covered by wind power and it's likely to be achieved, as in 2019 they obtained 47\% of coverage by domestic production\cite{denmark-sources-record-wind-2019}. Moreover they have finished construction of next large scale wind farm Horns Rev 3 in August 2019\cite{denmark-sources-record-wind-2019}. There are also defined next goals in last presented national energy strategy. For wind power consumption they aim for 70\% in 2030\cite{denmark-sources-record-wind-2019}. Denmark is currently leader of wind power shares in the national production and its development.
 
-The production of such significant part of energy from wind carries some risk. Wind speed is very fluctuant and variable even in a day cycle. There are no perfect methods of forecasting in the long term periods. It may occur in higher (or lower) demand in production from other, stable sources of energy to cover consumption. It's problematic to mark a common trend in wind power forecasts\ref{fig:wind_power_2019}. Thus it's helpful to correct prediction of electricity demand.
+The production of such significant part of energy from wind carries some risk. Wind speed is very fluctuant and variable even in a day cycle. There are no perfect methods of forecasting in the long term periods. It may occur in higher (or lower) demand in production from other, stable sources of energy to cover consumption. It's problematic to mark a common trend in wind power forecasts (Fig:\ref{fig:wind_power_2019}). Thus it's helpful to correct prediction of electricity demand.
 
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=10cm]{pictures/analysis/wind_power/total_day_2019_DK1.png}
+    \includegraphics[width=14cm]{pictures/analysis/wind_power/total_day_2019_DK1.png}
     \caption{Wind power produced per day in 2019 (DK1)}
     \label{fig:wind_power_2019}
 \end{figure}
 
-Wind power generation can't be stopped quickly as production of conventional sources of energy (coal, gas). Because of that higher unexpected wind power production may lead to decreased prices on energy stocks and in some cases, prices can drop below zero. That was happening rarely in the era of conventional production and regulated electricity market, but it happens more often with more renewable power generators. Because energy network is quite connected with each other in the European Union, in a case of negative prices energy from Danish areas (DK1, DK2) is exported to the neighboring countries, mainly to the Germany, which Denmark has the biggest balance of energy export and import.
+Wind power generation can't be stopped quickly as production of conventional sources of energy (coal, gas). Because of that higher unexpected wind power production may lead to decreased prices on energy stocks and in some cases, prices can drop below zero. That was happening rarely in the era of conventional production and regulated electricity market, but it happens more often with more renewable power generators. Because energy network is quite connected with each other in the European Union, in a case of negative prices energy from Danish areas (DK1, DK2) is exported to the neighboring countries, mainly to Germany, which Denmark has the biggest balance of energy export and import.
 
 Negative prices obligate to use other approaches of price forecasting, than the old ones which were failing with unexpected domain of values. In my work I will present a few models to forecast price and consumption and point out the best approach to have optimal forecasts.
 
@@ -72,7 +82,7 @@ The electricity market in Denmark is divided into 2 areas (DK1 and DK2). First a
     \label{fig:denmark_division}
 \end{figure}
 
-\section{Data analysis}
+\subsection{Data description}
 
 Data I used to perform forecasts has been downloaded from the official webpage of the Nordpool power exchange\cite{nordpool-historical-market-data}. Datasets are divided into the year files and periods (hours, weeks etc.). I managed to download following datasets (valid for the day 14.05.2020):
 \begin{itemize}
@@ -111,7 +121,7 @@ The files were downloaded, merged, split for regions DK1 and DK2, pivoted in ord
 I performed a few analysis for each dataset, although I didn't include all of the charts and the tables in this work. The rest is uploaded into the github repository.
 
 
-\subsection{Missing values}
+\subsubsection{Missing values}
 
 Data was very consistent and yet only single values were missing. These null values were replaced by average of the neighboring cells and in case of missing value in neighbor cell, value was fixed manually (with file fill\_empty\_cells.py). Half of day 2018-09-18 from Wind prognosis files was filled taking closest neighbors and counting average for whole vector (with file fill\_empty\_cells\_wind\_prognosis\_DK.py). Number of missing values was reduced to zero.
 
@@ -132,14 +142,14 @@ Wind power prognosis & 18 & 19 \\
 
 
 
-\subsection{Consumption data}
+\subsubsection{Consumption data}
 Elictricity consumption was higher in the area DK1 than DK2, compared for years 2016-2019 19.14, 19.41, 20.28, 20.37 TWh to 13.13, 13.03, 13.28, 13.16 TWh accordingly. We can see that consumption increased gradually in the area DK1, meanwhile in area DK2 was on the similar level.
 
 We can spot three types of seasonal trends in the data: annual, weekly and daily. On the below chart showing consumption per day in 2019, we see that every weekend consumption value drops.
 
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=9cm]{pictures/analysis/consumption/total_day_2019_DK1.png}
+    \includegraphics[width=12.5cm]{pictures/analysis/consumption/total_day_2019_DK1.png}
     \caption{Consumption per day in 2019 (DK1)}
     \label{fig:}
 \end{figure}
@@ -149,7 +159,7 @@ Although it's not easy to spot in the DK1, there is annual trend with lower cons
 
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=9cm]{pictures/analysis/consumption/total_day_2019_DK2.png}
+    \includegraphics[width=12.5cm]{pictures/analysis/consumption/total_day_2019_DK2.png}
     \caption{Consumption per day in 2019 (DK2)}
     \label{fig:}
 \end{figure}
@@ -159,7 +169,7 @@ Simple moving average with 14 days windows for each year shows clearly this tren
 
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=8cm]{pictures/analysis/consumption/sma_14days_DK2.png}
+    \includegraphics[width=12cm]{pictures/analysis/consumption/sma_14days_DK2.png}
     \caption{Simple moving average of consumption - 14 days window (DK2)}
     \label{fig:}
 \end{figure}
@@ -169,7 +179,7 @@ Last seasonal trend is daily which can be observed for each day of a week, even 
 
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=9cm]{pictures/analysis/consumption/avg_dayofweek_DK1.png}
+    \includegraphics[width=11cm]{pictures/analysis/consumption/avg_dayofweek_DK1.png}
     \caption{Average consumption per each hour of day for each day of week (DK1)}
     \label{fig:}
 \end{figure}
@@ -179,19 +189,19 @@ There is also one interesting thing observed in the 2020's data only in the area
 
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=8cm]{pictures/analysis/consumption/avg_hour_DK2.png}
+    \includegraphics[width=11cm]{pictures/analysis/consumption/avg_hour_DK2.png}
     \caption{Average consumption per each hour of day for each year (DK2)}
     \label{fig:}
 \end{figure}
 \FloatBarrier
 
 \FloatBarrier
-\subsubsection{Nordpool's prognosis}
+\paragraph{Nordpool's prognosis}
 The prognosis day-ahead given by Nordpool shows that those are less accurate over time, especially for area DK1 where consumption is larger than DK2. Level of accuracy for area DK2 is quite stable. Also there is no clear trend regarding the time of day. For DK1 best prediction are for night and for DK2 best prediction are performed for hours 7 and 15.
 
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=14cm]{pictures/err_analysis/consumption/consumption_mae_to_prognosis_dk1.png}
+    \includegraphics[width=15cm]{pictures/err_analysis/consumption/consumption_mae_to_prognosis_dk1.png}
     \caption{MAE for consumption for each hour and year with total figures (DK1)}
     \label{fig:}
 \end{figure}
@@ -199,20 +209,20 @@ The prognosis day-ahead given by Nordpool shows that those are less accurate ove
 
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=14cm]{pictures/err_analysis/consumption/consumption_mae_to_prognosis_dk2.png}
+    \includegraphics[width=15cm]{pictures/err_analysis/consumption/consumption_mae_to_prognosis_dk2.png}
     \caption{MAE for consumption for each hour and year with total figures (DK2)}
     \label{fig:}
 \end{figure}
 \FloatBarrier
 
-\subsection{Wind power data}
+\subsubsection{Wind power data}
 Wind power production increased significantly within last 4 years. In the area DK1 from 9.41 to 11.26 TWh and for area DK2 from 2.37 to 3.22 TWh, so about 35\% more.
 
 So far in the consumption data we could spot trends whereas in the wind power data there is no distinct trend.
 
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=8cm]{pictures/analysis/wind_power/avg_dayofweek_DK1.png}
+    \includegraphics[width=12cm]{pictures/analysis/wind_power/avg_dayofweek_DK1.png}
     \caption{Wind power production per hour of a day for each day of week (DK1)}
     \label{fig:}
 \end{figure}
@@ -222,7 +232,7 @@ Simple moving average also doesn't show anything recurrent, thus we can't assume
 
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=8cm]{pictures/analysis/wind_power/sma_14days_DK1.png}
+    \includegraphics[width=12cm]{pictures/analysis/wind_power/sma_14days_DK1.png}
     \caption{Simple moving average of wind power production for each day of the year (DK1)}
     \label{fig:}
 \end{figure}
@@ -232,18 +242,18 @@ Only chart of average wind power for each hour suggest there may be a daily tren
 
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=8cm]{pictures/analysis/wind_power/avg_hour_DK1.png}
+    \includegraphics[width=12cm]{pictures/analysis/wind_power/avg_hour_DK1.png}
     \caption{Average wind power production per hour of a day for each year (DK1)}
     \label{fig:}
 \end{figure}
 \FloatBarrier
 
-\subsubsection{Nordpool's prognosis}
+\paragraph{Nordpool's prognosis}
 I calculated mean absolute error for prognosis performed by Nordpool for each hour and year. The results for area DK1 are rounded to the whole number. We can spot that error for prognosis is bigger for newer data with over 80\% growth in 2020 (until 12th May) comparing to the previous year. Another thing we can notice that the error in the night hours is lower than others.
 
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=13cm]{pictures/err_analysis/wind_power/wind_mae_to_prognosis_dk1.png}
+    \includegraphics[width=15cm]{pictures/err_analysis/wind_power/wind_mae_to_prognosis_dk1.png}
     \caption{MAE for wind power and Nordpool prognosis for each hour and year (DK1)}
     \label{fig:}
 \end{figure}
@@ -253,13 +263,13 @@ The results for area DK2 are similar, however numbers are smaller due to the low
 
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=13cm]{pictures/err_analysis/wind_power/wind_mae_to_prognosis_dk2.png}
+    \includegraphics[width=15cm]{pictures/err_analysis/wind_power/wind_mae_to_prognosis_dk2.png}
     \caption{MAE for wind power and Nordpool prognosis for each hour and year (DK2)}
     \label{fig:}
 \end{figure}
 \FloatBarrier
 
-\subsection{Price data}
+\subsubsection{Price data}
 In the 2020 price of energy decreased compared to the previous years. However we don't know what kind of the impact had epidemic on this data so it's hard to come up with any conclusion.
 
 \begin{table}[!htbp]
@@ -282,7 +292,7 @@ As in the consumption data we can also notice seasonal trends in this category, 
 
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=9cm]{pictures/analysis/price/sma_14days_DK1.png}
+    \includegraphics[width=12cm]{pictures/analysis/price/sma_14days_DK1.png}
     \caption{Simple moving average of price for each year - 14 days window (DK1)}
     \label{fig:}
 \end{figure}
@@ -292,25 +302,25 @@ Electricity prices are lower during weekends due to the lower consumption and th
 
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=8cm]{pictures/analysis/price/avg_dayofweek_DK1.png}
+    \includegraphics[width=12cm]{pictures/analysis/price/avg_dayofweek_DK1.png}
     \caption{Average price per hour of a day for each day of week (DK1)}
     \label{fig:}
 \end{figure}
 \FloatBarrier
 
-\subsubsection{Negative prices}
+\paragraph{Negative prices}
 There were 417 negative prices in the area DK1 in the years 2016-2020 and 288 in the DK2. The dataset for 2020 ends on 12th May, however there are already 84 negative prices compared to the 133 in the full year 2019. Negative prices occur more often during nights than the peaks of consumption. It shows that DK2 is more balanced than DK1.
 
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=11cm]{pictures/analysis/price/neg_prices_dk1.png}
+    \includegraphics[width=13cm]{pictures/analysis/price/neg_prices_dk1.png}
     \caption{Number of negative prices for each hour, year and totally (DK1)}
     \label{fig:}
 \end{figure}
 \FloatBarrier
 
 
-\subsubsection{Correlation between price and wind power}
+\paragraph{Correlation between price and wind power}
 
 We can suspect that with bigger values of wind power price is lower. Pearson's correlation shows that mostly it's weak correlation, only for 2020 year there are moderate values.
 
@@ -318,13 +328,13 @@ Correlation is a little bit higher for night hours than rest of the day.
 
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=11cm]{pictures/analysis/price/corr_price_wind.png}
+    \includegraphics[width=15cm]{pictures/analysis/price/corr_price_wind.png}
     \caption{Correlation between price and wind power for each hour and year (DK1 and DK2)}
     \label{fig:}
 \end{figure}
 \FloatBarrier
 
-\subsection{Holidays}
+\subsubsection{Holidays}
 Usage of the electricity decreases during weekends and public holidays and this has a significant effect on a prediction especially during Christmas or Easter. Due to that fact, each day was aligned with variable holiday with following value based of occurrence of day of week or public holiday:
 \begin{itemize}
 	\item 1 - National Holidays (e.g. Easter Monday)\cite{denmark-holidays}
@@ -495,6 +505,7 @@ Third model is an extension of second model (\ref{eq:price_model_2}) which consi
 
 \begin{equation}
 \label{eq:price_model_3}
+\tag{P3}
 P_{d,h}=\sum_{i=1}^{7} \beta_{0,i}D_{i,d} + \beta_{1}p_{d-1,h}  + \beta_{2}p_{d-2,h} + \beta_{3}p_{d-7,h} + \beta_{4}p_{d-1,min} + \beta_{5}p_{d-1,max} + \beta_{6}p_{d-1,24} + \varepsilon_{d,h}
 \end{equation}
 
@@ -541,7 +552,7 @@ For both areas results with $asinh$ were significantly worse than with standard 
 
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=10cm]{pictures/forecasts/consumption/consumption_mae_dk1.png}
+    \includegraphics[width=15cm]{pictures/forecasts/consumption/consumption_mae_dk1.png}
     \caption{MAE on the consumption forecasts (DK1)}
     \label{fig:}
 \end{figure}
@@ -549,7 +560,7 @@ For both areas results with $asinh$ were significantly worse than with standard 
 
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=10cm]{pictures/forecasts/consumption/consumption_mae_dk2.png}
+    \includegraphics[width=15cm]{pictures/forecasts/consumption/consumption_mae_dk2.png}
     \caption{MAE on the consumption forecasts (DK2)}
     \label{fig:}
 \end{figure}
@@ -557,7 +568,7 @@ For both areas results with $asinh$ were significantly worse than with standard 
 
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=10cm]{pictures/forecasts/consumption/consumption_rmse_dk1.png}
+    \includegraphics[width=15cm]{pictures/forecasts/consumption/consumption_rmse_dk1.png}
     \caption{RMSE on the consumption forecasts (DK1)}
     \label{fig:}
 \end{figure}
@@ -565,7 +576,7 @@ For both areas results with $asinh$ were significantly worse than with standard 
 
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=10cm]{pictures/forecasts/consumption/consumption_rmse_dk2.png}
+    \includegraphics[width=15cm]{pictures/forecasts/consumption/consumption_rmse_dk2.png}
     \caption{RMSE on the consumption forecasts (DK2)}
     \label{fig:}
 \end{figure}
@@ -575,7 +586,7 @@ For area DK1 the best performing model is Model \ref{eq:demand_model_4} with 728
 
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=10cm]{pictures/dm_test/consumption_dk1_date4.png}
+    \includegraphics[width=15cm]{pictures/dm_test/consumption_dk1_date4.png}
     \caption{Diebold-Mariano Test for consumption forecasts (DK1) }
     \label{fig:}
 \end{figure}
@@ -592,7 +603,7 @@ There are different settings for area DK2, but for every period the best model i
 
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=10cm]{pictures/dm_test/consumption_dk2_date4.png}
+    \includegraphics[width=15cm]{pictures/dm_test/consumption_dk2_date4.png}
     \caption{Diebold-Mariano Test for consumption forecasts (DK2) }
     \label{fig:}
 \end{figure}
@@ -603,7 +614,7 @@ The retrieved results from wind power forecasting with standard normalization we
 
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=10cm]{pictures/forecasts/wind/wind_mae_dk1.png}
+    \includegraphics[width=15cm]{pictures/forecasts/wind/wind_mae_dk1.png}
     \caption{MAE on the wind power forecasts (DK1)}
     \label{fig:}
 \end{figure}
@@ -611,7 +622,7 @@ The retrieved results from wind power forecasting with standard normalization we
 
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=10cm]{pictures/forecasts/wind/wind_mae_dk2.png}
+    \includegraphics[width=15cm]{pictures/forecasts/wind/wind_mae_dk2.png}
     \caption{MAE on the wind power forecasts (DK2)}
     \label{fig:}
 \end{figure}
@@ -619,7 +630,7 @@ The retrieved results from wind power forecasting with standard normalization we
 
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=10cm]{pictures/forecasts/wind/wind_rmse_dk1.png}
+    \includegraphics[width=15cm]{pictures/forecasts/wind/wind_rmse_dk1.png}
     \caption{RMSE on the wind power forecasts (DK1)}
     \label{fig:}
 \end{figure}
@@ -627,7 +638,7 @@ The retrieved results from wind power forecasting with standard normalization we
 
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=10cm]{pictures/forecasts/wind/wind_rmse_dk2.png}
+    \includegraphics[width=15cm]{pictures/forecasts/wind/wind_rmse_dk2.png}
     \caption{RMSE on the wind power forecasts (DK2)}
     \label{fig:}
 \end{figure}
@@ -637,7 +648,7 @@ Forecasts for area DK1 were better in every period with best model \ref{eq:wind_
 
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=10cm]{pictures/dm_test/wind_dk1_date4.png}
+    \includegraphics[width=15cm]{pictures/dm_test/wind_dk1_date4.png}
     \caption{Diebold-Mariano Test for wind power forecasts (DK1) }
     \label{fig:}
 \end{figure}
@@ -647,7 +658,7 @@ On the other hand best forecast was Nordpool's prognosis in the area DK2, except
 
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=10cm]{pictures/dm_test/wind_dk1_date4.png}
+    \includegraphics[width=15cm]{pictures/dm_test/wind_dk1_date4.png}
     \caption{Diebold-Mariano Test for wind power forecasts (DK2) }
     \label{fig:}
 \end{figure}
@@ -660,7 +671,7 @@ I performed Model 5 hoping that with better predictions of wind power and consum
 
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=10cm]{pictures/forecasts/price/price_mae_dk1.png}
+    \includegraphics[width=15cm]{pictures/forecasts/price/price_mae_dk1.png}
     \caption{MAE on the price forecasts (DK1)}
     \label{fig:}
 \end{figure}
@@ -668,7 +679,7 @@ I performed Model 5 hoping that with better predictions of wind power and consum
 
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=10cm]{pictures/forecasts/price/price_mae_dk2.png}
+    \includegraphics[width=15cm]{pictures/forecasts/price/price_mae_dk2.png}
     \caption{MAE on the price forecasts (DK2)}
     \label{fig:}
 \end{figure}
@@ -676,7 +687,7 @@ I performed Model 5 hoping that with better predictions of wind power and consum
 
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=10cm]{pictures/forecasts/price/price_rmse_dk1.png}
+    \includegraphics[width=15cm]{pictures/forecasts/price/price_rmse_dk1.png}
     \caption{RMSE on the price forecasts (DK1)}
     \label{fig:}
 \end{figure}
@@ -684,7 +695,7 @@ I performed Model 5 hoping that with better predictions of wind power and consum
 
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=10cm]{pictures/forecasts/price/price_rmse_dk2.png}
+    \includegraphics[width=15cm]{pictures/forecasts/price/price_rmse_dk2.png}
     \caption{RMSE on the price forecasts (DK2)}
     \label{fig:}
 \end{figure}
@@ -701,7 +712,7 @@ Best performing models for area DK1 were differential and Model \ref{eq:price_mo
 
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=10cm]{pictures/dm_test/price_dk1_date4.png}
+    \includegraphics[width=15cm]{pictures/dm_test/price_dk1_date4.png}
     \caption{Diebold-Mariano Test for price forecasts (DK1) }
     \label{fig:}
 \end{figure}
@@ -718,11 +729,33 @@ In the area DK2 best performing model was Model \ref{eq:price_model_5} in every 
 
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=10cm]{pictures/dm_test/price_dk2_date4.png}
+    \includegraphics[width=15cm]{pictures/dm_test/price_dk2_date4.png}
     \caption{Diebold-Mariano Test for price forecasts (DK2) }
     \label{fig:}
 \end{figure}
 \FloatBarrier
+
+\subsection{Results summary}
+
+In following table there are included settings of models for the best result for each area and period of consumption, wind power and price forecast.
+
+\begin{table}[h!]
+\begin{center}
+\begin{tabular}{llrrr}
+area &        period &  consumption &       wind power &       price \\
+      \hline
+DK1 &  2019.01.01-2019.12.31 &        C4.728 &  W2.364.asinh-hp &  P4.728.asinh \\
+DK1 &  2019.05.13-2020.05.12 &        C4.728 &  W2.364.asinh-hp &  P5.728.hp  \\
+DK1 &  2019.01.01-2020.05.12 &        C4.728 &  W2.364.asinh-hp &  P4.728  \\
+DK1 &  2020.01.01-2020.05.12 &        C4.728 &  W2.182.asinh-hp &  P4.728.hp  \\
+DK2 &  2019.01.01-2019.12.31 &        C3.728 &  W1 &  P5.728.asinh  \\
+DK2 &  2019.05.13-2020.05.12 &        C3.364.hp &  W1 &  P5.728.hp  \\
+DK2 &  2019.01.01-2020.05.12 &        C3.364.hp &  W1 &  P5.728.asinh  \\
+DK2 &  2020.01.01-2020.05.12 &        C3.182.hp &  W1 &  P5.728.hp  \\
+\end{tabular}
+    \caption{Best settings of models.}
+\end{center}
+\end{table}
 
 
 \section{Conclusions}
@@ -731,163 +764,162 @@ Almost all of the assumptions came true, forecasts for consumption and partially
 
 Main finding is that period of forecast matters in using the most efficient model. For some periods more accurate were shorter calibration windows, because anomalies in the 2020 caused by COVID-19 changed seasonal trends like consumption and thus price which was significantly lower in 2020 than 2019.
 
-One assumption I found invalid was that $asinh$ normalization function improves price predictions. It does but not for 2020 year where asinh and asinh-hp normalization fails with every length of calibration window. It also fails for wind power DK2 where power production is probably too low to have impact on the seasonal trend, thus mostly best forecast is provided by Nordpool. In the area DK1 best forecasts used asinh-hp transformation and no other forecasts and areas used this transformation as the best one. Other used either asinh or hp filter. not both.
+One assumption I found invalid was that $asinh$ normalization function improves price predictions. It does but not for 2020 year where asinh and asinh-hp normalization fails with every length of calibration window. It also fails for wind power DK2 where power production is probably too low to have impact on the seasonal trend, thus mostly best forecast is provided by Nordpool. In the area DK1 best forecasts used asinh-hp transformation and no other forecasts and areas used this transformation as the best one. Other used either asinh or hp filter, not both.
 
 Experiment of replacing original forecasts of Nordpool with better, forecasted results unfortunately failed but I still see potential with bigger calibration window, which can be used to trained better forecasts for whole considering period of price prediction. But for this purpose it's necessary to have more data. However for DK2 Model P5 has better performance, this model uses original wind power forecast so it's not know very different from Model P4.
 
-There are still some questions that should be resolved to receive better forecasts and I think the biggest one is to find relation between area DK1 and DK2, because for now there is no one universal model for both areas. Knowing this relation should get profits in predicting more accurate prices for electricity.
+There are still some questions that should be resolved to receive better forecasts and I think the biggest one is to find relation between area DK1 and DK2, because for now there is no one universal model for both areas. Different methods and tools are better in forecasting for each area. Knowing this relation should get profits in predicting more accurate prices for electricity.
 
 
-
-\section{Appendix}
-
-\subsection{Diebolt-Mariano test results}
-\subsubsection{Consumption forecasts}
+\section{Appendix - Diebolt-Mariano test results}
+\subsection{Consumption forecasts}
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=10cm]{pictures/dm_test/consumption_dk1_date1.png}
+    \includegraphics[width=15cm]{pictures/dm_test/consumption_dk1_date1.png}
     \caption{Diebold-Mariano Test for consumption forecasts (DK1) }
     \label{fig:}
 \end{figure}
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=10cm]{pictures/dm_test/consumption_dk1_date2.png}
+    \includegraphics[width=15cm]{pictures/dm_test/consumption_dk1_date2.png}
     \caption{Diebold-Mariano Test for consumption forecasts (DK1) }
     \label{fig:}
 \end{figure}
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=10cm]{pictures/dm_test/consumption_dk1_date3.png}
+    \includegraphics[width=15cm]{pictures/dm_test/consumption_dk1_date3.png}
     \caption{Diebold-Mariano Test for consumption forecasts (DK1) }
     \label{fig:}
 \end{figure}
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=10cm]{pictures/dm_test/consumption_dk1_date4.png}
+    \includegraphics[width=15cm]{pictures/dm_test/consumption_dk1_date4.png}
     \caption{Diebold-Mariano Test for consumption forecasts (DK1) }
     \label{fig:}
 \end{figure}
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=10cm]{pictures/dm_test/consumption_dk2_date1.png}
+    \includegraphics[width=15cm]{pictures/dm_test/consumption_dk2_date1.png}
     \caption{Diebold-Mariano Test for consumption forecasts (DK2) }
     \label{fig:}
 \end{figure}
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=10cm]{pictures/dm_test/consumption_dk2_date2.png}
+    \includegraphics[width=15cm]{pictures/dm_test/consumption_dk2_date2.png}
     \caption{Diebold-Mariano Test for consumption forecasts (DK2) }
     \label{fig:}
 \end{figure}
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=10cm]{pictures/dm_test/consumption_dk2_date3.png}
+    \includegraphics[width=15cm]{pictures/dm_test/consumption_dk2_date3.png}
     \caption{Diebold-Mariano Test for consumption forecasts (DK2) }
     \label{fig:}
 \end{figure}
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=10cm]{pictures/dm_test/consumption_dk2_date4.png}
+    \includegraphics[width=15cm]{pictures/dm_test/consumption_dk2_date4.png}
     \caption{Diebold-Mariano Test for consumption forecasts (DK2) }
     \label{fig:}
 \end{figure}
 \FloatBarrier
-\subsubsection{Wind power forecasts}
+
+\subsection{Wind power forecasts}
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=10cm]{pictures/dm_test/wind_dk1_date1.png}
+    \includegraphics[width=15cm]{pictures/dm_test/wind_dk1_date1.png}
     \caption{Diebold-Mariano Test for wind power forecasts (DK1) }
     \label{fig:}
 \end{figure}
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=10cm]{pictures/dm_test/wind_dk1_date2.png}
+    \includegraphics[width=15cm]{pictures/dm_test/wind_dk1_date2.png}
     \caption{Diebold-Mariano Test for wind power forecasts (DK1) }
     \label{fig:}
 \end{figure}
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=10cm]{pictures/dm_test/wind_dk1_date3.png}
+    \includegraphics[width=15cm]{pictures/dm_test/wind_dk1_date3.png}
     \caption{Diebold-Mariano Test for wind power forecasts (DK1) }
     \label{fig:}
 \end{figure}
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=10cm]{pictures/dm_test/wind_dk1_date4.png}
+    \includegraphics[width=15cm]{pictures/dm_test/wind_dk1_date4.png}
     \caption{Diebold-Mariano Test for wind power forecasts (DK1) }
     \label{fig:}
 \end{figure}
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=10cm]{pictures/dm_test/wind_dk2_date1.png}
+    \includegraphics[width=15cm]{pictures/dm_test/wind_dk2_date1.png}
     \caption{Diebold-Mariano Test for wind power forecasts (DK2) }
     \label{fig:}
 \end{figure}
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=10cm]{pictures/dm_test/wind_dk2_date2.png}
+    \includegraphics[width=15cm]{pictures/dm_test/wind_dk2_date2.png}
     \caption{Diebold-Mariano Test for wind power forecasts (DK2) }
     \label{fig:}
 \end{figure}
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=10cm]{pictures/dm_test/wind_dk2_date3.png}
+    \includegraphics[width=15cm]{pictures/dm_test/wind_dk2_date3.png}
     \caption{Diebold-Mariano Test for wind power forecasts (DK2) }
     \label{fig:}
 \end{figure}
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=10cm]{pictures/dm_test/wind_dk2_date4.png}
+    \includegraphics[width=15cm]{pictures/dm_test/wind_dk2_date4.png}
     \caption{Diebold-Mariano Test for wind power forecasts (DK2) }
     \label{fig:}
 \end{figure}
 \FloatBarrier
-\subsubsection{Price forecasts}
+
+\subsection{Price forecasts}
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=10cm]{pictures/dm_test/price_dk1_date1.png}
+    \includegraphics[width=15cm]{pictures/dm_test/price_dk1_date1.png}
     \caption{Diebold-Mariano Test for price forecasts (DK1) }
     \label{fig:}
 \end{figure}
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=10cm]{pictures/dm_test/price_dk1_date2.png}
+    \includegraphics[width=15cm]{pictures/dm_test/price_dk1_date2.png}
     \caption{Diebold-Mariano Test for price forecasts (DK1) }
     \label{fig:}
 \end{figure}
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=10cm]{pictures/dm_test/price_dk1_date3.png}
+    \includegraphics[width=15cm]{pictures/dm_test/price_dk1_date3.png}
     \caption{Diebold-Mariano Test for price forecasts (DK1) }
     \label{fig:}
 \end{figure}
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=10cm]{pictures/dm_test/price_dk1_date4.png}
+    \includegraphics[width=15cm]{pictures/dm_test/price_dk1_date4.png}
     \caption{Diebold-Mariano Test for price forecasts (DK1) }
     \label{fig:}
 \end{figure}
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=10cm]{pictures/dm_test/price_dk2_date1.png}
+    \includegraphics[width=15cm]{pictures/dm_test/price_dk2_date1.png}
     \caption{Diebold-Mariano Test for price forecasts (DK2) }
     \label{fig:}
 \end{figure}
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=10cm]{pictures/dm_test/price_dk2_date2.png}
+    \includegraphics[width=15cm]{pictures/dm_test/price_dk2_date2.png}
     \caption{Diebold-Mariano Test for price forecasts (DK2) }
     \label{fig:}
 \end{figure}
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=10cm]{pictures/dm_test/price_dk2_date3.png}
+    \includegraphics[width=15cm]{pictures/dm_test/price_dk2_date3.png}
     \caption{Diebold-Mariano Test for price forecasts (DK2) }
     \label{fig:}
 \end{figure}
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=10cm]{pictures/dm_test/price_dk2_date4.png}
+    \includegraphics[width=15cm]{pictures/dm_test/price_dk2_date4.png}
     \caption{Diebold-Mariano Test for price forecasts (DK2) }
     \label{fig:}
 \end{figure}
