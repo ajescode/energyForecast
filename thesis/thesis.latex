@@ -8,6 +8,8 @@
 \usepackage[margin=1.2in]{geometry}
 \usepackage[section]{placeins}
 \usepackage[subsection]{placeins}
+\usepackage[final]{pdfpages}
+\usepackage[absolute]{textpos}
 
 \addbibresource{biblio.bib}
 
@@ -19,6 +21,7 @@
 {0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
 
 
+
 \newcommand{\githubLocation}{https://github.com/ajescode/energyForecast}
 
 \title{Modeling and forecasting of electricity prices and demand}
@@ -27,16 +30,24 @@
 
 \begin{document}
 
-\maketitle
+\includepdf[pages=-]{front_page.pdf}
 
+% \maketitle
+
+% \begin{abstract}
+% Goal of the thesis is to receive the best performing regression-type models for forecasting of demand and prices in the Danish day-ahead power market. Different explanatory variables and different sets of rolling windows and transformation methods are considered. The best results were obtained usually with models containing exogenous parameters and using 728 days-length window, either HP filter or asinh transformation method depending on the area and the predicted period, but with exceptions.
+% \end{abstract}
+
+% Keywords: electricity spot prices, day-ahead market, forecasting, power market
+
+% Supervisor: prof. Rafał Weron
+\clearpage
+
+\renewcommand{\abstractname}{Acknowledgements}
 \begin{abstract}
-Goal of the thesis is to test models for demand and price forecasting for Danish day-ahead power market using regression method. Suggested models include expert models using different variables and different sets of rolling window and transformation method.
+I would like to thanks my supervisor Prof. Rafał Weron for very valuable guidance and feedback throughout this work and Dr Katarzyna Maciejowska for the very interesting and helpful introduction to the topic and the support despite unlucky circumstances.
 \end{abstract}
 
-Keywords: electricity spot prices, day-ahead market, forecasting, power market
-
-
-Supervisor: prof. Rafał Weron, dr. Katarzyna Maciejowska
 \clearpage
 
 \tableofcontents
@@ -45,22 +56,24 @@ Supervisor: prof. Rafał Weron, dr. Katarzyna Maciejowska
 
 \section{Introduction}
 
-We have experienced big growth of wind power industry in the recent years and massive number of new installments of the wind turbines. Some countries have significantly increasing shares of renewable energy in the overall production. I will focus especially on a wind energy, which is becoming the most important source in some regions.
+We have experienced big growth of wind power industry in the recent years and massive number of new installments of wind turbines. Some countries have significantly increased shares of renewable energy in the overall production. I will focus on wind energy, which is becoming the most important source in some regions.
 
-Better prognosis of the renewable energy production and consumption may have positive impact on the final predicted price of energy. Smaller errors may lead to economical profits for companies operating and buying energy on the power exchanges. It may occur also in lower waste of energy.
+Better prognosis of the renewable energy production and electricity consumption may have a positive impact on the final price. Smaller errors may lead to economical profits for companies operating and buying energy in the power exchanges.
 
-In this work I made a simulations in order to achieve the best forecasts of consumption and price for Danish market using day-ahead data. There are plenty of possible approaches using i.e. regression models\cite{forecasting-regression}\cite{nordpool-foreacsting-python}, neural networks\cite{forecasting-neural-networks}\cite{forecasting-neural-networks2}, probabilistic methods\cite{forecasting-probalistic}. I decided to use regression model with best fitting expert models from [Uniejewski, Weron, 2018]\cite{eff-forecasting-spot-prices} implementing modifications of HP filter and testing different variations of expert models with different lengths of calibration window.
+In this work I made simulations in order to achieve the best forecasts of consumption and price for the Danish market using day-ahead data. There are plenty of possible approaches using, e.g., regression models \cite{forecasting-regression}\cite{nordpool-foreacsting-python}, neural networks \cite{forecasting-neural-networks}\cite{forecasting-neural-networks2}, probabilistic methods\ cite{forecasting-probabilistic}. I decided to use regression models built on expert knowledge \cite{eff-forecasting-spot-prices} and implemented modifications of the Hodrick-Prescott filter and different lengths of calibration windows.
 
-In the Chapter 2 I reviewed analysis of the Danish market. In the Chapter 3 I presented characteristics of available data provided by Nordpool power exchange. In the Chapter 4 I presented methods used to perform forecasts. In the Chapter 5 I presented empirical results of the all forecasts and in the last Chapter 6 I came up with conclusions.
+The remainder of the thesis is structured as follows. In Chapter 2 I introduce the Danish market and the considered datasets. In Chapter 3 I present the characteristics of data provided by the NordPool power exchange. In Chapter 4 I present methods used to perform forecasts. In Chapter 5 I present empirical results and in Chapter 6 I wrap up the results and conclude.
 
-\section{Market and data description}
+\clearpage
+\section{The Danish power market}
 
 \subsection{Market description}
-Danish power market has been transformed in the last several years drastically. Since 70s there was a lot of investments in renewable sources of energy, especially in the field of wind power, and much more since 2002 when first large scale offshore wind farm in the world has been finished - Horns Rev 1 (160 MW). For year 2019, total wind power generation capacity was 6128 MW\cite{wind-europe-2019}.
+Danish power market has been transformed in the last several years drastically. Since the 70s there have been a lot of investments in renewable sources of energy, especially in the field of wind power, and much more since 2002 when the first large scale offshore wind farm in the world has been finished - Horns Rev 1 (160 MW). For year 2019, total wind power generation capacity was 6128 MW \cite{wind-europe-2019}.
 
-National target for 2020 is over 50\% of a energy consumption covered by wind power and it's likely to be achieved, as in 2019 they obtained 47\% of coverage by domestic production\cite{denmark-sources-record-wind-2019}. Moreover they have finished construction of next large scale wind farm Horns Rev 3 in August 2019\cite{denmark-sources-record-wind-2019}. There are also defined next goals in last presented national energy strategy. For wind power consumption they aim for 70\% in 2030\cite{denmark-sources-record-wind-2019}. Denmark is currently leader of wind power shares in the national production and its development.
+National target for 2020 is over 50\% of energy consumption covered by wind power and it's likely to be achieved, as in 2019 they obtained 47\% of coverage by domestic production \cite{denmark-sources-record-wind-2019}. Moreover they have finished construction of the next large scale wind farm Horns Rev 3 in August 2019 \cite{denmark-sources-record-wind-2019}. There are also defined next goals in the last presented national energy strategy. For wind power consumption they aim for 70\% in 2030\cite{denmark-sources-record-wind-2019}. Denmark is currently leader of wind power shares in the national production and its development.
 
-The production of such significant part of energy from wind carries some risk. Wind speed is very fluctuant and variable even in a day cycle. There are no perfect methods of forecasting in the long term periods. It may occur in higher (or lower) demand in production from other, stable sources of energy to cover consumption. It's problematic to mark a common trend in wind power forecasts (Fig:\ref{fig:wind_power_2019}). Thus it's helpful to correct prediction of electricity demand.
+The production of such a significant part of energy from wind carries some risk. Wind speed is very variable even in a day cycle. There are no perfect methods of forecasting in the long term periods. Lower or higher wind power production may occur in respectively higher (or lower) demand in production from other, stable sources of energy (e.g., nuclear, gas) to cover total consumption. It's problematic to mark a common trend in wind power forecasts (Fig. \ref{fig:wind_power_2019}). Thus it's helpful to correct predictions of electricity demand to provide better indicators for stable energy sources.
+
 
 \begin{figure}[htp]
     \centering
@@ -69,42 +82,47 @@ The production of such significant part of energy from wind carries some risk. W
     \label{fig:wind_power_2019}
 \end{figure}
 
-Wind power generation can't be stopped quickly as production of conventional sources of energy (coal, gas). Because of that higher unexpected wind power production may lead to decreased prices on energy stocks and in some cases, prices can drop below zero. That was happening rarely in the era of conventional production and regulated electricity market, but it happens more often with more renewable power generators. Because energy network is quite connected with each other in the European Union, in a case of negative prices energy from Danish areas (DK1, DK2) is exported to the neighboring countries, mainly to Germany, which Denmark has the biggest balance of energy export and import.
+Wind power generation cannot be stopped quickly as production of conventional sources of energy (coal, gas). That higher unexpected wind power production and the need of the consumption of all the generated energy may lead to decreased prices on the power exchanges and in some cases, prices can drop below zero. That was happening rarely in the era of conventional production and regulated electricity markets, but it happens more often with more renewable power generators. Because the electric grid connects European countries, in the case of negative prices energy from Danish areas (DK1, DK2) is exported to the neighboring countries, mainly to Germany, which Denmark has the biggest balance of energy export and import.
 
-Negative prices obligate to use other approaches of price forecasting, than the old ones which were failing with unexpected domain of values. In my work I will present a few models to forecast price and consumption and point out the best approach to have optimal forecasts.
+Negative prices obligate to use other approaches of price forecasting, than the old ones which were failing with unexpected domains of values. In my work I will present a few models to forecast price and consumption and point out the best approach to have optimal forecasts.
 
-The electricity market in Denmark is divided into 2 areas (DK1 and DK2). First area (DK1) consists of regions: Nordjylland, Midtjylland and Syddanmark; second area (DK2) consists of regions Sjælland and Hovedstaden with the capital Copenhagen.
+The electricity market in Denmark is divided into 2 areas (DK1 and DK2). First area (DK1) consists of regions: Nordjylland, Midtjylland and Syddanmark; second area (DK2) consists of regions Sjælland and Hovedstaden with the capital Copenhagen, see Fig. \ref{fig:denmark_divisions}.
+
 
 \begin{figure}[htp]
     \centering
     \includegraphics[width=8cm]{pictures/denmark_sector_division.png}
-    \caption{Danish electricity market}
-    \label{fig:denmark_division}
+    \caption{The Danish electricity market}
+    \label{fig:denmark_divisions}
 \end{figure}
 
 \subsection{Data description}
 
-Data I used to perform forecasts has been downloaded from the official webpage of the Nordpool power exchange\cite{nordpool-historical-market-data}. Datasets are divided into the year files and periods (hours, weeks etc.). I managed to download following datasets (valid for the day 14.05.2020):
+Data I used to perform forecasts has been downloaded from the official webpage of the NordPool power exchange \cite{nordpool-historical-market-data}. I managed to download the following datasets (valid for the day 14.05.2020):
 \begin{itemize}
-	\item Consumption - hourly
-	\item Consumption prognosis - hourly
-	\item Wind power - hourly
-	\item Wind power prognosis - hourly
-	\item Elspot prices (as Price) - hourly
+	\item Consumption - hourly,
+	\item Consumption prognosis - hourly,
+	\item Wind power - hourly,
+	\item Wind power prognosis - hourly,
+	\item Elspot prices (as Price) - hourly.
 \end{itemize}
 
-All of the datasets were available for years 2013-2020, except for Consumption prognosis (2015-2020). So I decided to focus on analysis only on the period 2015-2020 (2015.01.01-2020.05.12), because 4 years time frame is still sufficient for calculations. 
+All of the datasets were available for years 2013-2020, except for Consumption prognosis (2015-2020). So I decided to focus only on the period 2015-2020 (2015.01.01-2020.05.12), because the 4 years time frame is still sufficient for calculations.
 
-Units of downloaded data are following:
+Units of downloaded data are the following:
 \begin{itemize}
-	\item Consumption and Wind Power- MWh
-	\item Price - DKK/MWh
+	\item Consumption and Wind Power- MWh,
+	\item Price - DKK/MWh.
 \end{itemize}
 
-The files were downloaded, merged, split for regions DK1 and DK2, pivoted in order to have separated hours as parameters for each day and merged for all years. Example for consumption DK1 is presented below.
+The files were downloaded, merged, split for regions DK1 and DK2, restructured in order to have separated hours as parameters for each day and merged for all years. Example for consumption DK1 is presented in Table \ref{tab:first_rows_consumption}.
+
+I performed a few analysis for each dataset, although I didn't include all of the charts and the tables in this work. The rest is uploaded into the github repository.
 
 \begin{table}[h!]
 \begin{center}
+\caption{First 5 rows of merged file Consumption DK1.}
+\label{tab:first_rows_consumption}
 \begin{tabular}{llrrrrrrr}
 {} &        date &  holiday &       0 &       1 &       2 & ... &  22 &      23 \\
       \hline
@@ -114,19 +132,17 @@ The files were downloaded, merged, split for regions DK1 and DK2, pivoted in ord
 3 &  2016-01-04 &        0 &  1844.0 &  1803.0 &  1789.0 & ... &   2293.0 &  2079.0 \\
 4 &  2016-01-05 &        0 &  1940.0 &  1891.0 &  1952.0 & ... &   2372.0 &  2193.0 \\
 \end{tabular}
-    \caption{First 5 rows of merged file Consumption DK1.}
 \end{center}
 \end{table}
-
-I performed a few analysis for each dataset, although I didn't include all of the charts and the tables in this work. The rest is uploaded into the github repository.
 
 
 \subsubsection{Missing values}
 
-Data was very consistent and yet only single values were missing. These null values were replaced by average of the neighboring cells and in case of missing value in neighbor cell, value was fixed manually (with file fill\_empty\_cells.py). Half of day 2018-09-18 from Wind prognosis files was filled taking closest neighbors and counting average for whole vector (with file fill\_empty\_cells\_wind\_prognosis\_DK.py). Number of missing values was reduced to zero.
+Data was very consistent and only single values were missing. These null values were replaced by the average of the neighboring cells and in case of a missing value in a neighboring cell, the value was fixed manually (with file fill\_empty\_cells.py). Half of day 2018-09-18 from Wind prognosis files was filled taking closest neighbors and counting average for the whole vector (with file fill\_empty\_cells\_wind\_prognosis\_DK.py). Number of missing values was reduced to zero.
 
 \begin{table}[!htbp]
 \begin{center}
+\caption{Missing values in files.}
 \begin{tabular}{lrr}
 Dataset &  DK1 & DK2 \\
       \hline
@@ -136,46 +152,45 @@ Price & 21 & 12 \\
 Wind power & 12 & 6 \\
 Wind power prognosis & 18 & 19 \\
 \end{tabular}
-    \caption{Missing values in files.}
 \end{center}
 \end{table}
 
 
 
 \subsubsection{Consumption data}
-Elictricity consumption was higher in the area DK1 than DK2, compared for years 2016-2019 19.14, 19.41, 20.28, 20.37 TWh to 13.13, 13.03, 13.28, 13.16 TWh accordingly. We can see that consumption increased gradually in the area DK1, meanwhile in area DK2 was on the similar level.
+Electricity consumption was higher in area DK1 than in DK2, compared for years 2016-2019: 19.14, 19.41, 20.28, 20.37 TWh to 13.13, 13.03, 13.28, 13.16 TWh accordingly. We can see that consumption increased gradually in area DK1, meanwhile in area DK2 was on a similar level.
 
-We can spot three types of seasonal trends in the data: annual, weekly and daily. On the below chart showing consumption per day in 2019, we see that every weekend consumption value drops.
+We can spot three types of seasonal trends in the data: annual, weekly and daily. In Figure \ref{fig:consumption_2019_dk1} showing consumption per day in 2019, we see that every weekend consumption value drops.
+
 
 \begin{figure}[htp]
     \centering
     \includegraphics[width=12.5cm]{pictures/analysis/consumption/total_day_2019_DK1.png}
     \caption{Consumption per day in 2019 (DK1)}
-    \label{fig:}
+    \label{fig:consumption_2019_dk1}
 \end{figure}
 \FloatBarrier
 
-Although it's not easy to spot in the DK1, there is annual trend with lower consumption during summer months and higher during winter. It's observable particularly in the DK2.
+Although it is not easy to spot in the DK1 area, there is an annual trend with lower consumption during summer months and higher during winter. It is observable particularly in the DK2 area. A simple moving average with 14 days windows for each year shows clearly this trend. Although in the area DK1 it is not very sharp, see Fig.\,\ref{fig:sma_consumption_dk2}.
+
 
 \begin{figure}[htp]
     \centering
     \includegraphics[width=12.5cm]{pictures/analysis/consumption/total_day_2019_DK2.png}
     \caption{Consumption per day in 2019 (DK2)}
-    \label{fig:}
+    \label{fig:consumption_2019_dk2}
 \end{figure}
 \FloatBarrier
-
-Simple moving average with 14 days windows for each year shows clearly this trend. Although in the area DK1 it's not very sharp.
 
 \begin{figure}[htp]
     \centering
     \includegraphics[width=12cm]{pictures/analysis/consumption/sma_14days_DK2.png}
-    \caption{Simple moving average of consumption - 14 days window (DK2)}
-    \label{fig:}
+    \caption{Simple moving average of the consumption - 14 days window (DK2)}
+    \label{fig:sma_consumption_dk2}
 \end{figure}
 \FloatBarrier
 
-Last seasonal trend is daily which can be observed for each day of a week, even holidays. There are two peaks of energy consumption each day, in the morning and evening. During weekends and holidays, morning peaks are slightly shifted than during work days. There is also noticeable smaller consumption in the night.
+The last seasonal trend is daily which can be observed for each day of a week, even holidays. There are two peaks of energy consumption each day, in the morning and evening. During weekends and holidays, morning peaks are slightly shifted compared to the work days. There is also noticeable smaller consumption in the night.
 
 \begin{figure}[htp]
     \centering
@@ -185,7 +200,7 @@ Last seasonal trend is daily which can be observed for each day of a week, even 
 \end{figure}
 \FloatBarrier
 
-There is also one interesting thing observed in the 2020's data only in the area DK2. Evening daily peak is slightly shifted which can be caused epidemic COVID-19 or incomplete data of 2020 year.
+There is also one interesting thing observed in the 2020's data only in the area DK2. Evening daily peak is slightly shifted which can be caused by the COVID-19 pandemic or incomplete data for year 2020.
 
 \begin{figure}[htp]
     \centering
@@ -196,84 +211,78 @@ There is also one interesting thing observed in the 2020's data only in the area
 \FloatBarrier
 
 \FloatBarrier
-\paragraph{Nordpool's prognosis}
-The prognosis day-ahead given by Nordpool shows that those are less accurate over time, especially for area DK1 where consumption is larger than DK2. Level of accuracy for area DK2 is quite stable. Also there is no clear trend regarding the time of day. For DK1 best prediction are for night and for DK2 best prediction are performed for hours 7 and 15.
+\paragraph{NordPool's prognosis}
+The day-ahead prognosis given by NordPool is less accurate over time, especially for area DK1 where consumption is larger than DK2. Level of accuracy for area DK2 is quite stable. Also there is no clear trend regarding the time of day. For DK1 the best predictions are for the night and for DK2 for hours 7 and 15. The mean absolute errors (MAE) for the data are presented in Table \ref{tab:mae_consumption_dk1} and Table \ref{tab:mae_consumption_dk2}
 
-\begin{figure}[htp]
+\begin{table}[htp]
     \centering
+    \caption{MAE for NordPool's consumption prognosis for each hour of the day (DK1). Total refers to the whole period 2016-2020.}
     \includegraphics[width=15cm]{pictures/err_analysis/consumption/consumption_mae_to_prognosis_dk1.png}
-    \caption{MAE for consumption for each hour and year with total figures (DK1)}
-    \label{fig:}
-\end{figure}
+    \label{tab:mae_consumption_dk1}
+\end{table}
 \FloatBarrier
 
-\begin{figure}[htp]
+\begin{table}[htp]
     \centering
+    \caption{MAE for NordPool's consumption prognosis for each hour of the day (DK1). Total refers to the whole period 2016-2020.}
     \includegraphics[width=15cm]{pictures/err_analysis/consumption/consumption_mae_to_prognosis_dk2.png}
-    \caption{MAE for consumption for each hour and year with total figures (DK2)}
-    \label{fig:}
-\end{figure}
+    \label{tab:mae_consumption_dk2}
+\end{table}
 \FloatBarrier
 
 \subsubsection{Wind power data}
-Wind power production increased significantly within last 4 years. In the area DK1 from 9.41 to 11.26 TWh and for area DK2 from 2.37 to 3.22 TWh, so about 35\% more.
-
-So far in the consumption data we could spot trends whereas in the wind power data there is no distinct trend.
+Wind power production increased significantly within the last 4 years. In the area DK1 from 9.41 to 11.26 TWh and for area DK2 from 2.37 to 3.22 TWh, so about 35\% more. So far in the consumption data we could spot trends whereas in the wind power data there is no distinct trend, see Fig. \ref{fig:avg_wind_power_dk1_dayofweek}. A simple moving average also does not show anything recurrent, thus we can not assume any annual trend, see Fig. \ref{fig:sma_wind_power_dk1}. Only chart of average wind power for each hour suggest there may be a daily trend, however data from area DK2 does not confirm this assumption, see Fig. \ref{fig:average_wind_power_dk1}.
 
 \begin{figure}[htp]
     \centering
     \includegraphics[width=12cm]{pictures/analysis/wind_power/avg_dayofweek_DK1.png}
-    \caption{Wind power production per hour of a day for each day of week (DK1)}
-    \label{fig:}
+    \caption{Average wind power production per hour of a day for each day of week (DK1)}
+    \label{fig:avg_wind_power_dk1_dayofweek}
 \end{figure}
-\FloatBarrier
-
-Simple moving average also doesn't show anything recurrent, thus we can't assume any annual trend.
 
 \begin{figure}[htp]
     \centering
     \includegraphics[width=12cm]{pictures/analysis/wind_power/sma_14days_DK1.png}
     \caption{Simple moving average of wind power production for each day of the year (DK1)}
-    \label{fig:}
+    \label{fig:sma_wind_power_dk1}
 \end{figure}
 \FloatBarrier
-
-Only chart of average wind power for each hour suggest there may be a daily trend, however data from area DK2 doesn't confirm this assumption.
 
 \begin{figure}[htp]
     \centering
     \includegraphics[width=12cm]{pictures/analysis/wind_power/avg_hour_DK1.png}
     \caption{Average wind power production per hour of a day for each year (DK1)}
-    \label{fig:}
+    \label{fig:average_wind_power_dk1}
 \end{figure}
 \FloatBarrier
 
-\paragraph{Nordpool's prognosis}
-I calculated mean absolute error for prognosis performed by Nordpool for each hour and year. The results for area DK1 are rounded to the whole number. We can spot that error for prognosis is bigger for newer data with over 80\% growth in 2020 (until 12th May) comparing to the previous year. Another thing we can notice that the error in the night hours is lower than others.
+\paragraph{NordPool's prognosis}
+I calculated mean absolute errors (MAE) for prognosis performed by NordPool for each hour and year. The results for area DK1 are rounded to the whole number. We can spot that the errors for prognosis is bigger for newer data with over 80\% growth in 2020 (until 12th May) compared to the previous year. Another thing we can notice is that the error in the night hours is lower than day time hours. The results for area DK2 are similar, however numbers are smaller due to the lower capacity of wind farms in this part of Denmark.
 
-\begin{figure}[htp]
+\begin{table}[htp]
     \centering
+    \caption{MAE for wind power and NordPool prognosis for each hour and year (DK1)}
     \includegraphics[width=15cm]{pictures/err_analysis/wind_power/wind_mae_to_prognosis_dk1.png}
-    \caption{MAE for wind power and Nordpool prognosis for each hour and year (DK1)}
     \label{fig:}
-\end{figure}
+\end{table}
 \FloatBarrier
 
-The results for area DK2 are similar, however numbers are smaller due to the lower capacity of wind farms in this part of Denmark.
 
-\begin{figure}[htp]
+\begin{table}[htp]
     \centering
+    \caption{MAE for wind power and NordPool prognosis for each hour and year (DK2)}
     \includegraphics[width=15cm]{pictures/err_analysis/wind_power/wind_mae_to_prognosis_dk2.png}
-    \caption{MAE for wind power and Nordpool prognosis for each hour and year (DK2)}
     \label{fig:}
-\end{figure}
+\end{table}
 \FloatBarrier
 
 \subsubsection{Price data}
-In the 2020 price of energy decreased compared to the previous years. However we don't know what kind of the impact had epidemic on this data so it's hard to come up with any conclusion.
+In 2020 the price of electricity decreased compared to the previous years, see Table \ref{tab:average_price}. However we do not know what kind of impact the pandemic had, so it is hard to come up with any conclusion. As in the consumption data we can also notice seasonal trends in this category, but this time only two kinds: daily and weekly. There is no annual trend in the price data, see Fig. \ref{fig:sma_price_dk1}. Electricity prices are lower during weekends due to the lower consumption and there are also 2 daily peaks each day, either weekend (including holidays) and work days, see Fig. \ref{fig:avg_price_dk1_dayofweek}.
 
 \begin{table}[!htbp]
 \begin{center}
+\caption{Average price of energy per each year (DKK/MWh)}
+\label{tab:average_price}
 \begin{tabular}{lrr}
 Year &  DK1 & DK2 \\
       \hline
@@ -283,106 +292,97 @@ Year &  DK1 & DK2 \\
 2019 & 289.270 & 295.390 \\
 2020 & 142.520 & 149.865 \\
 \end{tabular}
-    \caption{Average price of energy per each year (DKK/MWh)}
 \end{center}
 \end{table}
 \FloatBarrier
-
-As in the consumption data we can also notice seasonal trends in this category, but this time only two kinds: daily and weekly. There is no annual trend in the price data.
 
 \begin{figure}[htp]
     \centering
     \includegraphics[width=12cm]{pictures/analysis/price/sma_14days_DK1.png}
     \caption{Simple moving average of price for each year - 14 days window (DK1)}
-    \label{fig:}
+    \label{fig:sma_price_dk1}
 \end{figure}
 \FloatBarrier
-
-Electricity prices are lower during weekends due to the lower consumption and there are also 2 daily peaks each day, either weekend (including holidays) and work days.
 
 \begin{figure}[htp]
     \centering
     \includegraphics[width=12cm]{pictures/analysis/price/avg_dayofweek_DK1.png}
     \caption{Average price per hour of a day for each day of week (DK1)}
-    \label{fig:}
+    \label{fig:avg_price_dk1_dayofweek}
 \end{figure}
 \FloatBarrier
 
 \paragraph{Negative prices}
-There were 417 negative prices in the area DK1 in the years 2016-2020 and 288 in the DK2. The dataset for 2020 ends on 12th May, however there are already 84 negative prices compared to the 133 in the full year 2019. Negative prices occur more often during nights than the peaks of consumption. It shows that DK2 is more balanced than DK1.
+There were 417 negative prices in the area DK1 in the years 2016-2020 and 288 in DK2. The dataset for 2020 ends on 12th May, however there are already 84 negative prices compared to the 133 in the full year 2019. Negative prices occur more often during the nights. It shows that DK2 is more balanced than DK1.
 
-\begin{figure}[htp]
+\begin{table}[htp]
     \centering
-    \includegraphics[width=13cm]{pictures/analysis/price/neg_prices_dk1.png}
     \caption{Number of negative prices for each hour, year and totally (DK1)}
+    \includegraphics[width=13cm]{pictures/analysis/price/neg_prices_dk1.png}
     \label{fig:}
-\end{figure}
+\end{table}
 \FloatBarrier
 
 
 \paragraph{Correlation between price and wind power}
 
-We can suspect that with bigger values of wind power price is lower. Pearson's correlation shows that mostly it's weak correlation, only for 2020 year there are moderate values.
+We can suspect that with bigger values of wind power price is lower. Pearson's correlation shows that mostly it's weak correlation, only for 2020 year there are moderate values. Correlation is a little bit higher for night hours than for the rest of the day, see Table \ref{tab:correlation_price_wind_power}.
 
-Correlation is a little bit higher for night hours than rest of the day.
-
-\begin{figure}[htp]
+\begin{table}[htp]
     \centering
-    \includegraphics[width=15cm]{pictures/analysis/price/corr_price_wind.png}
     \caption{Correlation between price and wind power for each hour and year (DK1 and DK2)}
-    \label{fig:}
-\end{figure}
+    \label{tab:correlation_price_wind_power}
+    \includegraphics[width=15cm]{pictures/analysis/price/corr_price_wind.png}
+\end{table}
 \FloatBarrier
 
 \subsubsection{Holidays}
-Usage of the electricity decreases during weekends and public holidays and this has a significant effect on a prediction especially during Christmas or Easter. Due to that fact, each day was aligned with variable holiday with following value based of occurrence of day of week or public holiday:
+Usage of the electricity decreases during weekends and public holidays and this has a significant effect on predictions especially during Christmas or Easter. Due to that fact, each day was aligned with variable holiday with following value based on occurrence of day of week or public holiday:
 \begin{itemize}
-	\item 1 - National Holidays (e.g. Easter Monday)\cite{denmark-holidays}
-	\item 1 - Sundays
-	\item 0 - Not a public holidays (e.g. New Year's Eve)
-	\item 0 - Other days
+	\item 1 - National Holidays (e.g., Easter Monday) \cite{denmark-holidays},
+	\item 1 - Sundays,
+	\item 0 - Not public holidays (e.g., New Year's Eve),
+	\item 0 - Other days.
 \end{itemize}
 \FloatBarrier
 
-Each holiday is treated in weekday dummies as a Sunday.
-\section{Methodology}
+\clearpage
 
-I decided to choose Danish market for forecasting and so on I want to apply methods and models most fitting to the characteristics of this market. I performed forecasting for 3 categories of values: wind power, consumption and price. In each category I made prognosis for few models which are described in Forecasting section. My forecasting framework for all of them is following:
+\section{Forecasting methodology}
+
+I decided to choose the Danish market for forecasting. I wanted to apply methods and models most fitting to the characteristics of this market. I performed forecasting for 3 categories of values: wind power, consumption and price. In each category I made a prognosis for few models which are described in the corresponding sections in this chapter. My forecasting framework for all of them is the following:
 
 \begin{enumerate}
-	\item Data preparation
-	\item Preliminary data analysis
-	\item Data forecasting (cycle for each model and day)
-	\subitem Optional deseasonalization
-	\subitem Data normalization
-	\subitem Day-ahead forecasting
-	\item Verifying models' performance
+	\item Data preparation,
+	\item Preliminary data analysis,
+	\item Data forecasting (for each model and day):
+	\subitem – Optional deseasonalization,
+	\subitem – Data normalization,
+	\subitem – Day-ahead forecasting,
+	\item Verifying model performance.
 \end{enumerate}
 
-All calculations were conducted with Python 3.7 language and its libraries, i.e. numpy, pandas, scipy. All the scripts and results made are accessible in public GIT repository \githubLocation.
+All calculations were conducted in Python 3.7, using libraries, e.g., numpy, pandas, scipy. All the scripts and results are accessible in the public GIT repository \githubLocation.
 
+Wind power prognosis and consumption prognosis is provided only one day in advance so data forecasting is also performed day ahead. I used 3 calibration windows to compute predictions. They may take values of week multiples (7 days) because of the seasonal trend of energy production. Because chosen data has a limit of 1583 days, the maximum calibration window I considered is 728 days, around 2 years.
 
-\FloatBarrier
-Wind power prognosis and Consumption prognosis is provided only one day in advance so data forecasting is also performed day ahead. I used 3 calibration windows to compute predictions. They may take values of week multiples (7 days) because of the seasonal trend of energy production. Because chosen data has a limit of 1583 days, the maximum calibration window I considered is 728 days, around 2 years.
-
-I consider few models for each category of forecasts (consumption, price and wind power) which I explain later in this section. General equation for each model (except of benchmark models for wind power and consumption) can be presented as:
+I consider a few models for each category of forecasts (consumption, price and wind power) which I explain later in this section. General equation for each model (except of benchmark models for wind power and consumption) can be presented as:
 
 \begin{equation}
     \hat{Y}_{d,h} = \sum_{i=1}^{n}\beta_{d,h,i}X_{d,h}^{i},
 \end{equation}
 
-where $Y_{d,h}$ is prediction and $X_{d,h}^{i}$ is variable for given day ($d$) and hour ($h$). We can predict values for next whole day only, but basing on the variables from whole calibration window. Coefficients $\beta_{h,i}$ have been approximated by ordinary least squares (OLS).
+\noindent where $\hat{Y}_{d,h}$ is the prediction and $X_{d,h}^{i}$ is the i-th explanatory variable for given day ($d$) and hour ($h$). We can predict the values for the next whole day only using the values from the whole calibration window. Coefficients $\beta_{h,i}$ have been estimated by ordinary least squares (OLS):
 
 \begin{equation}
-    \vec{\hat{\beta}}=(X^{T}X)^{-1}X^{T}Y,
+    \hat{\beta}=(X^{T}X)^{-1}X^{T}Y,
 \end{equation}
 
-where $X$ is matrix of independent variables, and $Y$ is vector of dependant variables of size of calibration window (multiple of 7 days).
+\noindent where $X$ is the matrix of independent explanatory variables of size of calibration window and number of explanatory variables increased by one , and $Y$ is the vector of dependent variables of size of calibration window.
 
-Because prices of energy due to the wind dependence can have negative values I needed to normalize values. I used function $asinh$ which was empirically confirmed to have best results for danish market among 4 different normalization functions.\cite{variance-stabilizing}.
+Because prices of energy due to the wind dependence can have negative values I needed to normalize values. I used the $asinh$ function, which was empirically confirmed to yield best results for the Danish market among 4 different normalization functions\,\cite{variance-stabilizing}:
 
 \begin{equation}
-\tag{asinh}
 \label{eq:asinh_function}
     X_{d,h}=asinh(x_{d,h})\equiv \log (x_{d,h}+\sqrt{x^{2}_{d,h}+1}),
 \end{equation}
@@ -390,7 +390,6 @@ Because prices of energy due to the wind dependence can have negative values I n
 where $Y_{d,h} $ is transformed value used for forecasts either as independent variable or dependent variable. Independent values in the model must be also transformed. $y_{d,h}$ is normalized in a calibration window by:
 \begin{equation}
 \label{eq:normalization}
-\tag{std}
     x_{d,h}=\frac{1}{b_{d,h}}(x^*_{d,h}-a_{d,h}),
 \end{equation}
 
@@ -418,7 +417,7 @@ Despite of used transformations, the forecasts were performed with several diffe
 	\item \begin{tabbing}Predicted dates: \= 2019.01.01-2019.12.31 (2019 year), \\        \>2019.05.13-2020.05.12 (last year),\\ \>2020.01.01-2020.05.12, \\ \>2019.01.01-2020.05.12\end{tabbing}
 \end{itemize}
 
-\subsection{Demand forecasting}
+\subsection{Demand}
 
 First considering model is a benchmark model containing consumption forecast provided by Nordpool's database for day ahead ($FL_{t,h}$). Its performance is analyzed in the section Demand data prognosis.
 \begin{equation}
@@ -451,7 +450,7 @@ C_{d,h}=\sum_{i=1}^{7}\beta_{0,i}D_{i,d} + \beta_{1}FC_{d,h} + \beta_{2}C_{d-1,h
 \end{equation}
 
 
-\subsection{Wind power forecasting}
+\subsection{Wind power}
 First model is presented and analyzed in the section \emph{Wind power data prognosis}. This is a benchmark model for further forecasts, where $FW_{t,h} + \varepsilon_{t}$ is a day ahead forecast of wind power taken from Nordpool's data.
 \begin{equation}
 \label{eq:wind_model_1}
@@ -484,7 +483,7 @@ W_{t,h}=\sum_{i=1}^{7}\beta_{0,i}D_{i,d} + \beta_{1} FW_{t,h} + \beta_{2} W_{t-1
 \end{equation}
 
 
-\subsection{Price forecasting}
+\subsection{Prices}
 First forecasting model of price consists of the same daf of week vector ($D_{i,d}$) as the second demand model (\ref{eq:demand_model_2}).
 
 \begin{equation}
@@ -771,7 +770,7 @@ Experiment of replacing original forecasts of Nordpool with better, forecasted r
 There are still some questions that should be resolved to receive better forecasts and I think the biggest one is to find relation between area DK1 and DK2, because for now there is no one universal model for both areas. Different methods and tools are better in forecasting for each area. Knowing this relation should get profits in predicting more accurate prices for electricity.
 
 
-\section{Appendix - Diebolt-Mariano test results}
+\section{Appendix - Diebold-Mariano test results}
 \subsection{Consumption forecasts}
 \begin{figure}[htp]
     \centering
