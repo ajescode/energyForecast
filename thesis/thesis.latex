@@ -559,9 +559,12 @@ For each forecast and out-of-sample period I compared the Mean Absolute Error (M
 
 For each table of DM results I eliminated the results where p-value of a test exceeded 0.05 which means that forecasts are not significantly different in specific pairs of models. Those have values 0.0 and a gray background in a table. Other values represent DM statistics. The green color means that the forecasts of a model on X-axis is better than the corresponding model on Y-axis. The bigger value (darker green color) in a cell for a given row, the better the model is, reversed interpretation stands for color red, which means the model on X-axis is worse than corresponding model on Y-axis.
 
+The best model amongst other models is considered as a model which is not significantly worse than any other, is significantly better in more cases than others and lastly has the higher values of DM statistic in a case of equal number of better comparisons. In some cases there were a few models not significantly different between each other, but performed better against other models.
+
+
 \subsection{Demand forecasts}
 
-For both areas results with $asinh$ were significantly worse than with standard normalization function. Especially for calibration window 182. The forecast with standard normalization was better for Models 2-4 than NordPool prognosis, however, better accuracy was for longer calibration windows. Because of drops in consumption level in 2020 the results including this period were less accurate, see Tables in this section and Section \ref{section:dm_consumption}.
+For both areas results with $asinh$ were significantly worse than with standard normalization function. Especially for calibration window 182. The forecast with standard normalization was better for Models \ref{eq:demand_model_2}-\ref{eq:demand_model_4} than NordPool prognosis, however, better accuracy was for longer calibration windows. Because of drops in consumption level in 2020 the results including this period were less accurate, see Tables in this section and Section \ref{section:dm_consumption}.
 
 For area DK1 the best performing model is Model \ref{eq:demand_model_4} with a 728-day window, but not significantly better compared to several other models for period 2020.01.01-2020.05.12.
 
@@ -569,8 +572,8 @@ There are different settings for area DK2, but for every period the best model i
 
 \begin{itemize}
 	\item 2019.01.01-2019.12.31: Model \ref{eq:demand_model_3}, 728 window, None,
-	\item 2019.05.13-2020.05.12: Model \ref{eq:demand_model_3}, 364 window, HP,
-	\item 2019.01.01-2020.05.12: Model \ref{eq:demand_model_3}, 364 window, HP,
+	\item 2019.05.13-2020.05.12: Model \ref{eq:demand_model_3}, 182 window, HP,
+	\item 2019.01.01-2020.05.12: Model \ref{eq:demand_model_3}, 728 window, None,
 	\item 2020.01.01-2020.05.12: Model \ref{eq:demand_model_3}, 182 window, HP.
 \end{itemize}
 
@@ -661,7 +664,7 @@ The best performing models for area DK1 were different and Model \ref{eq:price_m
     \item 2020.01.01-2020.05.12: Model \ref{eq:price_model_4}, 728 window, HP.
 \end{itemize}
 
-In area DK2 the best performing model was Model \ref{eq:price_model_5} in every period, however again in some settings there was no big difference compared to Model \ref{eq:price_model_4}:
+In area DK2 the best performing model was Model \ref{eq:price_model_5} in every period, however again in some settings there was no significant difference compared to Model \ref{eq:price_model_4}:
 
 \begin{itemize}
     \item 2019.01.01-2019.12.31: Model \ref{eq:price_model_5}, 728 window, Asinh,
@@ -718,9 +721,9 @@ DK1 &  2019.05.13-2020.05.12 &        C4.728 &  W2.364.asinh-hp &  P5.728.hp  \\
 DK1 &  2019.01.01-2020.05.12 &        C4.728 &  W2.364.asinh-hp &  P4.728  \\
 DK1 &  2020.01.01-2020.05.12 &        C4.728 &  W2.182.asinh-hp &  P4.728.hp  \\
 DK2 &  2019.01.01-2019.12.31 &        C3.728 &  W1 &  P5.728.asinh  \\
-DK2 &  2019.05.13-2020.05.12 &        C3.364.hp &  W1 &  P5.728.hp  \\
-DK2 &  2019.01.01-2020.05.12 &        C3.364.hp &  W1 &  P5.728.asinh  \\
-DK2 &  2020.01.01-2020.05.12 &        C3.182.hp &  W1 &  P5.728.hp  \\
+DK2 &  2019.05.13-2020.05.12 &        C3.182.hp &  W1 &  P5.728.hp  \\
+DK2 &  2019.01.01-2020.05.12 &        C3.728 &  W1 &  P5.728.asinh  \\
+DK2 &  2020.01.01-2020.05.12 &        C3.182.hp &  W2.728.asinh &  P5.728.hp  \\
 \end{tabular}
 \end{center}
 \end{table}
