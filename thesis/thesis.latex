@@ -564,7 +564,7 @@ The best model amongst other models is considered as a model which is not signif
 
 \subsection{Demand forecasts}
 
-For both areas results with $asinh$ were significantly worse than with standard normalization function. Especially for calibration window 182. The forecast with standard normalization was better for Models \ref{eq:demand_model_2}-\ref{eq:demand_model_4} than NordPool prognosis, however, better accuracy was for longer calibration windows. Because of drops in consumption level in 2020 the results including this period were less accurate, see Tables in this section and Section \ref{section:dm_consumption}.
+For both areas results with $asinh$ were significantly worse than with standard normalization function. Especially for calibration window 182. The forecast with standard normalization was better for Models \ref{eq:demand_model_2}-\ref{eq:demand_model_4} than NordPool prognosis, however, better accuracy was for longer calibration windows. Because of drops in consumption level in 2020 the results including this period were less accurate, see Tables \ref{tab:results_consumption_first}-\ref{tab:results_consumption_last}.
 
 For area DK1 the best performing model is Model \ref{eq:demand_model_4} with a 728-day window, but not significantly better compared to several other models for period 2020.01.01-2020.05.12.
 
@@ -576,10 +576,12 @@ There are different settings for area DK2, but for every period the best model i
 	\item 2019.01.01-2020.05.12: Model \ref{eq:demand_model_3}, 728 window, None,
 	\item 2020.01.01-2020.05.12: Model \ref{eq:demand_model_3}, 182 window, HP.
 \end{itemize}
+\FloatBarrier
 
 \begin{table}[htp]
     \centering
     \caption{MAE for the consumption forecasts (DK1).}
+    \label{tab:results_consumption_first}
     \includegraphics[width=15cm]{pictures/forecasts/consumption/consumption_mae_dk1.png}
     \label{fig:}
 \end{table}
@@ -607,146 +609,7 @@ There are different settings for area DK2, but for every period the best model i
     \includegraphics[width=15cm]{pictures/forecasts/consumption/consumption_rmse_dk2.png}
     \label{fig:}
 \end{table}
-\FloatBarrier
-
-
-\subsection{Wind power forecasts}
-The retrieved results from wind power forecasting with standard normalization were significantly better for DK1, and slightly better for DK2 compared to the NordPool's forecast. $Asinh$ function as normalization was useful only for part of cases with a short calibration window, so I do not consider it as a successful result. MAE for Model \ref{eq:wind_model_4} with a 728-day window and for the full 2019 year is 6.6\% lower, while MAE for the last period (2020.01.01-2020.05-12) is 22.19\% lower, see Tables in this section and Section \ref{section:dm_wind}.
-
-For area DK1 best forecasts were achieved by Model \ref{eq:wind_model_2}, 364-day window and asinh-hp transformation with small difference in period 2020.01.01-2020.05.12 where best rolling window was 182.
-
-On the other hand, the best forecast in the area DK2 was NordPool prognosis, except for the period 2020.01.01-2020.05.12, where the best model was Model \ref{eq:wind_model_2}, 728-day window, asinh.
-
-\begin{table}[htp]
-    \centering
-    \caption{MAE for the wind power forecasts (DK1).}
-    \includegraphics[width=15cm]{pictures/forecasts/wind/wind_mae_dk1.png}
-    \label{fig:}
-\end{table}
-\FloatBarrier
-
-\begin{table}[htp]
-    \centering
-    \caption{MAE for the wind power forecasts (DK2).}
-    \includegraphics[width=15cm]{pictures/forecasts/wind/wind_mae_dk2.png}
-    \label{fig:}
-\end{table}
-\FloatBarrier
-
-\begin{table}[htp]
-    \centering
-    \caption{RMSE for the wind power forecasts (DK1).}
-    \includegraphics[width=15cm]{pictures/forecasts/wind/wind_rmse_dk1.png}
-    \label{fig:}
-\end{table}
-\FloatBarrier
-
-\begin{table}[htp]
-    \centering
-    \caption{RMSE for the wind power forecasts (DK2).}
-    \includegraphics[width=15cm]{pictures/forecasts/wind/wind_rmse_dk2.png}
-    \label{fig:}
-\end{table}
-\FloatBarrier
-
-
-\subsection{Price forecasts}
-With more complex models results are much better, however, $asinh$ function surprisingly does not improve predictions in every case. Disproportion is especially big in the last period (2020.01.01-2020.05-12) and Model \ref{eq:price_model_4}.
-
-I proposed the Model \ref{eq:price_model_5} hoping that with better predictions of wind power and consumption than original ones, price will be more accurate. Because these predictions replaced only values for the prediction period, not the rolling window, coefficients could be overfitted to the worse values trying to predict using improved ones, see Tables in this section and Section \ref{section:dm_price}.
-
-The best performing models for area DK1 were different and Model \ref{eq:price_model_5} was best only in one period. In some settings there was no significant difference between models \ref{eq:price_model_5} and \ref{eq:price_model_4}. In both areas the best length of rolling window was 728.
-
-\begin{itemize}
-    \item 2019.01.01-2019.12.31: Model \ref{eq:price_model_4}, 728 window, Asinh,
-    \item 2019.05.13-2020.05.12: Model \ref{eq:price_model_5}, 728 window, HP,
-    \item 2019.01.01-2020.05.12: Model \ref{eq:price_model_4}, 728 window, None,
-    \item 2020.01.01-2020.05.12: Model \ref{eq:price_model_4}, 728 window, HP.
-\end{itemize}
-
-In area DK2 the best performing model was Model \ref{eq:price_model_5} in every period, however again in some settings there was no significant difference compared to Model \ref{eq:price_model_4}:
-
-\begin{itemize}
-    \item 2019.01.01-2019.12.31: Model \ref{eq:price_model_5}, 728 window, Asinh,
-    \item 2019.05.13-2020.05.12: Model \ref{eq:price_model_5}, 728 window, HP,
-    \item 2019.01.01-2020.05.12: Model \ref{eq:price_model_5}, 728 window, Asinh,
-    \item 2020.01.01-2020.05.12: Model \ref{eq:price_model_5}, 728 window, HP.
-\end{itemize}
-
-\begin{table}[htp]
-    \centering
-    \includegraphics[width=15cm]{pictures/forecasts/price/price_mae_dk1.png}
-    \caption{MAE for the price forecasts (DK1).}
-    \label{fig:}
-\end{table}
-\FloatBarrier
-
-\begin{table}[htp]
-    \centering
-    \caption{MAE for the price forecasts (DK2).}
-    \includegraphics[width=15cm]{pictures/forecasts/price/price_mae_dk2.png}
-    \label{fig:}
-\end{table}
-\FloatBarrier
-
-\begin{table}[htp]
-    \centering
-    \caption{RMSE for the price forecasts (DK1).}
-    \includegraphics[width=15cm]{pictures/forecasts/price/price_rmse_dk1.png}
-    \label{fig:}
-\end{table}
-\FloatBarrier
-
-\begin{table}[htp]
-    \centering
-    \caption{RMSE for the price forecasts (DK2).}
-    \includegraphics[width=15cm]{pictures/forecasts/price/price_rmse_dk2.png}
-    \label{fig:}
-\end{table}
-\FloatBarrier
-
-\subsection{Results summary}
-
-In Table \ref{table:best_settings_models} the best performing models for each area and period of consumption, wind power and price forecast are presented.
-
-\begin{table}[h!]
-\begin{center}
-\caption{Best settings of models.}
-\label{table:best_settings_models}
-\begin{tabular}{llrrr}
-area &        period &  consumption &       wind power &       price \\
-      \hline
-DK1 &  2019.01.01-2019.12.31 &        C4.728 &  W2.364.asinh-hp &  P4.728.asinh \\
-DK1 &  2019.05.13-2020.05.12 &        C4.728 &  W2.364.asinh-hp &  P5.728.hp  \\
-DK1 &  2019.01.01-2020.05.12 &        C4.728 &  W2.364.asinh-hp &  P4.728  \\
-DK1 &  2020.01.01-2020.05.12 &        C4.728 &  W2.182.asinh-hp &  P4.728.hp  \\
-DK2 &  2019.01.01-2019.12.31 &        C3.728 &  W1 &  P5.728.asinh  \\
-DK2 &  2019.05.13-2020.05.12 &        C3.182.hp &  W1 &  P5.728.hp  \\
-DK2 &  2019.01.01-2020.05.12 &        C3.728 &  W1 &  P5.728.asinh  \\
-DK2 &  2020.01.01-2020.05.12 &        C3.182.hp &  W2.728.asinh &  P5.728.hp  \\
-\end{tabular}
-\end{center}
-\end{table}
-
-\clearpage
-\section{Conclusions}
-
-Almost all of the assumptions came true, forecasts for consumption and partially for wind power have been performed better than the original ones prepared by NordPool. Even models for wind power performed well, however, it is not a typical time-series problem, because more important factors influencing such as atmospheric models were not used in this work.
-
-The main finding is that out-of-sample period matters in using the most efficient model. For some periods more accurate were shorter calibration windows, because anomalies in 2020 caused by COVID-19 changed seasonal trends like consumption and thus prices were significantly lower in 2020 than in 2019.
-
-One assumption I found invalid was that $asinh$ normalization function improves price predictions. It does but not for 2020, where asinh and asinh-hp normalization fails with every length of calibration window. It also fails for wind power DK2 where power production is probably too low to have an impact on the seasonal trend. In the DK1 the best forecasts used asinh-hp transformation and no other forecasts and areas used this transformation as the best one. Other used either asinh or HP filter, not both.
-
-The experiment of replacing original forecasts of NordPool with better, forecasted results unfortunately failed, but I still see potential with a bigger calibration window. But for this purpose it is necessary to have more data. However for the DK2 Model P5 has better performance, this model uses the original wind power forecast so it is not very different from Model P4.
-
-There are still some questions that should be resolved to receive better forecasts and I think the biggest one is to find a relation between area DK1 and DK2, because for now there is no one universal model for both areas. Different methods and tools are better in forecasting for each area. Knowing this relation should yield profits.
-
-
-\clearpage
-\section{Appendix - Diebold-Mariano test results}
-\subsection{Consumption forecasts}
-\label{section:dm_consumption}
-\begin{table}[htp]
+\FloatBarrier\begin{table}[htp]
     \centering
     \caption{Diebold-Mariano Test for consumption forecasts (DK1).}
     \includegraphics[width=15cm]{pictures/dm_test/consumption_dk1_date1.png}
@@ -791,13 +654,52 @@ There are still some questions that should be resolved to receive better forecas
 \begin{table}[htp]
     \centering
     \caption{Diebold-Mariano Test for consumption forecasts (DK2).}
+    \label{tab:results_consumption_last}
     \includegraphics[width=15cm]{pictures/dm_test/consumption_dk2_date4.png}
     \label{fig:}
 \end{table}
 \FloatBarrier
 
+
 \subsection{Wind power forecasts}
-\label{section:dm_wind}
+The retrieved results from wind power forecasting with standard normalization were significantly better for DK1, and slightly better for DK2 compared to the NordPool's forecast. $Asinh$ function as normalization was useful only for part of cases with a short calibration window, so I do not consider it as a successful result. MAE for Model \ref{eq:wind_model_4} with a 728-day window and for the full 2019 year is 6.6\% lower, while MAE for the last period (2020.01.01-2020.05-12) is 22.19\% lower, see Tables \ref{tab:results_wind_first}-\ref{tab:results_wind_last}.
+
+For area DK1 best forecasts were achieved by Model \ref{eq:wind_model_2}, 364-day window and asinh-hp transformation with small difference in period 2020.01.01-2020.05.12 where best rolling window was 182.
+
+On the other hand, the best forecast in the area DK2 was NordPool prognosis, except for the period 2020.01.01-2020.05.12, where the best model was Model \ref{eq:wind_model_2}, 728-day window, asinh.
+
+\begin{table}[htp]
+    \centering
+    \caption{MAE for the wind power forecasts (DK1).}
+    \label{tab:results_wind_first}
+    \includegraphics[width=15cm]{pictures/forecasts/wind/wind_mae_dk1.png}
+    \label{fig:}
+\end{table}
+\FloatBarrier
+
+\begin{table}[htp]
+    \centering
+    \caption{MAE for the wind power forecasts (DK2).}
+    \includegraphics[width=15cm]{pictures/forecasts/wind/wind_mae_dk2.png}
+    \label{fig:}
+\end{table}
+\FloatBarrier
+
+\begin{table}[htp]
+    \centering
+    \caption{RMSE for the wind power forecasts (DK1).}
+    \includegraphics[width=15cm]{pictures/forecasts/wind/wind_rmse_dk1.png}
+    \label{fig:}
+\end{table}
+\FloatBarrier
+
+\begin{table}[htp]
+    \centering
+    \caption{RMSE for the wind power forecasts (DK2).}
+    \includegraphics[width=15cm]{pictures/forecasts/wind/wind_rmse_dk2.png}
+    \label{fig:}
+\end{table}
+\FloatBarrier
 \begin{table}[htp]
     \centering
     \caption{Diebold-Mariano Test for wind power forecasts (DK1).}
@@ -843,14 +745,66 @@ There are still some questions that should be resolved to receive better forecas
 \begin{table}[htp]
     \centering
     \caption{Diebold-Mariano Test for wind power forecasts (DK2).}
+    \label{tab:results_wind_last}
     \includegraphics[width=15cm]{pictures/dm_test/wind_dk2_date4.png}
-    \label{fig:}
 \end{table}
 \FloatBarrier
 
 \subsection{Price forecasts}
-\label{section:dm_price}
+With more complex models results are much better, however, $asinh$ function surprisingly does not improve predictions in every case. Disproportion is especially big in the last period (2020.01.01-2020.05-12) and Model \ref{eq:price_model_4}.
+
+I proposed the Model \ref{eq:price_model_5} hoping that with better predictions of wind power and consumption than original ones, price will be more accurate. Because these predictions replaced only values for the prediction period, not the rolling window, coefficients could be overfitted to the worse values trying to predict using improved ones, see Tables \ref{tab:results_price_first}-\ref{tab:results_price_last}.
+
+The best performing models for area DK1 were different and Model \ref{eq:price_model_5} was best only in one period. In some settings there was no significant difference between models \ref{eq:price_model_5} and \ref{eq:price_model_4}. In both areas the best length of rolling window was 728.
+
+\begin{itemize}
+    \item 2019.01.01-2019.12.31: Model \ref{eq:price_model_4}, 728 window, Asinh,
+    \item 2019.05.13-2020.05.12: Model \ref{eq:price_model_5}, 728 window, HP,
+    \item 2019.01.01-2020.05.12: Model \ref{eq:price_model_4}, 728 window, None,
+    \item 2020.01.01-2020.05.12: Model \ref{eq:price_model_4}, 728 window, HP.
+\end{itemize}
+
+In area DK2 the best performing model was Model \ref{eq:price_model_5} in every period, however again in some settings there was no significant difference compared to Model \ref{eq:price_model_4}:
+
+\begin{itemize}
+    \item 2019.01.01-2019.12.31: Model \ref{eq:price_model_5}, 728 window, Asinh,
+    \item 2019.05.13-2020.05.12: Model \ref{eq:price_model_5}, 728 window, HP,
+    \item 2019.01.01-2020.05.12: Model \ref{eq:price_model_5}, 728 window, Asinh,
+    \item 2020.01.01-2020.05.12: Model \ref{eq:price_model_5}, 728 window, HP.
+\end{itemize}
+
 \begin{table}[htp]
+    \centering
+    \caption{MAE for the price forecasts (DK1).}
+    \label{tab:results_price_first}
+    \includegraphics[width=15cm]{pictures/forecasts/price/price_mae_dk1.png}
+    \label{fig:}
+\end{table}
+\FloatBarrier
+
+\begin{table}[htp]
+    \centering
+    \caption{MAE for the price forecasts (DK2).}
+    \includegraphics[width=15cm]{pictures/forecasts/price/price_mae_dk2.png}
+    \label{fig:}
+\end{table}
+\FloatBarrier
+
+\begin{table}[htp]
+    \centering
+    \caption{RMSE for the price forecasts (DK1).}
+    \includegraphics[width=15cm]{pictures/forecasts/price/price_rmse_dk1.png}
+    \label{fig:}
+\end{table}
+\FloatBarrier
+
+\begin{table}[htp]
+    \centering
+    \caption{RMSE for the price forecasts (DK2).}
+    \includegraphics[width=15cm]{pictures/forecasts/price/price_rmse_dk2.png}
+    \label{fig:}
+\end{table}
+\FloatBarrier\begin{table}[htp]
     \centering
     \caption{Diebold-Mariano Test for price forecasts (DK1).}
     \includegraphics[width=15cm]{pictures/dm_test/price_dk1_date1.png}
@@ -895,9 +849,48 @@ There are still some questions that should be resolved to receive better forecas
 \begin{table}[htp]
     \centering
     \caption{Diebold-Mariano Test for price forecasts (DK2).}
+    \label{tab:results_price_last}
     \includegraphics[width=15cm]{pictures/dm_test/price_dk2_date4.png}
     \label{fig:}
 \end{table}
+\FloatBarrier
+
+\subsection{Results summary}
+
+In Table \ref{table:best_settings_models} the best performing models for each area and period of consumption, wind power and price forecast are presented.
+
+\begin{table}[h!]
+\begin{center}
+\caption{Best settings of models.}
+\label{table:best_settings_models}
+\begin{tabular}{llrrr}
+area &        period &  consumption &       wind power &       price \\
+      \hline
+DK1 &  2019.01.01-2019.12.31 &        C4.728 &  W2.364.asinh-hp &  P4.728.asinh \\
+DK1 &  2019.05.13-2020.05.12 &        C4.728 &  W2.364.asinh-hp &  P5.728.hp  \\
+DK1 &  2019.01.01-2020.05.12 &        C4.728 &  W2.364.asinh-hp &  P4.728  \\
+DK1 &  2020.01.01-2020.05.12 &        C4.728 &  W2.182.asinh-hp &  P4.728.hp  \\
+DK2 &  2019.01.01-2019.12.31 &        C3.728 &  W1 &  P5.728.asinh  \\
+DK2 &  2019.05.13-2020.05.12 &        C3.182.hp &  W1 &  P5.728.hp  \\
+DK2 &  2019.01.01-2020.05.12 &        C3.728 &  W1 &  P5.728.asinh  \\
+DK2 &  2020.01.01-2020.05.12 &        C3.182.hp &  W2.728.asinh &  P5.728.hp  \\
+\end{tabular}
+\end{center}
+\end{table}
+
+\clearpage
+\section{Conclusions}
+
+Almost all of the assumptions came true, forecasts for consumption and partially for wind power have been performed better than the original ones prepared by NordPool. Even models for wind power performed well, however, it is not a typical time-series problem, because more important factors influencing such as atmospheric models were not used in this work.
+
+The main finding is that out-of-sample period matters in using the most efficient model. For some periods more accurate were shorter calibration windows, because anomalies in 2020 caused by COVID-19 changed seasonal trends like consumption and thus prices were significantly lower in 2020 than in 2019.
+
+One assumption I found invalid was that $asinh$ normalization function improves price predictions. It does but not for 2020, where asinh and asinh-hp normalization fails with every length of calibration window. It also fails for wind power DK2 where power production is probably too low to have an impact on the seasonal trend. In the DK1 the best forecasts used asinh-hp transformation and no other forecasts and areas used this transformation as the best one. Other used either asinh or HP filter, not both.
+
+The experiment of replacing original forecasts of NordPool with better, forecasted results unfortunately failed, but I still see potential with a bigger calibration window. But for this purpose it is necessary to have more data. However for the DK2 Model P5 has better performance, this model uses the original wind power forecast so it is not very different from Model P4.
+
+There are still some questions that should be resolved to receive better forecasts and I think the biggest one is to find a relation between area DK1 and DK2, because for now there is no one universal model for both areas. Different methods and tools are better in forecasting for each area. Knowing this relation should yield profits.
+
 
 \clearpage
 
