@@ -105,7 +105,7 @@ class VariablesGetter:
                 else:
                     window = 364
             elif self.area == 'DK2':
-                if self.start_date == '2019-01-01' and self.end_date == '2020-05-12':
+                if self.start_date == '2020-01-01' and self.end_date == '2020-05-12':
                     vars_a = ['dayofweek', 'wind_prognosis']
                     window = 728
                     method = 'asinh'
