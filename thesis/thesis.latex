@@ -56,7 +56,7 @@ I would like to thank my supervisor Prof. Rafał Weron for very valuable guidanc
 
 We have experienced big growth of wind power industry in the recent years and massive number of new installations of wind turbines. Some countries have significantly increased shares of renewable energy in the overall production. Better prognosis of the renewable energy production and electricity consumption may have a positive impact on profits for companies operating and buying energy in the power exchanges.
 
-In this work I fitted models in order to achieve the best forecasts of consumption, wind generation and price for the Danish market using day-ahead data. There are plenty of possible approaches using, e.g., regression models \cite{forecasting-regression}\cite{nordpool-foreacsting-python}, neural networks \cite{forecasting-neural-networks}\cite{forecasting-neural-networks2}, probabilistic methods \cite{forecasting-probabilistic}. I decided to use regression models built on expert knowledge \cite{eff-forecasting-spot-prices} and implemented modifications the utilize the Hodrick-Prescott filter and different lengths of calibration windows.
+In this work I fitted models in order to achieve the best forecasts of consumption (as a proxy for the demand for electricity), wind generation and price for the Danish market using day-ahead data. There are plenty of possible approaches using, e.g., regression models \cite{forecasting-regression}\cite{nordpool-foreacsting-python}, neural networks \cite{forecasting-neural-networks2}\cite{forecasting-neural-networks3}\cite{forecasting-neural-networks}, probabilistic methods \cite{forecasting-probabilistic}. I decided to use regression models built on expert knowledge \cite{eff-forecasting-spot-prices} and implemented modifications the utilize the Hodrick-Prescott filter \cite{hp-filter}\cite{long-term-seasonal-component} and different lengths of calibration windows.
 
 The remainder of the thesis is structured as follows. In Chapter 2 I introduce the Danish market and the considered datasets. In Chapter 3 I present the characteristics of data provided by the Nord Pool power exchange. In Chapter 4 I present methods used to perform forecasts. In Chapter 5 I present empirical results and in Chapter 6 I wrap up the results and conclude.
 
@@ -68,7 +68,7 @@ Danish power market has been transformed in the last several years drastically. 
 
 National target for 2020 is over 50\% of energy consumption covered by wind power and it is likely to be achieved, as in 2019 they obtained 47\% of coverage by domestic production \cite{denmark-sources-record-wind-2019}. Moreover they have finished construction of the next large scale wind farm Horns Rev 3 in August 2019 \cite{denmark-sources-record-wind-2019}. There are also defined next goals in the last presented national energy strategy. For wind power consumption they aim for 70\% in 2030\cite{denmark-sources-record-wind-2019}. Denmark is currently leader of wind power shares in the national production and its development.
 
-The production of such a significant part of energy from wind carries some risk. Wind speed is very variable even in a day cycle. There are no perfect methods of forecasting in the long term periods. Lower or higher wind power production may occur in respectively higher (or lower) demand in production from other, stable sources of energy (e.g., nuclear, gas) to cover total consumption. It is problematic to mark a common trend in wind power forecasts (Fig. \ref{fig:wind_power_2019}). Thus it is helpful to correct predictions of electricity demand to provide better indicators for stable energy sources.
+The production of such a significant part of energy from wind carries some risk. Wind speed is very variable even in a day cycle. There are no perfect methods of forecasting in the long term periods. Lower or higher wind power production may occur in respectively higher (or lower) demand in production from other, stable sources of energy (e.g., nuclear, gas) to cover total consumption. It is problematic to mark a common trend in wind power forecasts (Fig. \ref{fig:wind_power_2019}). Thus it is helpful to correct predictions of electricity demand to provide better indicators for stable energy sources \cite{better-indicators2}\cite{better-indicators}.
 
 
 \begin{figure}[htp]
@@ -78,7 +78,7 @@ The production of such a significant part of energy from wind carries some risk.
     \label{fig:wind_power_2019}
 \end{figure}
 
-Wind power generation cannot be stopped quickly as production of conventional sources of energy (coal, gas). That higher unexpected wind power production and the need of the consumption of all the generated energy may lead to decreased prices on the power exchanges and in some cases, prices can drop below zero. That was happening rarely in the era of conventional production and regulated electricity markets, but it happens more often with more renewable power generators. Because the electric grid connects European countries, in the case of negative prices energy from Danish areas (DK1, DK2) is exported to the neighboring countries, mainly to Germany, which Denmark has the biggest balance of energy export and import.
+Wind power generation cannot be stopped quickly as production of conventional sources of energy (coal, gas). That higher unexpected wind power production and the need of the consumption of all the generated energy may lead to decreased prices on the power exchanges and in some cases, prices can drop below zero. That was happening rarely in the era of conventional production and regulated electricity markets, but it happens more often with more renewable power generators. Because the electric grid connects European countries, in the case of negative prices energy from Danish areas (DK1, DK2) is exported to the neighboring countries, mainly to Germany, which Denmark has the biggest balance of energy export and import \cite{electricity-export}.
 
 Negative prices obligate to use other approaches of price forecasting, than the old ones which were failing with unexpected domains of values. In my work I will present a few models to forecast price and consumption and point out the best approach to have optimal forecasts.
 
@@ -229,6 +229,7 @@ The day-ahead prognosis given by Nord Pool is less accurate over time, especiall
 \FloatBarrier
 
 \subsubsection{Wind power data}
+\label{section:wind_power_data}
 Wind power production increased significantly within the last 4 years. In the area DK1 from 9.41 to 11.26 TWh and for area DK2 from 2.37 to 3.22 TWh, so about 35\% more. So far in the consumption data we could spot trends whereas in the wind power data there is no distinct trend, see Fig. \ref{fig:avg_wind_power_dk1_dayofweek}. A simple moving average also does not show anything recurrent, thus we can not assume any annual trend, see Fig. \ref{fig:sma_wind_power_dk1}. Only chart of average wind power for each hour suggest there may be a daily trend, however data from area DK2 does not confirm this assumption, see Fig. \ref{fig:average_wind_power_dk1}.
 
 \begin{figure}[htp]
@@ -370,7 +371,7 @@ I consider a few models for each category of forecasts (consumption, price and w
     \hat{Y}_{d,h} = \sum_{i=1}^{n}\beta_{d,h,i}X_{d,h}^{i},
 \end{equation}
 
-\noindent where $\hat{Y}_{d,h}$ is the prediction and $X_{d,h}^{i}$ is the i-th explanatory variable for given day ($d$) and hour ($h$). We can predict the values for the next whole day only using the values from the whole calibration window. Coefficients $\beta_{h,i}$ have been estimated by ordinary least squares (OLS):
+\noindent where $\hat{Y}_{d,h}$ is the prediction and $X_{d,h}^{i}$ is the i-th explanatory variable for given day ($d$) and hour ($h$). We can predict the values for the next whole day only using the values from the whole calibration window. Coefficients $\beta_{h,i}$ have been estimated by ordinary least squares (OLS) \cite{ols-forecasting}:
 
 \begin{equation}
 \label{eq:regression}
@@ -455,7 +456,7 @@ C_{d,h}=\sum_{i=1}^{7}\beta_{0,i}D_{i,d} + \beta_{1}FC_{d,h} + \beta_{2}C_{d-1,h
 
 \subsection{Wind power}
 \label{section:wind_power_forecasting}
-The first model is a benchmark for further forecasts.
+The first model is a benchmark for further forecasts. Its performance is analyzed in Section \ref{section:wind_power_data}.
 \begin{equation}
 \label{eq:wind_model_1}
 \tag{W1}
